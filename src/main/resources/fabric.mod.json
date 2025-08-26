@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "nine_lifes",
+  "version": "${version}",
+  "name": "nine_lifes",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/nine_lifes/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.bleudev.nine_lifes.client.Nine_lifesClient"
+    ],
+    "main": [
+      "com.bleudev.nine_lifes.Nine_lifes"
+    ]
+  },
+  "mixins": [
+    "nine_lifes.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
