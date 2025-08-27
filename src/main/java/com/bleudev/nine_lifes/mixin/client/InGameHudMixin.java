@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.util.LivesUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -14,6 +13,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static com.bleudev.nine_lifes.ModDataStorage.lives;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -38,19 +39,11 @@ public class InGameHudMixin {
 
         TextRenderer textRenderer = client.textRenderer;
 
-        int lives = 9;
-        if (client.getServer() != null)
-            lives = LivesUtils.getLives(client.getServer().getPlayerManager().getPlayer(client.player.getUuid()));
-
         Text text = Text.literal("" + lives);
 
         int x0 = context.getScaledWindowWidth() / 2;
         int x = x0 - textRenderer.getWidth(text) / 2;
         int y = context.getScaledWindowHeight() - 48;
-
-//        if (client.player.experienceLevel > 0) {
-//            y -= 6;
-//        }
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(0, 0);
