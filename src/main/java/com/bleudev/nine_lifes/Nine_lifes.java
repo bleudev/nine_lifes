@@ -1,9 +1,7 @@
 package com.bleudev.nine_lifes;
 
-import com.bleudev.nine_lifes.util.LivesUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.command.CommandManager;
 
 public class Nine_lifes implements ModInitializer {

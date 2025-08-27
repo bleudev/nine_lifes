@@ -7,8 +7,8 @@
     "ServerPlayerEntityMixin"
   ],
   "client": [
-    "DeathScreenMixin",
-    "InGameHudMixin"
+    "client.DeathScreenMixin",
+    "client.InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
