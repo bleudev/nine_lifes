@@ -8,8 +8,10 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.command.PermissionLevelSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.world.GameMode;
 
 public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
@@ -17,11 +19,15 @@ public class Nine_lifes implements ModInitializer {
     public void onInitialize() {
         Packets.initialize();
         ServerPlayerEvents.JOIN.register(player -> {
+            if (player.getGameMode() == GameMode.SURVIVAL)
+                if (LivesUtils.getLives(player) == 0)
+                    LivesUtils.setLives(player, 9);
             ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager
                 .literal("nl").executes(CustomCommands::nine_lifes)
+                .requires(PermissionLevelSource::hasElevatedPermissions)
                 .then(CommandManager
                     .literal("reset").executes(CustomCommands::nine_lifes_reset)
                     .then(CommandManager

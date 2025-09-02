@@ -5,17 +5,14 @@ import com.bleudev.nine_lifes.util.LivesUtils;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
-import net.minecraft.world.GameRules;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,15 +26,10 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     @Shadow
     public abstract boolean changeGameMode(GameMode gameMode);
     @Shadow
-    @Final
-    private MinecraftServer server;
-    @Shadow
     public ServerPlayNetworkHandler networkHandler;
 
     @Unique
     protected int lives;
-    @Unique
-    protected int default_players_percentage;
 
     public int nine_lifes$getLives() {
         return this.lives;
@@ -74,22 +66,11 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<Either<ServerPlayerEntity.SleepFailureReason, Unit>> cir) {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         int lives = LivesUtils.getLives(player);
-
-        var psp = server.getGameRules().get(GameRules.PLAYERS_SLEEPING_PERCENTAGE);
-
-        if (lives <= 5) {
-            if (psp.get() != 101)
-                default_players_percentage = psp.get();
-            psp.set(101, server);
-        }
-        else {
-            if (psp.get() == 101)
-                psp.set(default_players_percentage, server);
-        }
-
         if (lives <= 3) {
-            player.sendMessage(Text.translatable("block.minecraft.bed.no_sleep"), true);
-            cir.setReturnValue(Either.left(ServerPlayerEntity.SleepFailureReason.OTHER_PROBLEM));
+            cir.setReturnValue(Either.left(ServerPlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW));
+            cir.cancel();
+        } else if (lives <= 5) {
+            cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE));
             cir.cancel();
         }
     }
