@@ -2,7 +2,7 @@
 
 ![9 lifes indicator](./readme_assets/9lifes_indicator.png)
 
-Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Cool challenge for those who are tired of the vanilla hardcore.
+Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Cool challenge for those who are tired of the vanilla hardcore. For changes in lives count - use `/nl` command. Enjoy!)
 
 For a better atmosphere:
 - Install [CTR VCR shader](https://modrinth.com/shader/ctrvcr).
