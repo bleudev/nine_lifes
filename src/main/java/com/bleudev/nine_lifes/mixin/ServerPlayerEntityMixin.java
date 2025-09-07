@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
+import com.bleudev.nine_lifes.custom.CustomEffects;
 import com.bleudev.nine_lifes.interfaces.mixin.ServerPlayerEntityCustomInteface;
 import com.bleudev.nine_lifes.util.LivesUtils;
 import com.mojang.datafixers.util.Either;
@@ -66,18 +67,21 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     private void onTrySleep(BlockPos bedPos, CallbackInfoReturnable<Either<ServerPlayerEntity.SleepFailureReason, Unit>> cir) {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         int lives = LivesUtils.getLives(player);
-        if (lives <= 3) {
-            cir.setReturnValue(Either.left(ServerPlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW));
-            cir.cancel();
-        } else if (lives <= 5) {
-            cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE));
-            cir.cancel();
+
+        if (!player.hasStatusEffect(CustomEffects.AMETHYSM)) {
+            if (lives <= 3) {
+                cir.setReturnValue(Either.left(ServerPlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW));
+                cir.cancel();
+            } else if (lives <= 5) {
+                cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE));
+                cir.cancel();
+            }
         }
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo ci) {
-       if (lives <= 3)
+        if (lives <= 3)
            this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(6000L, 0, true));
     }
 }
