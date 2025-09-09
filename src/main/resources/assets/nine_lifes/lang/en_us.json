@@ -1,4 +1,9 @@
 {
   "effect.nine_lifes.amethysm": "Amethysm",
-  "death.attack.amethysm": "%1$s didn't expect amethysts to kill"
+
+  "death.attack.amethysm": "%1$s didn't expect amethysts to kill",
+  "death.attack.charged_amethyst": "%1$s learned the power of amethyst",
+  "death.attack.unknown": "%1$s died of unknown cause",
+
+  "enchantment.nine_lifes.charge": "Charge"
 }

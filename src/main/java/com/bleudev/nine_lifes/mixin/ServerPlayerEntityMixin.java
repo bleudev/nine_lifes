@@ -81,7 +81,10 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo ci) {
-        if (lives <= 3)
-           this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(6000L, 0, true));
+        ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+        var effect = player.getStatusEffect(CustomEffects.AMETHYSM);
+        var bl = (effect != null) && (!effect.isDurationBelow(15));
+        if (lives <= 3 || bl)
+           this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(9000L, 0, true));
     }
 }

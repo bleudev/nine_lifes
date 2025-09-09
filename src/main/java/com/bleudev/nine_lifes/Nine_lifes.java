@@ -2,6 +2,7 @@ package com.bleudev.nine_lifes;
 
 import com.bleudev.nine_lifes.custom.CustomConsumeEffectTypes;
 import com.bleudev.nine_lifes.custom.CustomEffects;
+import com.bleudev.nine_lifes.custom.CustomEnchantments;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
@@ -24,6 +25,7 @@ public class Nine_lifes implements ModInitializer {
         Packets.initialize();
         CustomEffects.initialize();
         CustomConsumeEffectTypes.initialize();
+        CustomEnchantments.initialize();
         ServerPlayerEvents.JOIN.register(player -> {
             if (player.getGameMode() == GameMode.SURVIVAL)
                 if (LivesUtils.getLives(player) == 0)

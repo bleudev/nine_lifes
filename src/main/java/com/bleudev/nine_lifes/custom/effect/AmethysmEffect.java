@@ -32,7 +32,6 @@ public class AmethysmEffect extends StatusEffect {
             ticks++;
             this.entity = entity;
             if (entity instanceof PlayerEntity player1) {
-                System.out.println("is player!");
                 player = (ServerPlayerEntity) player1;
                 ServerPlayNetworking.send(player, new AmethysmEffectUpdatePayload(true));
             }

@@ -1,0 +1,23 @@
+{
+  "description": {
+    "type": "translatable",
+    "translate": "enchantment.nine_lifes.charge",
+    "fallback": "Charge description"
+  },
+  "supported_items": [
+    "minecraft:amethyst_shard"
+  ],
+  "weight": 1024,
+  "max_level": 1,
+  "min_cost": {
+    "base": 3,
+    "per_level_above_first": 0
+  },
+  "max_cost": {
+    "base": 7,
+    "per_level_above_first": 0
+  },
+  "anvil_cost": 4,
+  "slots": ["mainhand"],
+  "effects": {}
+}

@@ -12,6 +12,8 @@ import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
 
 public class CustomDamageTypes {
     public static final RegistryKey<DamageType> AMETHYSM_DAMAGE_TYPE = getDamageType("amethysm");
+    public static final RegistryKey<DamageType> CHARGED_AMETHYST_DAMAGE_TYPE = getDamageType("charged_amethyst");
+    public static final RegistryKey<DamageType> UNKNOWN_DAMAGE_TYPE = getDamageType("unknown");
 
     private static RegistryKey<DamageType> getDamageType(String name) {
         return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(MOD_ID, name));
