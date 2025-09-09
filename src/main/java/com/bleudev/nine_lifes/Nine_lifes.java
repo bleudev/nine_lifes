@@ -3,6 +3,7 @@ package com.bleudev.nine_lifes;
 import com.bleudev.nine_lifes.custom.CustomConsumeEffectTypes;
 import com.bleudev.nine_lifes.custom.CustomEffects;
 import com.bleudev.nine_lifes.custom.CustomEnchantments;
+import com.bleudev.nine_lifes.custom.CustomPotions;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
@@ -13,8 +14,11 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.command.PermissionLevelSource;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Potions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.world.GameMode;
 
@@ -26,6 +30,10 @@ public class Nine_lifes implements ModInitializer {
         CustomEffects.initialize();
         CustomConsumeEffectTypes.initialize();
         CustomEnchantments.initialize();
+        CustomPotions.initialize();
+        FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
+            builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM);
+        });
         ServerPlayerEvents.JOIN.register(player -> {
             if (player.getGameMode() == GameMode.SURVIVAL)
                 if (LivesUtils.getLives(player) == 0)

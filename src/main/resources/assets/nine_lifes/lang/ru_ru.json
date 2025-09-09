@@ -1,5 +1,8 @@
 {
   "effect.nine_lifes.amethysm": "Аметизм",
+  "item.minecraft.potion.effect.amethysm": "Зелье аметизма",
+  "item.minecraft.splash_potion.effect.amethysm": "Взрывное зелье аметизма",
+  "item.minecraft.lingering_potion.effect.amethysm": "Туманное зелье аметизма",
 
   "death.attack.amethysm": "%1$s не ожидал, что аметисты убивают",
   "death.attack.charged_amethyst": "%1$s познал силу аметиста",

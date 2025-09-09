@@ -1,5 +1,8 @@
 {
   "effect.nine_lifes.amethysm": "Amethysm",
+  "item.minecraft.potion.effect.amethysm": "Potion of Amethysm",
+  "item.minecraft.splash_potion.effect.amethysm": "Splash Potion of Amethysm",
+  "item.minecraft.lingering_potion.effect.amethysm": "Lingering Potion of Amethysm",
 
   "death.attack.amethysm": "%1$s didn't expect amethysts to kill",
   "death.attack.charged_amethyst": "%1$s learned the power of amethyst",
