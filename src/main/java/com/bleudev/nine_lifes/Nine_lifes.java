@@ -17,10 +17,15 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.command.PermissionLevelSource;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.GameMode;
+
+import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_foods;
+import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
 
 public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
@@ -42,7 +47,19 @@ public class Nine_lifes implements ModInitializer {
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (var player: server.getPlayerManager().getPlayerList())
-                ComponentUtils.ensure_custom_foods(player);
+                ComponentUtils.player_ensure_custom_foods(player);
+
+            // Find all amethyst shard item entities in `find_radius`
+            double find_radius = 20;
+            for (var world: server.getWorlds())
+                for (var player: world.getPlayers()) {
+                    world.getEntitiesByType(
+                        EntityType.ITEM,
+                        Box.of(player.getPos(), find_radius, find_radius, find_radius),
+                        entity -> entity.getStack().isOf(Items.AMETHYST_SHARD) &&
+                                         should_update_amethyst_shard(entity.getStack())
+                    ).forEach(entity -> entity.setStack(item_ensure_custom_foods(entity.getStack())));
+                }
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager

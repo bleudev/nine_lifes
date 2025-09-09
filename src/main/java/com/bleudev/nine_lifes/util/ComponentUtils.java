@@ -63,29 +63,36 @@ public class ComponentUtils {
         }
     }
 
-    public static void ensure_custom_foods(ServerPlayerEntity player) {
+
+    private static final FoodComponent amethyst_shard_food_component = new FoodComponent(3, 0.3f, true);
+    private static final ConsumableComponent amethyst_shard_consumable_component = ConsumableComponents.food().consumeEffect(new AmethysmConsumeEffect()).build();
+    private static final UseCooldownComponent amethyst_shard_cooldown_component = new UseCooldownComponent(5);
+
+    public static boolean should_update_amethyst_shard(ItemStack stack) {
+        return CheckStackPredicateBuilder.create()
+            .of(Items.AMETHYST_SHARD)
+            .with(CheckStackPredicateBuilder.create()
+                    .not_component(DataComponentTypes.FOOD, amethyst_shard_food_component)
+                    .not_component(DataComponentTypes.CONSUMABLE, amethyst_shard_consumable_component)
+                    .not_component(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component)
+            )
+        .build().test(stack);
+    }
+
+    public static ItemStack item_ensure_custom_foods(ItemStack stack) {
+        stack.set(DataComponentTypes.FOOD, amethyst_shard_food_component);
+        stack.set(DataComponentTypes.CONSUMABLE, amethyst_shard_consumable_component);
+        stack.set(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component);
+        return stack;
+    }
+
+    public static void player_ensure_custom_foods(ServerPlayerEntity player) {
         var inventory = player.getInventory();
 
         for (int slot = 0; slot < inventory.getMainStacks().size(); slot++) {
             ItemStack stack = inventory.getStack(slot);
-
-            FoodComponent amethyst_shard_food_component = new FoodComponent(3, 0.3f, true);
-            ConsumableComponent amethyst_shard_consumable_component = ConsumableComponents.food().consumeEffect(new AmethysmConsumeEffect()).build();
-            UseCooldownComponent amethyst_shard_cooldown_component = new UseCooldownComponent(5);
-
-            if (CheckStackPredicateBuilder.create()
-                .of(Items.AMETHYST_SHARD)
-                .with(CheckStackPredicateBuilder.create()
-                    .not_component(DataComponentTypes.FOOD, amethyst_shard_food_component)
-                    .not_component(DataComponentTypes.CONSUMABLE, amethyst_shard_consumable_component)
-                    .not_component(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component)
-                )
-                .build().test(stack)) {
-                stack.set(DataComponentTypes.FOOD, amethyst_shard_food_component);
-                stack.set(DataComponentTypes.CONSUMABLE, amethyst_shard_consumable_component);
-                stack.set(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component);
-                inventory.setStack(slot, stack);
-            }
+            if (should_update_amethyst_shard(stack))
+                inventory.setStack(slot, item_ensure_custom_foods(stack));
         }
     }
 }
