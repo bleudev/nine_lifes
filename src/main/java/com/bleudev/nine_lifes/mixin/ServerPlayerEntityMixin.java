@@ -14,6 +14,7 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,6 +29,9 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     public abstract boolean changeGameMode(GameMode gameMode);
     @Shadow
     public ServerPlayNetworkHandler networkHandler;
+
+    @Shadow
+    public abstract @NotNull GameMode getGameMode();
 
     @Unique
     protected int lives;
@@ -52,14 +56,14 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
 
     @Inject(method = "copyFrom", at = @At("TAIL"))
     private void onRespawn(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
-        if (!alive)
+        if (!alive && oldPlayer.getGameMode().isSurvivalLike())
             LivesUtils.setLives((ServerPlayerEntity) (Object) this,
                 o -> Math.max(((ServerPlayerEntityCustomInteface) oldPlayer).nine_lifes$getLives() - 1, 0));
     }
 
     @Inject(method = "onDeath", at = @At("RETURN"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci) {
-        if (this.nine_lifes$getLives() <= 1)
+        if (this.nine_lifes$getLives() <= 1 && getGameMode().isSurvivalLike())
             this.changeGameMode(GameMode.SPECTATOR);
     }
 
