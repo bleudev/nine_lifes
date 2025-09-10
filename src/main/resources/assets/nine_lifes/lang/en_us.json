@@ -13,6 +13,6 @@
   "chat.message.join.lives": "Your lives: %1$s.",
   "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!",
 
-  "text.autoconfig.nine_lifes.title": "Nine lifes config",
+  "text.autoconfig.nine_lifes.title": "Nine lifes settings",
   "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message"
 }
