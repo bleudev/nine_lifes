@@ -20,7 +20,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
-import net.minecraft.world.explosion.Explosion;
 
 import static com.bleudev.nine_lifes.custom.CustomConsumeEffectTypes.AMETHYSM_CONSUME_EFFECT_TYPE;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
@@ -44,7 +43,7 @@ public record AmethysmConsumeEffect() implements ConsumeEffect {
                 .orElse(false))) {
             if (world instanceof ServerWorld serverWorld) {
                 serverWorld.createExplosion(
-                        entity, Explosion.createDamageSource(world, entity), new EntityExplosionBehavior(entity),
+                        entity, CustomDamageTypes.of(serverWorld, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE), new EntityExplosionBehavior(entity),
                         entity.getX(), entity.getY(), entity.getZ(),
                         7f, true, World.ExplosionSourceType.MOB,
                         ParticleTypes.LARGE_SMOKE, ParticleTypes.LARGE_SMOKE,

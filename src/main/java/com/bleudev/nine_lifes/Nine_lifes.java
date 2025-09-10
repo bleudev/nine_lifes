@@ -47,6 +47,7 @@ public class Nine_lifes implements ModInitializer {
             ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
+            // Custom food (amethyst shard)
             for (var player: server.getPlayerManager().getPlayerList())
                 ComponentUtils.player_ensure_custom_foods(player);
 
@@ -61,6 +62,12 @@ public class Nine_lifes implements ModInitializer {
                                          should_update_amethyst_shard(entity.getStack())
                     ).forEach(entity -> entity.setStack(item_ensure_custom_foods(entity.getStack())));
                 }
+
+            // Wind charges
+            for (var world: server.getWorlds())
+                world.getEntitiesByType(EntityType.WIND_CHARGE, ignored -> true).forEach(wind_charge -> {
+                    WindChargeTickFeatures.do_for(world, wind_charge);
+                });
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CustomCommands.initialize(dispatcher);
