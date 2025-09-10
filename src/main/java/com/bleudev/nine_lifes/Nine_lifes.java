@@ -1,27 +1,20 @@
 package com.bleudev.nine_lifes;
 
-import com.bleudev.nine_lifes.custom.CustomConsumeEffectTypes;
-import com.bleudev.nine_lifes.custom.CustomEffects;
-import com.bleudev.nine_lifes.custom.CustomEnchantments;
-import com.bleudev.nine_lifes.custom.CustomPotions;
+import com.bleudev.nine_lifes.custom.*;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
 import com.bleudev.nine_lifes.util.LivesUtils;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
-import net.minecraft.command.PermissionLevelSource;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.GameMode;
 
@@ -30,6 +23,12 @@ import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_
 
 public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
+    public static final String NAME = "Nine lifes";
+    public static final String AUTHOR = "bleudev";
+    public static final String VERSION = "1.4";
+    public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
+    public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
+
     @Override
     public void onInitialize() {
         Packets.initialize();
@@ -64,26 +63,7 @@ public class Nine_lifes implements ModInitializer {
                 }
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager
-                .literal("nl").executes(CustomCommands::nine_lifes)
-                .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(CommandManager
-                    .literal("reset").executes(CustomCommands::nine_lifes_reset)
-                    .then(CommandManager
-                        .argument("players", EntityArgumentType.players())
-                        .executes(CustomCommands::nine_lifes_reset_player))
-                )
-                .then(CommandManager
-                    .literal("set").executes(CustomCommands::nine_lifes_set)
-                    .then(CommandManager
-                        .argument("lives", IntegerArgumentType.integer(1, 9))
-                        .executes(CustomCommands::nine_lifes_set_lives)
-                        .then(CommandManager
-                            .argument("players", EntityArgumentType.players())
-                            .executes(CustomCommands::nine_lifes_set_lives_players))
-                    )
-                )
-            );
+            CustomCommands.initialize(dispatcher);
         });
     }
 }

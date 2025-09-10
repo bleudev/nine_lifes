@@ -15,5 +15,15 @@
 
   "text.autoconfig.nine_lifes.title": "Настройки Nine lifes",
   "text.autoconfig.nine_lifes.option.join_message_enabled": "Включить приветственное сообщение",
-  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней"
+  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
+
+  "commands.nl.text.author": "Автор: %1$s",
+  "commands.nl.text.version": "Версия: %1$s",
+  "commands.nl.text.links": "Ссылки:",
+
+  "commands.nl.reset.success": "Жизни были успешно сброшены",
+  "commands.nl.reset.player.success": "Жизни %1$s были успешно сброшены",
+
+  "commands.nl.set.success": "Количество жизней было успешно установлено на %1$s",
+  "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s"
 }

@@ -15,5 +15,15 @@
 
   "text.autoconfig.nine_lifes.title": "Nine lifes settings",
   "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message",
-  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Send a message every time you enter a world with the number of lives remaining"
+  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Send a message every time you enter a world with the number of lives remaining",
+
+  "commands.nl.text.author": "Author: %1$s",
+  "commands.nl.text.version": "Version: %1$s",
+  "commands.nl.text.links": "Links:",
+
+  "commands.nl.reset.success": "Lives were successfully reset",
+  "commands.nl.reset.player.success": "%1$s's lives have been successfully reset",
+
+  "commands.nl.set.success": "The number of lives was successfully set to %1$s",
+  "commands.nl.set.player.success": "%2$s's life count was successfully set to %1$s"
 }
