@@ -1,12 +1,8 @@
 {
   "description": {
-    "type": "translatable",
-    "translate": "enchantment.nine_lifes.charge",
-    "fallback": "Charge description"
+    "translate": "enchantment.nine_lifes.charge"
   },
-  "supported_items": [
-    "minecraft:amethyst_shard"
-  ],
+  "supported_items": "#nine_lifes:enchantable/charge",
   "weight": 1024,
   "max_level": 1,
   "min_cost": {
