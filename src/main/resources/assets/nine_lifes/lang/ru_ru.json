@@ -8,5 +8,8 @@
   "death.attack.charged_amethyst": "%1$s познал силу аметиста",
   "death.attack.unknown": "%1$s умер по неизвестной причине",
 
-  "enchantment.nine_lifes.charge": "Заряд"
+  "enchantment.nine_lifes.charge": "Заряд",
+
+  "chat.message.join.lives": "Ваши жизни: %1$s.",
+  "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!"
 }

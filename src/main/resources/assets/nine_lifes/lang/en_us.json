@@ -8,5 +8,8 @@
   "death.attack.charged_amethyst": "%1$s learned the power of amethyst",
   "death.attack.unknown": "%1$s died of unknown cause",
 
-  "enchantment.nine_lifes.charge": "Charge"
+  "enchantment.nine_lifes.charge": "Charge",
+
+  "chat.message.join.lives": "Your lives: %1$s.",
+  "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!"
 }

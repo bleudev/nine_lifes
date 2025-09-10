@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.custom.CustomEffects;
 import com.bleudev.nine_lifes.custom.CustomEnchantments;
 import com.bleudev.nine_lifes.custom.CustomPotions;
 import com.bleudev.nine_lifes.networking.Packets;
+import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
 import com.bleudev.nine_lifes.util.LivesUtils;
@@ -44,6 +45,7 @@ public class Nine_lifes implements ModInitializer {
                 if (LivesUtils.getLives(player) == 0)
                     LivesUtils.setLives(player, 9);
             ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
+            ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (var player: server.getPlayerManager().getPlayerList())
