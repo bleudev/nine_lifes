@@ -11,6 +11,7 @@ public class CustomTags {
     public static final TagKey<Item> CAUSE_BLAST_FURNACE_EXPLODE = getItemTag("cause_blast_furnace_explode");
     public static final TagKey<Item> CAUSE_FURNACE_EXPLODE = getItemTag("cause_furnace_explode");
     public static final TagKey<Item> CAUSE_SMOKER_EXPLODE = getItemTag("cause_smoker_explode");
+    public static final TagKey<Item> CAUSE_CAMPFIRE_EXPLODE = getItemTag("cause_campfire_explode");
 
     private static Identifier get(String name) {
         return Identifier.of(MOD_ID, name);

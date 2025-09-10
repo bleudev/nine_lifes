@@ -55,7 +55,7 @@ public class AbstractFurnaceBlockEntityMixin {
             Vec3d vec = pos.toCenterPos();
             world.createExplosion(null,
                 vec.getX(), vec.getY(), vec.getZ(),
-                4f, World.ExplosionSourceType.BLOCK
+                4f, true, World.ExplosionSourceType.BLOCK
             );
         }
     }
