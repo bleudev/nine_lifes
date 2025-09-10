@@ -11,5 +11,9 @@
   "enchantment.nine_lifes.charge": "Заряд",
 
   "chat.message.join.lives": "Ваши жизни: %1$s.",
-  "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!"
+  "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
+
+  "text.autoconfig.nine_lifes.title": "Настройки Nine lifes",
+  "text.autoconfig.nine_lifes.option.join_message_enabled": "Включить приветственное сообщение",
+  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней"
 }
