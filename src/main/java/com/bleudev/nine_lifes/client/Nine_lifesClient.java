@@ -1,9 +1,12 @@
 package com.bleudev.nine_lifes.client;
 
 import com.bleudev.nine_lifes.ModDataStorage;
+import com.bleudev.nine_lifes.client.compat.modmenu.ClothAutoConfig;
 import com.bleudev.nine_lifes.networking.payloads.AmethysmEffectUpdatePayload;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -16,14 +19,22 @@ import static net.minecraft.util.Formatting.RED;
 public class Nine_lifesClient implements ClientModInitializer {
     private boolean has_effect = false;
 
+    public static ClothAutoConfig getConfig() {
+        return AutoConfig.getConfigHolder(ClothAutoConfig.class).getConfig();
+    }
+
     @Override
     public void onInitializeClient() {
+        AutoConfig.register(ClothAutoConfig.class, JanksonConfigSerializer::new);
+
         ClientPlayNetworking.registerGlobalReceiver(JoinMessagePayload.ID, ((payload, context) -> {
-            boolean careful = payload.lives() <= 5;
-            context.player().sendMessage(
-                (careful ? Text.translatable("chat.message.join.lives.careful", payload.lives()) :
-                Text.translatable("chat.message.join.lives", payload.lives())).formatted(careful ? RED : DARK_AQUA),
-                false);
+            if (getConfig().join_message_enabled) {
+                boolean careful = payload.lives() <= 5;
+                context.player().sendMessage(
+                    (careful ? Text.translatable("chat.message.join.lives.careful", payload.lives()) :
+                            Text.translatable("chat.message.join.lives", payload.lives())).formatted(careful ? RED : DARK_AQUA),
+                    false);
+            }
         }));
         ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> {
             ModDataStorage.lives = payload.lives();

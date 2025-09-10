@@ -11,5 +11,8 @@
   "enchantment.nine_lifes.charge": "Заряд",
 
   "chat.message.join.lives": "Ваши жизни: %1$s.",
-  "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!"
+  "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
+
+  "text.autoconfig.nine_lifes.title": "Nine lifes config",
+  "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message"
 }
