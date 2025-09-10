@@ -14,5 +14,6 @@
   "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!",
 
   "text.autoconfig.nine_lifes.title": "Nine lifes settings",
-  "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message"
+  "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message",
+  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Send a message every time you enter a world with the number of lives remaining"
 }
