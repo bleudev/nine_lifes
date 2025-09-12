@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.entity.ai.goal;
 
-import com.bleudev.nine_lifes.custom.entity.WanderingArmorStand;
+import com.bleudev.nine_lifes.custom.entity.WanderingArmorStandEntity;
 import net.minecraft.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
@@ -9,12 +9,12 @@ import java.util.EnumSet;
 Copied from net.minecraft.entity.ai.goal.LookAroundGoal with some improvements
  */
 public class WanderingArmorStandLookAroundGoal extends Goal {
-    protected final WanderingArmorStand mob;
+    protected final WanderingArmorStandEntity mob;
     private double deltaX;
     private double deltaZ;
     private int lookTime;
 
-    public WanderingArmorStandLookAroundGoal(WanderingArmorStand mob) {
+    public WanderingArmorStandLookAroundGoal(WanderingArmorStandEntity mob) {
         this.mob = mob;
         this.setControls(EnumSet.of(Goal.Control.MOVE, Goal.Control.LOOK));
     }

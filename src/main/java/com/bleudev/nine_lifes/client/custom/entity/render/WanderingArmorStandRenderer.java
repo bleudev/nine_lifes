@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.client.custom.entity.render;
 
 import com.bleudev.nine_lifes.client.custom.entity.model.WanderingArmorStandModel;
-import com.bleudev.nine_lifes.custom.entity.WanderingArmorStand;
+import com.bleudev.nine_lifes.custom.entity.WanderingArmorStandEntity;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -9,8 +9,8 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ArmorStandEntityRenderState;
 import net.minecraft.util.Identifier;
 
-public class WanderingArmorStandRendering extends LivingEntityRenderer<WanderingArmorStand, ArmorStandEntityRenderState, WanderingArmorStandModel> {
-    public WanderingArmorStandRendering(EntityRendererFactory.Context ctx) {
+public class WanderingArmorStandRenderer extends LivingEntityRenderer<WanderingArmorStandEntity, ArmorStandEntityRenderState, WanderingArmorStandModel> {
+    public WanderingArmorStandRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, new WanderingArmorStandModel(ctx.getPart(EntityModelLayers.ARMOR_STAND)), 0f);
     }
 
@@ -25,14 +25,14 @@ public class WanderingArmorStandRendering extends LivingEntityRenderer<Wandering
     }
 
     @Override
-    protected boolean hasLabel(WanderingArmorStand livingEntity, double d) {
+    protected boolean hasLabel(WanderingArmorStandEntity livingEntity, double d) {
         if (livingEntity.hasCustomName())
             return super.hasLabel(livingEntity, d);
         return false;
     }
 
     @Override
-    public void updateRenderState(WanderingArmorStand entity, ArmorStandEntityRenderState state, float f) {
+    public void updateRenderState(WanderingArmorStandEntity entity, ArmorStandEntityRenderState state, float f) {
         super.updateRenderState(entity, state, f);
 
         System.out.println("f: " + f);
