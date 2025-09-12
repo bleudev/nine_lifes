@@ -1,6 +1,8 @@
 package com.bleudev.nine_lifes.custom.entity;
 
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAroundGoal;
+import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEventPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -19,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -109,9 +112,9 @@ public class WanderingArmorStand extends PathAwareEntity {
 
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
-        if (source.getAttacker() instanceof PlayerEntity player) {
+        if (source.getAttacker() instanceof ServerPlayerEntity player) {
             // TODO: Blue eyes effect
-            player.sendMessage(Text.of("why?"), false);
+            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getPos()));
         }
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
