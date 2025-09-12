@@ -11,6 +11,7 @@
     "ServerPlayerEntityMixin"
   ],
   "client": [
+    "client.CreateWorldScreenMixin",
     "client.DeathScreenMixin",
     "client.InGameHudMixin"
   ],
