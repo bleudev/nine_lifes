@@ -3,10 +3,7 @@ package com.bleudev.nine_lifes.client;
 import com.bleudev.nine_lifes.ModDataStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.ClothAutoConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
-import com.bleudev.nine_lifes.networking.payloads.AmethysmEffectUpdatePayload;
-import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEventPayload;
-import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
-import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
+import com.bleudev.nine_lifes.networking.payloads.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -32,8 +29,14 @@ public class Nine_lifesClient implements ClientModInitializer {
     public static Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
 
     private boolean has_effect = false;
+
     private int armor_stand_hit_event_ticks = 0;
     private boolean armor_stand_hit_event_running = false;
+
+    private float max_whiteness_screen = 0f;
+    private int max_whiteness_screen_ticks = 0;
+    private int whiteness_screen_ticks = 0;
+    private boolean whiteness_screen_running = false;
 
     private float whiteness = 0f;
     private float redness = 0f;
@@ -73,6 +76,12 @@ public class Nine_lifesClient implements ClientModInitializer {
             if (!armor_stand_hit_event_running)
                 runArmorStandHitEvent();
         });
+        ClientPlayNetworking.registerGlobalReceiver(StartWhitenessScreenEvent.ID, (payload, context) -> {
+            max_whiteness_screen_ticks = payload.duration();
+            max_whiteness_screen = payload.max_whiteness();
+            whiteness_screen_ticks = 0;
+            whiteness_screen_running = true;
+        });
         WorldRenderEvents.AFTER_SETUP.register(context -> {
             if (has_effect)
                 GL46.glColorMask(false, true, false, true);
@@ -107,6 +116,17 @@ public class Nine_lifesClient implements ClientModInitializer {
         }
 
         redness = MathHelper.lerp(armor_stand_hit_redness, 0f, .2f);
+
+        if (whiteness_screen_running) {
+            if (whiteness_screen_ticks == max_whiteness_screen_ticks)
+                whiteness_screen_running = false;
+            else {
+                whiteness_screen_ticks++;
+
+                whiteness = MathHelper.lerp((float) whiteness_screen_ticks / max_whiteness_screen_ticks, 0f, max_whiteness_screen);
+            }
+        }
+        else whiteness = 0f;
     }
 
     private void runArmorStandHitEvent() {
