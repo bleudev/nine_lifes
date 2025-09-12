@@ -3,6 +3,7 @@
   "item.minecraft.potion.effect.amethysm": "Зелье аметизма",
   "item.minecraft.splash_potion.effect.amethysm": "Взрывное зелье аметизма",
   "item.minecraft.lingering_potion.effect.amethysm": "Туманное зелье аметизма",
+  "item.minecraft.tipped_arrow.effect.amethysm": "Стрела аметизма",
 
   "death.attack.amethysm": "%1$s не ожидал, что аметисты убивают",
   "death.attack.charged_amethyst": "%1$s познал силу аметиста",
@@ -25,5 +26,7 @@
   "commands.nl.reset.player.success": "Жизни %1$s были успешно сброшены",
 
   "commands.nl.set.success": "Количество жизней было успешно установлено на %1$s",
-  "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s"
+  "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s",
+
+  "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони"
 }

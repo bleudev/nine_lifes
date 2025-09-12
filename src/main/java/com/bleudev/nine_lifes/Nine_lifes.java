@@ -36,6 +36,7 @@ public class Nine_lifes implements ModInitializer {
         CustomConsumeEffectTypes.initialize();
         CustomEnchantments.initialize();
         CustomPotions.initialize();
+        CustomEntities.initialize();
         FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
             builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM);
         });
