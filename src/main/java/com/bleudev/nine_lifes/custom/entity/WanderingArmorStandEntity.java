@@ -20,12 +20,13 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class WanderingArmorStandEntity extends PathAwareEntity {
@@ -130,16 +131,27 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
         this.dataTracker.set(IS_ALIVE, is_alive);
     }
 
+    private static void spawnParticle(ParticleEffect particle, ServerWorld world, Vec3d pos) {
+        double offsetX = (world.random.nextDouble() - 0.5) * 2.0;
+        double offsetY = world.random.nextDouble() * 2.0;
+        double offsetZ = (world.random.nextDouble() - 0.5) * 2.0;
+
+        world.spawnParticles(particle,
+            pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ,
+            1, 0, 0, 0, 1
+        );
+    }
+
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack stack = player.getMainHandStack();
         // Eat
         if (stack.isOf(Items.AMETHYST_SHARD)) {
-            var pos = getPos();
-            for (int i = 0; i < 5; i++)
-                getWorld().addParticleClient(
-                    ParticleTypes.HEART, pos.getX(), pos.getY() + 1, pos.getZ(),
-                    1, 0, 0
-                );
+            if (getWorld() instanceof ServerWorld world) {
+                var pos = getPos();
+                for (int i = 0; i < 3; i++)
+                    spawnParticle(ParticleTypes.HEART, world, pos);
+            }
+
             // Consume amethyst shard
             if (!player.isCreative()) {
                 if (stack.getCount() == 1)
@@ -151,7 +163,6 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
             }
 
             setWander(true);
-            player.sendMessage(Text.of("hello"), false);
             return ActionResult.SUCCESS;
         }
         return super.interactMob(player, hand);

@@ -30,7 +30,7 @@ public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
     public static final String NAME = "Nine lifes";
     public static final String AUTHOR = "bleudev";
-    public static final String VERSION = "1.5.1";
+    public static final String VERSION = "1.5.2";
     public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
     public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
 
