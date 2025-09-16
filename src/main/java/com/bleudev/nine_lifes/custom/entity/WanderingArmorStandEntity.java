@@ -1,13 +1,11 @@
 package com.bleudev.nine_lifes.custom.entity;
 
-import com.bleudev.nine_lifes.custom.CustomEntities;
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAroundGoal;
 import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEventPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
@@ -28,14 +26,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 
 public class WanderingArmorStandEntity extends PathAwareEntity {
     private static final TrackedData<Boolean> IS_ALIVE;
@@ -119,26 +110,10 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
         }
     }
 
-    private ArrayList<BlueEyesEntity> eyes = new ArrayList<>();
-    private int eyes_remove_ticks = -1;
-
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
-        if ((source.getAttacker() instanceof ServerPlayerEntity player) && (eyes_remove_ticks == -1)) {
-            var pos = getPos();
-            var player_pos = player.getPos();
-            var normal = pos.subtract(player_pos);
-
-            List<Vec3d> eyes_poses = List.of(
-                normal.rotateY((float) Math.toRadians(45)),
-                normal.rotateY((float) Math.toRadians(-45))
-            );
-            for (var eyes_pos: eyes_poses)
-                eyes.add(CustomEntities.BLUE_EYES_TYPE.spawn(world, BlockPos.ofFloored(eyes_pos.multiply(0.5).add(pos)), SpawnReason.EVENT));
-            eyes_remove_ticks = 2 * TICKS_PER_SECOND;
-
-            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(pos));
-        }
+        if (source.getAttacker() instanceof ServerPlayerEntity player)
+            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getPos()));
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
 
@@ -153,22 +128,6 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
 
     public void setWander(boolean is_alive) {
         this.dataTracker.set(IS_ALIVE, is_alive);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (eyes_remove_ticks != -1) {
-            eyes_remove_ticks--;
-            if (eyes_remove_ticks == 0) {
-                if (getWorld() instanceof ServerWorld serverWorld) {
-                    for (var entity: eyes)
-                        entity.kill(serverWorld);
-                    eyes.clear();
-                    eyes_remove_ticks = -1;
-                }
-            }
-        }
     }
 
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
