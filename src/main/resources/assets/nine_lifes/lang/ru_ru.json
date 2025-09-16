@@ -6,8 +6,11 @@
   "item.minecraft.tipped_arrow.effect.amethysm": "Стрела аметизма",
 
   "death.attack.amethysm": "%1$s не ожидал, что аметисты убивают",
+  "death.attack.amethysm.player": "%1$s не ожидал, что аметисты убивают",
   "death.attack.charged_amethyst": "%1$s познал силу аметиста",
+  "death.attack.charged_amethyst.player": "%1$s познал силу аметиста",
   "death.attack.unknown": "%1$s умер по неизвестной причине",
+  "death.attack.unknown.player": "%1$s умер по неизвестной причине",
 
   "enchantment.nine_lifes.charge": "Заряд",
 
