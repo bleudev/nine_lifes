@@ -88,6 +88,8 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         var effect = player.getStatusEffect(CustomEffects.AMETHYSM);
         var bl = (effect != null) && (!effect.isDurationBelow(15));
+
+        if (!player.getGameMode().isSurvivalLike()) return;
         if (lives <= 3 || bl)
            this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(9000L, 0, true));
     }

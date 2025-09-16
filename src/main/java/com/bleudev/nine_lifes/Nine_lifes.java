@@ -20,7 +20,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
 
@@ -47,9 +46,8 @@ public class Nine_lifes implements ModInitializer {
             builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM);
         });
         ServerPlayerEvents.JOIN.register(player -> {
-            if (player.getGameMode() == GameMode.SURVIVAL)
-                if (LivesUtils.getLives(player) == 0)
-                    LivesUtils.setLives(player, 9);
+            if ((!player.isSpectator()) && (LivesUtils.getLives(player) == 0))
+                LivesUtils.resetLives(player);
             ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
             ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
         });
