@@ -86,11 +86,6 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
     }
 
     @Override
-    public boolean canBreatheInWater() {
-        return true;
-    }
-
-    @Override
     public boolean isPushable() {
         return false;
     }

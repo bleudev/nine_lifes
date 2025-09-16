@@ -2,9 +2,9 @@ package com.bleudev.nine_lifes.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -26,7 +26,7 @@ public class InGameHudMixin {
         float delta = (float) lives / 9;
 
         context.drawTexture(
-            RenderPipelines.GUI_TEXTURED, texture,
+            RenderLayer::getGuiTextured, texture,
             x0 - 9, y - 5, 0, 0, 18, 18, 18, 18,
             ColorHelper.fromFloats(0.75f, delta, delta, delta)
         );
@@ -45,12 +45,12 @@ public class InGameHudMixin {
         int x = x0 - textRenderer.getWidth(text) / 2;
         int y = context.getScaledWindowHeight() - 48;
 
-        context.getMatrices().pushMatrix();
-        context.getMatrices().translate(0, 0);
+        context.getMatrices().push();
+        context.getMatrices().translate(0, 0, 0);
         drawCenterHeart(context, Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"), lives);
         drawCenterHeart(context, Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"), lives);
         context.drawTextWithShadow(textRenderer, text, x, y, 0xffffffff);
-        context.getMatrices().popMatrix();
+        context.getMatrices().pop();
     }
 
 }

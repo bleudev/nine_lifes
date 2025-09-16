@@ -6,7 +6,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.PermissionLevelSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -93,14 +92,14 @@ public class CustomCommands {
             .literal("nl").executes(CustomCommands::nine_lifes)
             .then(CommandManager
                 .literal("reset").executes(CustomCommands::nine_lifes_reset)
-                .requires(PermissionLevelSource::hasElevatedPermissions)
+                    .requires(s -> s.hasPermissionLevel(2))
                 .then(CommandManager
                     .argument("players", EntityArgumentType.players())
                     .executes(CustomCommands::nine_lifes_reset_player))
             )
             .then(CommandManager
                 .literal("set")
-                .requires(PermissionLevelSource::hasElevatedPermissions)
+                .requires(s -> s.hasPermissionLevel(2))
                 .then(CommandManager
                     .argument("lives", IntegerArgumentType.integer(1, 9))
                         .suggests((context, builder) -> {

@@ -7,11 +7,10 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
@@ -44,14 +43,14 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
         this.lives = value;
     }
 
-    @Inject(method = "readCustomData", at = @At("RETURN"))
-    protected void readCustomData(ReadView view, CallbackInfo ci) {
-        this.lives = view.getInt("lives", 9);
+    @Inject(method = "readCustomDataFromNbt", at = @At("RETURN"))
+    protected void readCustomData(NbtCompound nbt, CallbackInfo ci) {
+        this.lives = nbt.getInt("lives", 9);
     }
 
-    @Inject(method = "writeCustomData", at = @At("RETURN"))
-    protected void writeCustomData(WriteView view, CallbackInfo ci) {
-        view.putInt("lives", this.lives);
+    @Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
+    protected void writeCustomData(NbtCompound nbt, CallbackInfo ci) {
+        nbt.putInt("lives", this.lives);
     }
 
     @Inject(method = "copyFrom", at = @At("TAIL"))

@@ -9,8 +9,9 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -53,7 +54,8 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         CustomEntityRenderers.initialize();
 
-        HudElementRegistry.addLast(OVERLAY_COLOR, this::renderOverlayColor);
+        HudLayerRegistrationCallback.EVENT.register(layeredDrawerWrapper -> layeredDrawerWrapper
+            .attachLayerAfter(IdentifiedLayer.OVERLAY_MESSAGE, OVERLAY_COLOR, this::renderOverlayColor));
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 

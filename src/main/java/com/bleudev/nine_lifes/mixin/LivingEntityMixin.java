@@ -8,11 +8,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,14 +43,14 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
         return damage_ticks;
     }
 
-    @Inject(method = "readCustomData", at = @At("RETURN"))
-    private void readDamageTicks(ReadView view, CallbackInfo ci) {
-        damage_ticks = view.getInt("damage_ticks", -1);
+    @Inject(method = "readCustomDataFromNbt", at = @At("RETURN"))
+    private void readDamageTicks(NbtCompound nbt, CallbackInfo ci) {
+        damage_ticks = nbt.getInt("damage_ticks", -1);
     }
 
-    @Inject(method = "writeCustomData", at = @At("RETURN"))
-    private void writeDamageTicks(WriteView view, CallbackInfo ci) {
-        view.putInt("damage_ticks", damage_ticks);
+    @Inject(method = "writeCustomDataToNbt", at = @At("RETURN"))
+    private void writeDamageTicks(NbtCompound nbt, CallbackInfo ci) {
+        nbt.putInt("damage_ticks", damage_ticks);
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
