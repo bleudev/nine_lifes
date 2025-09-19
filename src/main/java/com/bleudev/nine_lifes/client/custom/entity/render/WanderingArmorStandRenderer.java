@@ -34,16 +34,7 @@ public class WanderingArmorStandRenderer extends LivingEntityRenderer<WanderingA
     @Override
     public void updateRenderState(WanderingArmorStandEntity entity, ArmorStandEntityRenderState state, float f) {
         super.updateRenderState(entity, state, f);
-
-        System.out.println("f: " + f);
-
         state.showArms = true;
-        // animation = [-1; 1]
-        var progress = entity.limbAnimator.getAmplitude(f);
-        System.out.println("progress: " + progress);
-        float animation = progress;
-
-
         if (entity.isAlive()) {
             state.limbSwingAnimationProgress = entity.limbAnimator.getAnimationProgress(f);
             state.limbSwingAmplitude = entity.limbAnimator.getAmplitude(f);

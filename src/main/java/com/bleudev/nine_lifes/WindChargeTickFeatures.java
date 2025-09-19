@@ -49,7 +49,6 @@ public class WindChargeTickFeatures {
         System.out.println(TypeFilter.instanceOf(LivingEntity.class));
 
         world.getEntitiesByClass(LivingEntity.class, action_box, ignored -> true).forEach(entity -> {
-            System.out.println("Living entity " + entity);
             entity.removeStatusEffect(CustomEffects.AMETHYSM);
         });
 
