@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
@@ -20,12 +22,14 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL46;
 
+import static com.bleudev.nine_lifes.ModDataStorage.lives;
 import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 import static net.minecraft.util.Formatting.DARK_AQUA;
 import static net.minecraft.util.Formatting.RED;
 
 public class Nine_lifesClient implements ClientModInitializer {
+    public static Identifier CENTER_HEART = Identifier.of(MOD_ID, "center_heart");
     public static Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
 
     private boolean has_effect = false;
@@ -53,6 +57,7 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         CustomEntityRenderers.initialize();
 
+        HudElementRegistry.addLast(CENTER_HEART, this::renderCenterHeart);
         HudElementRegistry.addLast(OVERLAY_COLOR, this::renderOverlayColor);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
@@ -88,6 +93,38 @@ public class Nine_lifesClient implements ClientModInitializer {
             else
                 GL46.glColorMask(true, true, true, true);
         });
+    }
+
+    private void drawCenterHeart(DrawContext context, Identifier texture, int lives) {
+        int x0 = context.getScaledWindowWidth() / 2;
+        int y = context.getScaledWindowHeight() - 48;
+
+        float delta = (float) lives / 9;
+
+        context.drawTexture(
+                RenderPipelines.GUI_TEXTURED, texture,
+                x0 - 9, y - 5, 0, 0, 18, 18, 18, 18,
+                ColorHelper.fromFloats(0.75f, delta, delta, delta)
+        );
+    }
+
+    private void renderCenterHeart(DrawContext context, RenderTickCounter tickCounter) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player == null) return;
+        var mode = client.player.getGameMode();
+        if ((mode == null) || (!mode.isSurvivalLike())) return;
+
+        TextRenderer textRenderer = client.textRenderer;
+
+        Text text = Text.literal("" + lives);
+
+        int x0 = context.getScaledWindowWidth() / 2;
+        int x = x0 - textRenderer.getWidth(text) / 2;
+        int y = context.getScaledWindowHeight() - 48;
+
+        drawCenterHeart(context, Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"), lives);
+        drawCenterHeart(context, Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"), lives);
+        context.drawTextWithShadow(textRenderer, text, x, y, 0xffffffff);
     }
 
     private void renderOverlayColor(DrawContext context, RenderTickCounter tickCounter) {

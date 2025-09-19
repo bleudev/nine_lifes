@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.mixin;
 
 import com.bleudev.nine_lifes.custom.CustomEffects;
+import com.bleudev.nine_lifes.custom.CustomGameRules;
 import com.bleudev.nine_lifes.interfaces.mixin.ServerPlayerEntityCustomInteface;
 import com.bleudev.nine_lifes.util.LivesUtils;
 import com.mojang.datafixers.util.Either;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.WorldTimeUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +35,9 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     @Shadow
     public abstract @NotNull GameMode getGameMode();
 
+    @Shadow
+    public abstract ServerWorld getWorld();
+
     @Unique
     protected int lives;
 
@@ -41,7 +46,8 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
     }
 
     public void nine_lifes$setLives(int value) {
-        this.lives = value;
+        if (getWorld().getGameRules().getBoolean(CustomGameRules.NINE_LIFES_MODE_ENABLED))
+            this.lives = value;
     }
 
     @Inject(method = "readCustomData", at = @At("RETURN"))
