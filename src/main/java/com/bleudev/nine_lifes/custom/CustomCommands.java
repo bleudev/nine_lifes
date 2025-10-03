@@ -71,7 +71,7 @@ public class CustomCommands {
 
     public static int nine_lifes_set_lives(CommandContext<ServerCommandSource> context) {
         int lives = IntegerArgumentType.getInteger(context, "lives");
-        LivesUtils.setLives(context.getSource().getPlayer(), lives);
+        LivesUtils.setLives(context.getSource().getPlayer(), lives, false);
         context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.success", lives), false);
         return 1;
     }
@@ -79,7 +79,7 @@ public class CustomCommands {
         try {
             EntityArgumentType.getOptionalPlayers(context, "players").forEach(player -> {
                 int lives = IntegerArgumentType.getInteger(context, "lives");
-                LivesUtils.setLives(player, lives);
+                LivesUtils.setLives(player, lives, false);
                 context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.player.success", lives, player.getGameProfile().getName()), false);
             });
         } catch (CommandSyntaxException e) {

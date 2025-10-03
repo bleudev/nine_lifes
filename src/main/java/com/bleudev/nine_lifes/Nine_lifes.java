@@ -31,7 +31,7 @@ public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
     public static final String NAME = "Nine lifes";
     public static final String AUTHOR = "bleudev";
-    public static final String VERSION = "1.5.3";
+    public static final String VERSION = "1.6.alpha.1";
     public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
     public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
 
@@ -43,14 +43,16 @@ public class Nine_lifes implements ModInitializer {
         CustomEnchantments.initialize();
         CustomPotions.initialize();
         CustomEntities.initialize();
+        CustomGameRules.initialize();
         FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
             builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM);
         });
         ServerPlayerEvents.JOIN.register(player -> {
-            if ((!player.isSpectator()) && (LivesUtils.getLives(player) == 0))
+            var lives = LivesUtils.getLives(player.getName().getString());
+            if ((!player.isSpectator()) && (lives == 0))
                 LivesUtils.resetLives(player);
-            ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
-            ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
+            ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(lives));
+            ServerPlayNetworking.send(player, new JoinMessagePayload(lives));
         });
         ServerPlayerEvents.AFTER_RESPAWN.register((old_pl, new_pl, b) -> {
             ServerPlayNetworking.send(new_pl, new AmethysmEffectUpdatePayload(false));

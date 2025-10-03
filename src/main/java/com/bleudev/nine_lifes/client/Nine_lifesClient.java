@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.client;
 
-import com.bleudev.nine_lifes.ModDataStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.ClothAutoConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
@@ -67,7 +66,7 @@ public class Nine_lifesClient implements ClientModInitializer {
             }
         }));
         ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> {
-            ModDataStorage.lives = payload.lives();
+            ClientDataStorage.lives = payload.lives();
         });
         ClientPlayNetworking.registerGlobalReceiver(AmethysmEffectUpdatePayload.ID, (payload, context) -> {
             has_effect = payload.has_effect();
