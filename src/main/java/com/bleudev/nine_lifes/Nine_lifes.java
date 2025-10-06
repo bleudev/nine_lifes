@@ -17,9 +17,7 @@ import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
@@ -64,7 +62,7 @@ public class Nine_lifes implements ModInitializer {
             double find_radius = 20;
             for (var world: server.getWorlds())
                 for (var player: world.getPlayers()) {
-                    var box = Box.of(player.getPos(), find_radius, find_radius, find_radius);
+                    var box = Box.of(player.getEntityPos(), find_radius, find_radius, find_radius);
                     world.getEntitiesByType(
                         EntityType.ITEM,
                         box,
@@ -77,19 +75,17 @@ public class Nine_lifes implements ModInitializer {
                         if (damage_ticks == -1) return;
 
                         if (damage_ticks == 0) {
-                            inter.nine_lifes$setDamageTicks(-1);
                             world.createExplosion(
                                     entity, CustomDamageTypes.of(world, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE), new EntityExplosionBehavior(entity),
-                                    entity.getX(), entity.getY(), entity.getZ(),
-                                    7f, true, World.ExplosionSourceType.MOB,
-                                    ParticleTypes.LARGE_SMOKE, ParticleTypes.LARGE_SMOKE,
-                                    SoundEvents.ENTITY_GENERIC_EXPLODE
+                                    entity.getEntityPos(),
+                                    7f, true, World.ExplosionSourceType.MOB
                             );
                             entity.damage(world,
                                 CustomDamageTypes.of(entity, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE),
                                 1000f
                             );
-                        } else inter.nine_lifes$setDamageTicks(damage_ticks - 1);
+                        }
+                        inter.nine_lifes$setDamageTicks(--damage_ticks);
                     });
                 }
 

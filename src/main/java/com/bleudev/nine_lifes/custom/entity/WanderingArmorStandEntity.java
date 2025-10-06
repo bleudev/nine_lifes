@@ -106,7 +106,7 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
 
     @Override
     public void kill(ServerWorld world) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -114,7 +114,7 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if (source.getAttacker() instanceof ServerPlayerEntity player)
-            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getPos()));
+            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getEntityPos()));
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
 
@@ -146,8 +146,8 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
         ItemStack stack = player.getMainHandStack();
         // Eat
         if (stack.isOf(Items.AMETHYST_SHARD)) {
-            if (getWorld() instanceof ServerWorld world) {
-                var pos = getPos();
+            if (getEntityWorld() instanceof ServerWorld world) {
+                var pos = getEntityPos();
                 for (int i = 0; i < 3; i++)
                     spawnParticle(ParticleTypes.HEART, world, pos);
             }

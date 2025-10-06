@@ -28,7 +28,7 @@ public class AmethysmEffect extends StatusEffect {
 
     @Override
     public boolean applyUpdateEffect(ServerWorld world, LivingEntity entity, int amplifier) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             ticks++;
             this.entity = entity;
             if (entity instanceof PlayerEntity player1) {

@@ -58,9 +58,9 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
     public void tick(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (entity.getWorld().isClient) return;
+        if (entity.getEntityWorld().isClient()) return;
 
-        ServerWorld serverWorld = (ServerWorld) entity.getWorld();
+        ServerWorld serverWorld = (ServerWorld) entity.getEntityWorld();
         boolean shouldLight = shouldEmitLight();
         int lightLevel = shouldLight ? 15 : 0;
         BlockPos footPos = entity.getBlockPos();
@@ -103,8 +103,8 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
     public void remove(Entity.RemovalReason reason, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (!entity.getWorld().isClient && lastLightPos != null) {
-            removeLightAt((ServerWorld)entity.getWorld(), lastLightPos);
+        if (!entity.getEntityWorld().isClient() && lastLightPos != null) {
+            removeLightAt((ServerWorld)entity.getEntityWorld(), lastLightPos);
             lastLightPos = null;
         }
     }

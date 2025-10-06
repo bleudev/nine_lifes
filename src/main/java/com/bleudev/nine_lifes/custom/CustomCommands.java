@@ -61,7 +61,7 @@ public class CustomCommands {
         try {
             EntityArgumentType.getOptionalPlayers(context, "players").forEach(player -> {
                 LivesUtils.resetLives(player);
-                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.player.success", player.getGameProfile().getName()), false);
+                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.player.success", player.getGameProfile().name()), false);
             });
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);
@@ -80,7 +80,7 @@ public class CustomCommands {
             EntityArgumentType.getOptionalPlayers(context, "players").forEach(player -> {
                 int lives = IntegerArgumentType.getInteger(context, "lives");
                 LivesUtils.setLives(player, lives);
-                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.player.success", lives, player.getGameProfile().getName()), false);
+                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.player.success", lives, player.getGameProfile().name()), false);
             });
         } catch (CommandSyntaxException e) {
             throw new RuntimeException(e);

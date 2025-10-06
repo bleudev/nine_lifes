@@ -9,7 +9,6 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -18,7 +17,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.GL46;
+
+import java.util.function.Consumer;
 
 import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
@@ -82,21 +82,26 @@ public class Nine_lifesClient implements ClientModInitializer {
             whiteness_screen_ticks = 0;
             whiteness_screen_running = true;
         });
-        WorldRenderEvents.AFTER_SETUP.register(context -> {
-            if (has_effect)
-                GL46.glColorMask(false, true, false, true);
-            else
-                GL46.glColorMask(true, true, true, true);
+        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) -> {
+
         });
+
+//        WorldRenderEvents.AFTER_SETUP.register(context -> {
+//            if (has_effect)
+//                GL46.glColorMask(false, true, false, true);
+//            else
+//                GL46.glColorMask(true, true, true, true);
+//        });
     }
 
     private void renderOverlayColor(DrawContext context, RenderTickCounter tickCounter) {
-        fillOverlayColor(context, ColorHelper.fromFloats(redness, 1f, 0f, 0f));
-        fillOverlayColor(context, ColorHelper.fromFloats(whiteness, 1f, 1f, 1f));
-    }
+        Consumer<Integer> fill_overlay_color = color ->
+            context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
 
-    private void fillOverlayColor(DrawContext context, int color) {
-        context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
+        fill_overlay_color.accept(ColorHelper.fromFloats(0.5f, 0.7f, 0f, 0.7f));
+
+        fill_overlay_color.accept(ColorHelper.fromFloats(redness, 1f, 0f, 0f));
+        fill_overlay_color.accept(ColorHelper.fromFloats(whiteness, 1f, 1f, 1f));
     }
 
     private void tick(MinecraftClient client) {
