@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
@@ -29,6 +30,8 @@ import static net.minecraft.util.Formatting.RED;
 public class Nine_lifesClient implements ClientModInitializer {
     public static final Identifier OVERLAY_COLOR_BEFORE_HOTBAR = Identifier.of(MOD_ID, "overlay_color_before_hotbar");
     public static final Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
+
+    private static final Identifier QUESTION_MARK = Identifier.of(MOD_ID, "textures/hud/sprites/question_mark.png");
 
     public static ClothAutoConfig getConfig() {
         return AutoConfig.getConfigHolder(ClothAutoConfig.class).getConfig();
@@ -76,6 +79,8 @@ public class Nine_lifesClient implements ClientModInitializer {
         fill_overlay_color.accept(ColorHelper.fromFloats(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f));
     }
 
+    private long lastMillis = 0;
+
     private void renderOverlayColor(DrawContext context, RenderTickCounter tickCounter) {
         Consumer<Integer> fill_overlay_color = color -> renderOverlayColor(context, color);
 
@@ -83,6 +88,24 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         fill_overlay_color.accept(ColorHelper.withAlpha(redness, 0xff0000));
         fill_overlay_color.accept(ColorHelper.withAlpha(whiteness, 0xffffff));
+
+        // Question marks
+        long new_time = System.currentTimeMillis();
+        if (lastMillis == 0) lastMillis = new_time;
+        float delta_time = new_time - lastMillis;
+        lastMillis = new_time;
+
+        int w = context.getScaledWindowWidth();
+        int h = context.getScaledWindowHeight();
+
+        question_marks.forEach(i -> {
+            var v = i.tick(delta_time / 50);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate((float) (w * v.getX()) - 40, (float) (h * v.getY()) - 40);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, QUESTION_MARK, 0, 0, 0, 0, 80, 80, 80, 80, ColorHelper.withAlpha((float) v.getZ(), 0xffffff));
+            context.getMatrices().popMatrix();
+        });
+        question_marks.removeIf(i -> i.getTime() >= i.getDuration());
     }
 
     private void renderOverlayColor(DrawContext context, int color) {
