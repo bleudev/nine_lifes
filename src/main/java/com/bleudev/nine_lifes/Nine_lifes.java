@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes;
 import com.bleudev.nine_lifes.custom.*;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
-import com.bleudev.nine_lifes.networking.payloads.AmethysmEffectUpdatePayload;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
@@ -49,9 +48,6 @@ public class Nine_lifes implements ModInitializer {
                 LivesUtils.resetLives(player);
             ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
             ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
-        });
-        ServerPlayerEvents.AFTER_RESPAWN.register((old_pl, new_pl, b) -> {
-            ServerPlayNetworking.send(new_pl, new AmethysmEffectUpdatePayload(false));
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             // Custom food (amethyst shard)

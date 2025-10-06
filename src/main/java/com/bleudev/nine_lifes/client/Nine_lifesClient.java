@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.client;
 
-import com.bleudev.nine_lifes.ModDataStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.ClothAutoConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
@@ -10,6 +9,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -20,28 +20,15 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Consumer;
 
+import static com.bleudev.nine_lifes.ClientModStorage.*;
 import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 import static net.minecraft.util.Formatting.DARK_AQUA;
 import static net.minecraft.util.Formatting.RED;
 
 public class Nine_lifesClient implements ClientModInitializer {
-    public static Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
-
-    private boolean has_effect = false;
-
-    private int armor_stand_hit_event_ticks = 0;
-    private boolean armor_stand_hit_event_running = false;
-
-    private float max_whiteness_screen = 0f;
-    private int max_whiteness_screen_ticks = 0;
-    private int whiteness_screen_ticks = 0;
-    private boolean whiteness_screen_running = false;
-
-    private float whiteness = 0f;
-    private float redness = 0f;
-
-    private float armor_stand_hit_redness = 0f;
+    public static final Identifier OVERLAY_COLOR_BEFORE_HOTBAR = Identifier.of(MOD_ID, "overlay_color_before_hotbar");
+    public static final Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
 
     public static ClothAutoConfig getConfig() {
         return AutoConfig.getConfigHolder(ClothAutoConfig.class).getConfig();
@@ -53,6 +40,7 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         CustomEntityRenderers.initialize();
 
+        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, OVERLAY_COLOR_BEFORE_HOTBAR, this::renderOverlayColorBeforeHotBar);
         HudElementRegistry.addLast(OVERLAY_COLOR, this::renderOverlayColor);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
@@ -66,12 +54,7 @@ public class Nine_lifesClient implements ClientModInitializer {
                     false);
             }
         }));
-        ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> {
-            ModDataStorage.lives = payload.lives();
-        });
-        ClientPlayNetworking.registerGlobalReceiver(AmethysmEffectUpdatePayload.ID, (payload, context) -> {
-            has_effect = payload.has_effect();
-        });
+        ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> lives = payload.lives());
         ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEventPayload.ID, (payload, context) -> {
             if (!armor_stand_hit_event_running)
                 runArmorStandHitEvent();
@@ -83,28 +66,32 @@ public class Nine_lifesClient implements ClientModInitializer {
             whiteness_screen_running = true;
         });
         ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) -> {
-
+            amethysm_effect_info.start(payload.effect_ticks());
         });
+    }
 
-//        WorldRenderEvents.AFTER_SETUP.register(context -> {
-//            if (has_effect)
-//                GL46.glColorMask(false, true, false, true);
-//            else
-//                GL46.glColorMask(true, true, true, true);
-//        });
+    private void renderOverlayColorBeforeHotBar(DrawContext context, RenderTickCounter tickCounter) {
+        Consumer<Integer> fill_overlay_color = color -> renderOverlayColor(context, color);
+
+        fill_overlay_color.accept(ColorHelper.fromFloats(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f));
     }
 
     private void renderOverlayColor(DrawContext context, RenderTickCounter tickCounter) {
-        Consumer<Integer> fill_overlay_color = color ->
-            context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
+        Consumer<Integer> fill_overlay_color = color -> renderOverlayColor(context, color);
 
-        fill_overlay_color.accept(ColorHelper.fromFloats(0.5f, 0.7f, 0f, 0.7f));
+        fill_overlay_color.accept(ColorHelper.withAlpha(amethysm_whiteness, 0xffffff));
 
-        fill_overlay_color.accept(ColorHelper.fromFloats(redness, 1f, 0f, 0f));
-        fill_overlay_color.accept(ColorHelper.fromFloats(whiteness, 1f, 1f, 1f));
+        fill_overlay_color.accept(ColorHelper.withAlpha(redness, 0xff0000));
+        fill_overlay_color.accept(ColorHelper.withAlpha(whiteness, 0xffffff));
+    }
+
+    private void renderOverlayColor(DrawContext context, int color) {
+        context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
     }
 
     private void tick(MinecraftClient client) {
+        amethysm_effect_info.tick();
+
         if (armor_stand_hit_event_running) {
             if (armor_stand_hit_event_ticks == 0)
                 armor_stand_hit_event_running = false;
