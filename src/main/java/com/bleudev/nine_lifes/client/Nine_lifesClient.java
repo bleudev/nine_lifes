@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.client;
 
-import com.bleudev.nine_lifes.client.compat.modmenu.ClothAutoConfig;
+import com.bleudev.nine_lifes.client.compat.modmenu.ModMenuConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import static com.bleudev.nine_lifes.ClientModStorage.*;
 import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.client.util.RenderingUtils.renderAnaglyph;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 import static net.minecraft.util.Formatting.DARK_AQUA;
 import static net.minecraft.util.Formatting.RED;
@@ -35,13 +36,13 @@ public class Nine_lifesClient implements ClientModInitializer {
 
     private static final Identifier QUESTION_MARK = Identifier.of(MOD_ID, "textures/hud/sprites/question_mark.png");
 
-    public static ClothAutoConfig getConfig() {
-        return AutoConfig.getConfigHolder(ClothAutoConfig.class).getConfig();
+    public static ModMenuConfig.ClothConfig getConfig() {
+        return AutoConfig.getConfigHolder(ModMenuConfig.ClothConfig.class).getConfig();
     }
 
     @Override
     public void onInitializeClient() {
-        AutoConfig.register(ClothAutoConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(ModMenuConfig.ClothConfig.class, JanksonConfigSerializer::new);
 
         CustomEntityRenderers.initialize();
 
@@ -55,9 +56,8 @@ public class Nine_lifesClient implements ClientModInitializer {
             if (getConfig().join_message_enabled) {
                 boolean careful = payload.lives() <= 5;
                 context.player().sendMessage(
-                    (careful ? Text.translatable("chat.message.join.lives.careful", payload.lives()) :
-                            Text.translatable("chat.message.join.lives", payload.lives())).formatted(careful ? RED : DARK_AQUA),
-                    false);
+                    Text.translatable(careful ? "chat.message.join.lives.careful" : "chat.message.join.lives", payload.lives())
+                    .formatted(careful ? RED : DARK_AQUA), false);
             }
         }));
         ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> lives = payload.lives());
@@ -85,21 +85,17 @@ public class Nine_lifesClient implements ClientModInitializer {
         int h = context.getScaledWindowHeight();
         int th = 18;
 
-        int x0 = (w - th) / 2;
-        int x = x0 + textRenderer.getWidth(text);
-        int y = h - 48;
-
         float delta = (float) lives / 9;
         int color = ColorHelper.fromFloats(0.75f, delta, delta, delta);
 
         Consumer<Identifier> drawCenterHeart = texture ->
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, x0, y - 5, 0, 0, th, th, th, th, color);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, 0, -5, 0, 0, th, th, th, th, color);
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(0, 0);
+        context.getMatrices().translate((float) (w - th) / 2, h - 45);
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"));
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"));
-        context.drawTextWithShadow(textRenderer, text, x, y, 0xffffffff);
+        context.drawTextWithShadow(textRenderer, text, textRenderer.getWidth(text), 0, 0xffffffff);
         context.getMatrices().popMatrix();
     }
 
@@ -131,20 +127,11 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         question_marks.forEach(i -> {
             var v = i.tick(delta_time / 50);
-            var offset = i.getOffset();
-
-            Consumer<Integer> renderQuestionMark = c ->
-                context.drawTexture(RenderPipelines.GUI_TEXTURED, QUESTION_MARK, 0, 0, 0, 0, qmh, qmh, qmh, qmh, ColorHelper.withAlpha((float) v.getZ(), c));
-
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate((float) (w * v.getX()) - 40, (float) (h * v.getY()) - 40);
-
-            context.getMatrices().translate(-offset, 0);
-            renderQuestionMark.accept(0xff0000);
-            context.getMatrices().translate(2 * offset, 0);
-            renderQuestionMark.accept(0x00ffff);
-            context.getMatrices().translate(-offset, 0);
-            renderQuestionMark.accept(0xffffff);
+            context.getMatrices().translate((float) (w * v.getX()) - (float) qmh / 2, (float) (h * v.getY()) - (float) qmh / 2);
+            renderAnaglyph(context.getMatrices(),
+                c -> context.drawTexture(RenderPipelines.GUI_TEXTURED, QUESTION_MARK, 0, 0, 0, 0, qmh, qmh, qmh, qmh, c),
+                i.getOffset(), ColorHelper.withAlpha((float) v.getZ(), 0xffffff));
             context.getMatrices().popMatrix();
         });
         question_marks.removeIf(i -> i.getTime() >= i.getDuration());

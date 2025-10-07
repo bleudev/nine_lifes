@@ -24,10 +24,8 @@ public class ClientModStorage {
     public static int whiteness_screen_ticks = 0;
     public static boolean whiteness_screen_running = false;
 
-
     public static float whiteness = 0f;
     public static float redness = 0f;
-
     public static float amethysm_whiteness = 0f;
     public static float amethysm_purpleness = 0f;
 
@@ -134,4 +132,19 @@ public class ClientModStorage {
 
     public static AmethysmEffectInfo amethysm_effect_info = new AmethysmEffectInfo();
     public static ArrayList<DynamicQuestionMarkInfo> question_marks = new ArrayList<>();
+
+    public static class CenterHeartInfo {
+        private float time;
+
+        public void tick(float delta_tick_progress) {
+
+        }
+    }
+
+    public static CenterHeartInfo center_heart_info = new CenterHeartInfo();
+
+    public static void render_tick(float delta_tick_progress) {
+        amethysm_effect_info.tick();
+        center_heart_info.tick(delta_tick_progress);
+    }
 }
