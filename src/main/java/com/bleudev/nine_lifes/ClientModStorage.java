@@ -134,17 +134,33 @@ public class ClientModStorage {
     public static ArrayList<DynamicQuestionMarkInfo> question_marks = new ArrayList<>();
 
     public static class CenterHeartInfo {
-        private float time;
+        private float time = 0f;
+        private float heartbeat_strength = 0f;
+        private static final float HEARTHBEAT_TIME = 5;
 
         public void tick(float delta_tick_progress) {
+            this.time += delta_tick_progress;
+        }
 
+        public void do_heartbeat(float strength) {
+            time = 0f;
+            heartbeat_strength = strength;
+        }
+
+        private float getCurrentStrength() {
+            if (time > HEARTHBEAT_TIME) return 0f;
+
+            if (time <= HEARTHBEAT_TIME / 2) return MathHelper.lerp(time * 2 / HEARTHBEAT_TIME, 0f, heartbeat_strength);
+            return MathHelper.lerp((time - HEARTHBEAT_TIME / 2) * 2 / HEARTHBEAT_TIME, heartbeat_strength, 0f);
+        }
+
+        public Vec3d getOffsetAndScale() {
+//            float x = MathHelper.lerp(time / HEARTHBEAT_TIME, -getCurrentStrength(), +getCurrentStrength());
+            float x = 0;
+            float y = 0;
+            return new Vec3d(x, y, 1 + getCurrentStrength() / 20);
         }
     }
 
     public static CenterHeartInfo center_heart_info = new CenterHeartInfo();
-
-    public static void render_tick(float delta_tick_progress) {
-        amethysm_effect_info.tick();
-        center_heart_info.tick(delta_tick_progress);
-    }
 }

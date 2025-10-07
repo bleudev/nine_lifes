@@ -92,7 +92,10 @@ public class Nine_lifesClient implements ClientModInitializer {
             context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, 0, -5, 0, 0, th, th, th, th, color);
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate((float) (w - th) / 2, h - 45);
+        var v = center_heart_info.getOffsetAndScale();
+        context.getMatrices().translate((float) (w - th * v.getZ()) / 2, h - 45);
+        context.getMatrices().translate((float) v.getX(), (float) v.getY());
+        context.getMatrices().scale((float) v.getZ());
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"));
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"));
         context.drawTextWithShadow(textRenderer, text, textRenderer.getWidth(text), 0, 0xffffffff);
@@ -121,6 +124,8 @@ public class Nine_lifesClient implements ClientModInitializer {
         float delta_time = new_time - lastMillis;
         lastMillis = new_time;
 
+        center_heart_info.tick(delta_time / 50);
+
         int w = context.getScaledWindowWidth();
         int h = context.getScaledWindowHeight();
         int qmh = h / 5;
@@ -141,8 +146,13 @@ public class Nine_lifesClient implements ClientModInitializer {
         context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
     }
 
+    private int ticks = 0;
+
     private void tick(MinecraftClient client) {
         amethysm_effect_info.tick();
+        if (ticks % 40 == 0)
+            center_heart_info.do_heartbeat(2f);
+        ticks++;
 
         if (armor_stand_hit_event_running) {
             if (armor_stand_hit_event_ticks == 0)
