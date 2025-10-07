@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -30,6 +31,7 @@ import static net.minecraft.util.Formatting.RED;
 public class Nine_lifesClient implements ClientModInitializer {
     public static final Identifier OVERLAY_COLOR_BEFORE_HOTBAR = Identifier.of(MOD_ID, "overlay_color_before_hotbar");
     public static final Identifier OVERLAY_COLOR = Identifier.of(MOD_ID, "overlay_color");
+    public static final Identifier CENTER_HEART = Identifier.of(MOD_ID, "center_heart");
 
     private static final Identifier QUESTION_MARK = Identifier.of(MOD_ID, "textures/hud/sprites/question_mark.png");
 
@@ -44,6 +46,7 @@ public class Nine_lifesClient implements ClientModInitializer {
         CustomEntityRenderers.initialize();
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, OVERLAY_COLOR_BEFORE_HOTBAR, this::renderOverlayColorBeforeHotBar);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, CENTER_HEART, this::renderCenterHeart);
         HudElementRegistry.addLast(OVERLAY_COLOR, this::renderOverlayColor);
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
@@ -71,6 +74,33 @@ public class Nine_lifesClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) -> {
             amethysm_effect_info.start(payload.effect_ticks());
         });
+    }
+
+    private void renderCenterHeart(DrawContext context, RenderTickCounter tickCounter) {
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+
+        Text text = Text.literal("" + lives);
+
+        int w = context.getScaledWindowWidth();
+        int h = context.getScaledWindowHeight();
+        int th = 18;
+
+        int x0 = (w - th) / 2;
+        int x = x0 + textRenderer.getWidth(text);
+        int y = h - 48;
+
+        float delta = (float) lives / 9;
+        int color = ColorHelper.fromFloats(0.75f, delta, delta, delta);
+
+        Consumer<Identifier> drawCenterHeart = texture ->
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, x0, y - 5, 0, 0, th, th, th, th, color);
+
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate(0, 0);
+        drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"));
+        drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"));
+        context.drawTextWithShadow(textRenderer, text, x, y, 0xffffffff);
+        context.getMatrices().popMatrix();
     }
 
     private void renderOverlayColorBeforeHotBar(DrawContext context, RenderTickCounter tickCounter) {

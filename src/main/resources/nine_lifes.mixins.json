@@ -11,8 +11,7 @@
     "ServerPlayerEntityMixin"
   ],
   "client": [
-    "client.DeathScreenMixin",
-    "client.InGameHudMixin"
+    "client.DeathScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
