@@ -97,12 +97,24 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         int w = context.getScaledWindowWidth();
         int h = context.getScaledWindowHeight();
+        int qmh = h / 5;
 
         question_marks.forEach(i -> {
             var v = i.tick(delta_time / 50);
+            var offset = i.getOffset();
+
+            Consumer<Integer> renderQuestionMark = c ->
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, QUESTION_MARK, 0, 0, 0, 0, qmh, qmh, qmh, qmh, ColorHelper.withAlpha((float) v.getZ(), c));
+
             context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (w * v.getX()) - 40, (float) (h * v.getY()) - 40);
-            context.drawTexture(RenderPipelines.GUI_TEXTURED, QUESTION_MARK, 0, 0, 0, 0, 80, 80, 80, 80, ColorHelper.withAlpha((float) v.getZ(), 0xffffff));
+
+            context.getMatrices().translate(-offset, 0);
+            renderQuestionMark.accept(0xff0000);
+            context.getMatrices().translate(2 * offset, 0);
+            renderQuestionMark.accept(0x00ffff);
+            context.getMatrices().translate(-offset, 0);
+            renderQuestionMark.accept(0xffffff);
             context.getMatrices().popMatrix();
         });
         question_marks.removeIf(i -> i.getTime() >= i.getDuration());

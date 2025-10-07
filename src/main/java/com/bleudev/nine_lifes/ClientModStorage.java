@@ -2,10 +2,15 @@ package com.bleudev.nine_lifes;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.function.Function;
+
+import static java.lang.Math.PI;
 
 @Environment(EnvType.CLIENT)
 public class ClientModStorage {
@@ -42,6 +47,9 @@ public class ClientModStorage {
         public void tick() {
             if (running) {
                 if (ticks < duration) {
+                    if (ticks % 15 == 0)
+                        question_marks.add(new DynamicQuestionMarkInfo(0.5f, 0.5f, .25f, 40));
+
                     final int WHITENESS_START = 5;
                     final int WHITENESS_END_FROM_DURATION_END = 10;
 
@@ -65,6 +73,8 @@ public class ClientModStorage {
     }
 
     public static class DynamicQuestionMarkInfo {
+        private static float lastAngle = 0f;
+
         private final Vector2d xy0p;
         private final Vector2d direction;
         private float time;
@@ -77,9 +87,32 @@ public class ClientModStorage {
             this.duration = duration;
         }
 
+        public DynamicQuestionMarkInfo(float x0p, float y0p, float speed, int duration) {
+            this(x0p, y0p, new Vector2d(0), duration);
+
+            float angle = new Random().nextFloat(0f, (float) (2*PI));
+            if ((lastAngle > PI && angle > PI) || (lastAngle < PI && angle < PI))
+                angle = (float) (2*PI - angle);
+            lastAngle = angle;
+
+            this.direction.x = Math.cos(angle) * 2 * speed;
+            this.direction.y = Math.sin(angle) * speed;
+        }
+
         private float getAlpha() {
-//            if (this.time >= duration) return 0f;
-            return 1f;
+            final int FADE_IN = 30;
+            final int FADE_OUT = 10;
+            final float max_alpha = .5f;
+
+            Function<Float, Float> clamp = a -> MathHelper.lerp(MathHelper.clamp(a, 0f, 1f), 0f, max_alpha);
+
+            if (time <= FADE_IN) return clamp.apply(time / FADE_IN);
+            if (time <= duration - FADE_OUT) return max_alpha;
+            return clamp.apply(1f - (time - duration + FADE_OUT) / FADE_OUT);
+        }
+
+        public float getOffset() {
+            return MathHelper.lerp(time / duration, 0f, 5f);
         }
 
         public float getTime() {
@@ -95,15 +128,10 @@ public class ClientModStorage {
                 .multiply(this.time / 20)
                 .add(this.xy0p.x, this.xy0p.y, getAlpha());
             this.time += delta_tick_progress;
-            System.out.println(time + " " + res);
             return res;
         }
     }
 
     public static AmethysmEffectInfo amethysm_effect_info = new AmethysmEffectInfo();
     public static ArrayList<DynamicQuestionMarkInfo> question_marks = new ArrayList<>();
-
-    static {
-        question_marks.add(new DynamicQuestionMarkInfo(0.5f, 0.5f, new Vector2d(-0.03, -0.015), 200));
-    }
 }
