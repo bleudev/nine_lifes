@@ -2,8 +2,10 @@ package com.bleudev.nine_lifes;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
@@ -136,7 +138,7 @@ public class ClientModStorage {
     public static class CenterHeartInfo {
         private float time = 0f;
         private float heartbeat_strength = 0f;
-        private static final float HEARTHBEAT_TIME = 5;
+        private static final float HEARTBEAT_TIME = 5;
 
         public void tick(float delta_tick_progress) {
             this.time += delta_tick_progress;
@@ -148,19 +150,38 @@ public class ClientModStorage {
         }
 
         private float getCurrentStrength() {
-            if (time > HEARTHBEAT_TIME) return 0f;
+            if (time > HEARTBEAT_TIME) return 0f;
 
-            if (time <= HEARTHBEAT_TIME / 2) return MathHelper.lerp(time * 2 / HEARTHBEAT_TIME, 0f, heartbeat_strength);
-            return MathHelper.lerp((time - HEARTHBEAT_TIME / 2) * 2 / HEARTHBEAT_TIME, heartbeat_strength, 0f);
+            if (time <= HEARTBEAT_TIME / 2) return MathHelper.lerp(time * 2 / HEARTBEAT_TIME, 0f, heartbeat_strength);
+            return MathHelper.lerp((time - HEARTBEAT_TIME / 2) * 2 / HEARTBEAT_TIME, heartbeat_strength, 0f);
         }
 
         public Vec3d getOffsetAndScale() {
-//            float x = MathHelper.lerp(time / HEARTHBEAT_TIME, -getCurrentStrength(), +getCurrentStrength());
-            float x = 0;
-            float y = 0;
-            return new Vec3d(x, y, 1 + getCurrentStrength() / 20);
+            return new Vec3d(0,0, 1 + getCurrentStrength() / 20);
         }
     }
 
     public static CenterHeartInfo center_heart_info = new CenterHeartInfo();
+
+    private static <T extends PlayerEntity> int get_next_heartbeat_rate(@Nullable T player) {
+        var random = new Random();
+        int ans = random.nextInt(70, 90);
+        if (player != null) {
+            ans += (int) Math.floor(player.getMaxHealth() - player.getHealth()) * 2;
+            if (!player.isAlive()) ans -= 9999;
+        }
+        if (lives == 0) ans -= 9999;
+        ans -= (9 - lives) * 5;
+        return MathHelper.clamp(ans, 0, Integer.MAX_VALUE);
+    }
+
+    public static int heartbeat_ticks = 0;
+    public static int max_heartbeat_ticks = 1;
+
+    public static <T extends PlayerEntity> int get_next_heartbeat_time(@Nullable T player) {
+        var rate = get_next_heartbeat_rate(player);
+        if (rate == 0) return 1;
+        var in_second = (float) rate / 60;
+        return Math.round((1 / in_second) * 20);
+    }
 }

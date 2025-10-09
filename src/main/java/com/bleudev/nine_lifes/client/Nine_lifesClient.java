@@ -19,6 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -71,9 +72,8 @@ public class Nine_lifesClient implements ClientModInitializer {
             whiteness_screen_ticks = 0;
             whiteness_screen_running = true;
         });
-        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) -> {
-            amethysm_effect_info.start(payload.effect_ticks());
-        });
+        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) ->
+            amethysm_effect_info.start(payload.effect_ticks()));
     }
 
     private void renderCenterHeart(DrawContext context, RenderTickCounter tickCounter) {
@@ -142,17 +142,22 @@ public class Nine_lifesClient implements ClientModInitializer {
         question_marks.removeIf(i -> i.getTime() >= i.getDuration());
     }
 
-    private void renderOverlayColor(DrawContext context, int color) {
+    private void renderOverlayColor(@NotNull DrawContext context, int color) {
         context.fill(0, 0, context.getScaledWindowWidth(), context.getScaledWindowHeight(), color);
     }
 
-    private int ticks = 0;
-
     private void tick(MinecraftClient client) {
         amethysm_effect_info.tick();
-        if (ticks % 40 == 0)
+        if (max_heartbeat_ticks == 0)
+            max_heartbeat_ticks = get_next_heartbeat_time(client.player);
+
+        if (heartbeat_ticks == 0 && client.player != null && client.player.isAlive())
             center_heart_info.do_heartbeat(2f);
-        ticks++;
+        heartbeat_ticks++;
+        if (heartbeat_ticks == max_heartbeat_ticks) {
+            heartbeat_ticks = 0;
+            max_heartbeat_ticks = get_next_heartbeat_time(client.player);
+        }
 
         if (armor_stand_hit_event_running) {
             if (armor_stand_hit_event_ticks == 0)
