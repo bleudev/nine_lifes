@@ -1,3 +1,7 @@
+# 1.7.1 (1.21.6)
+## Depends updates
+[/] `[HOTFIX]` 1.21.6 port can be runned on Minecraft 1.21.9+
+
 # 1.7
 ## Depends updates
 ### 1.21.9+
