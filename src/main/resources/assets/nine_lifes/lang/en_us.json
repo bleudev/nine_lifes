@@ -31,5 +31,7 @@
 
   "nine_lifes.midnightconfig.title":"Nine lifes settings",
   "nine_lifes.midnightconfig.join_message_enabled": "Enable join message",
-  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Send a message every time you enter a world with the number of lives remaining"
+  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Send a message every time you enter a world with the number of lives remaining",
+  "nine_lifes.midnightconfig.heartbeat_enabled": "Enable heartbeat",
+  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "The heart in the center of the hotbar will beat"
 }

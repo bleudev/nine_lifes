@@ -31,5 +31,7 @@
 
   "nine_lifes.midnightconfig.title": "Настройки Nine lifes",
   "nine_lifes.midnightconfig.join_message_enabled": "Включить приветственное сообщение",
-  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней"
+  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
+  "nine_lifes.midnightconfig.heartbeat_enabled": "Включить сердцебиение",
+  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "Сердце в центре хотбара будет биться"
 }

@@ -1,3 +1,9 @@
+# 1.7
+## New features
+[+] Rewrite config to [`MidnightLib`](https://modrinth.com/mod/midnightlib) ([#12](https://github.com/bleudev/nine_lifes/issues/12))\
+[+] Add ability turn off heartbeat in config ([#11](https://github.com/bleudev/nine_lifes/issues/11))
+
+---
 # 1.6
 ## Breaking changes
 [-] Deleted `nine_lifes:blue_eyes` entity

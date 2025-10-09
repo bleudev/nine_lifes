@@ -5,4 +5,6 @@ import eu.midnightdust.lib.config.MidnightConfig;
 public class NineLifesConfig extends MidnightConfig {
     @Entry
     public static boolean join_message_enabled = true;
+    @Entry
+    public static boolean heartbeat_enabled = true;
 }

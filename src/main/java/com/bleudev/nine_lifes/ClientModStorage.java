@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes;
 
+import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
@@ -145,6 +146,7 @@ public class ClientModStorage {
         }
 
         public void do_heartbeat(float strength) {
+            if (!NineLifesConfig.heartbeat_enabled) return;
             time = 0f;
             heartbeat_strength = strength;
         }
