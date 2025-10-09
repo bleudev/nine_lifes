@@ -11,7 +11,8 @@
 ## New features
 [+] Update for Minecraft 1.21.9\
 [+] New amethysm screen effect\
-[+] Move rendering center heart from mixin to client
+[+] Move rendering center heart from mixin to layer\
+[+] Center heart now has heartbeat
 
 ## Fixes
 [/] Delete debug printing
