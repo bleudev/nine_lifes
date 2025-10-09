@@ -15,7 +15,6 @@ import net.minecraft.item.consume.ConsumeEffect;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
@@ -40,14 +39,12 @@ public record AmethysmConsumeEffect() implements ConsumeEffect {
             .anyMatch(entry -> entry.getKey()
                 .map(key -> key.equals(CustomEnchantments.CHARGE))
                 .orElse(false))) {
-            if (world instanceof ServerWorld serverWorld) {
-                if (entity instanceof ServerPlayerEntity player) {
-                    LivesUtils.setLives(player, o -> o + 2);
-                    ServerPlayNetworking.send(player, new StartWhitenessScreenEvent(TICKS_PER_SECOND));
-                }
-
-                ((LivingEntityCustomInterface) entity).nine_lifes$setDamageTicks(TICKS_PER_SECOND);
+            if (entity instanceof ServerPlayerEntity player) {
+                LivesUtils.setLives(player, o -> o + 2);
+                ServerPlayNetworking.send(player, new StartWhitenessScreenEvent(TICKS_PER_SECOND));
             }
+
+            ((LivingEntityCustomInterface) entity).nine_lifes$setDamageTicks(TICKS_PER_SECOND);
             return true;
         }
 
