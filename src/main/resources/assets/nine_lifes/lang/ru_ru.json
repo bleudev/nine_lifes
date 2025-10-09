@@ -22,10 +22,14 @@
   "commands.nl.text.links": "Ссылки:",
 
   "commands.nl.reset.success": "Жизни были успешно сброшены",
+  "commands.nl.reset.not_a_player": "Команда доступна только для игроков",
   "commands.nl.reset.player.success": "Жизни %1$s были успешно сброшены",
 
   "commands.nl.set.success": "Количество жизней было успешно установлено на %1$s",
+  "commands.nl.set.not_a_player": "Команда доступна только для игроков",
   "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s",
+
+  "commands.nl.revive.player.success": "%1$s был возрождён",
 
   "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони",
 
@@ -41,5 +45,5 @@
   "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Снизу справа",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Сверху слева",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Сверху в центре",
-  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа"
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа",
 }

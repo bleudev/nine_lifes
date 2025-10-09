@@ -10,11 +10,14 @@ import net.minecraft.command.PermissionLevelSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 import static com.bleudev.nine_lifes.Nine_lifes.*;
@@ -42,7 +45,11 @@ public class CustomCommands {
         return res;
     }
 
-    public static int nine_lifes(CommandContext<ServerCommandSource> context) {
+    public static Collection<ServerPlayerEntity> getPlayers(@NotNull CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return EntityArgumentType.getOptionalPlayers(context, "players");
+    }
+
+    public static int nl(CommandContext<ServerCommandSource> context) {
         context.getSource().sendFeedback(() ->
             Text.literal(NAME + "\n").formatted(RED).append(
             Text.translatable("commands.nl.text.author", AUTHOR).formatted(WHITE)).append("\n").append(
@@ -52,51 +59,62 @@ public class CustomCommands {
         return 1;
     }
 
-    public static int nine_lifes_reset(CommandContext<ServerCommandSource> context) {
-        LivesUtils.resetLives(context.getSource().getPlayer());
+    public static int nl_reset(CommandContext<ServerCommandSource> context) {
+        var player = context.getSource().getPlayer();
+        if (player == null) {
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.not_a_player"), false);
+            return -1;
+        }
+        LivesUtils.resetLives(player);
         context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.success"), false);
         return 1;
     }
-    public static int nine_lifes_reset_player(CommandContext<ServerCommandSource> context) {
-        try {
-            EntityArgumentType.getOptionalPlayers(context, "players").forEach(player -> {
-                LivesUtils.resetLives(player);
-                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.player.success", player.getGameProfile().name()), false);
-            });
-        } catch (CommandSyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public static int nl_reset_player(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        getPlayers(context).forEach(player -> {
+            LivesUtils.resetLives(player);
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.reset.player.success", player.getGameProfile().name()), false);
+        });
         return 1;
     }
 
-    public static int nine_lifes_set_lives(CommandContext<ServerCommandSource> context) {
+    public static int nl_set_lives(CommandContext<ServerCommandSource> context) {
         int lives = IntegerArgumentType.getInteger(context, "lives");
-        LivesUtils.setLives(context.getSource().getPlayer(), lives);
+        var player = context.getSource().getPlayer();
+        if (player == null) {
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.not_a_player"), false);
+            return -1;
+        }
+        LivesUtils.setLives(player, lives);
         context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.success", lives), false);
         return 1;
     }
-    public static int nine_lifes_set_lives_players(CommandContext<ServerCommandSource> context) {
-        try {
-            EntityArgumentType.getOptionalPlayers(context, "players").forEach(player -> {
-                int lives = IntegerArgumentType.getInteger(context, "lives");
-                LivesUtils.setLives(player, lives);
-                context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.player.success", lives, player.getGameProfile().name()), false);
-            });
-        } catch (CommandSyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public static int nl_set_lives_players(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        int lives = IntegerArgumentType.getInteger(context, "lives");
+        getPlayers(context).forEach(player -> {
+            LivesUtils.setLives(player, lives);
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.set.player.success", lives, player.getGameProfile().name()), false);
+        });
+        return 1;
+    }
+
+    public static int nl_revive_players(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        getPlayers(context).forEach(player -> {
+            LivesUtils.revive(player);
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.revive.player.success", player.getGameProfile().name()), false);
+        });
         return 1;
     }
 
     public static void initialize(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var players_arguments = CommandManager
+            .argument("players", EntityArgumentType.players());
+
         dispatcher.register(CommandManager
-            .literal("nl").executes(CustomCommands::nine_lifes)
+            .literal("nl").executes(CustomCommands::nl)
             .then(CommandManager
-                .literal("reset").executes(CustomCommands::nine_lifes_reset)
+                .literal("reset").executes(CustomCommands::nl_reset)
                 .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(CommandManager
-                    .argument("players", EntityArgumentType.players())
-                    .executes(CustomCommands::nine_lifes_reset_player))
+                .then(players_arguments.executes(CustomCommands::nl_reset_player))
             )
             .then(CommandManager
                 .literal("set")
@@ -110,10 +128,13 @@ public class CustomCommands {
                             builder.suggest(9);
                             return CompletableFuture.completedFuture(builder.build());
                         })
-                    .executes(CustomCommands::nine_lifes_set_lives)
-                    .then(CommandManager
-                        .argument("players", EntityArgumentType.players())
-                        .executes(CustomCommands::nine_lifes_set_lives_players))
-        )));
+                    .executes(CustomCommands::nl_set_lives)
+                    .then(players_arguments.executes(CustomCommands::nl_set_lives_players))
+            ))
+            .then(CommandManager
+                .literal("revive")
+                .requires(PermissionLevelSource::hasElevatedPermissions)
+                .then(players_arguments.executes(CustomCommands::nl_revive_players)))
+        );
     }
 }

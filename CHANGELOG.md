@@ -2,7 +2,11 @@
 ## New features
 [+] Rewrite config to [`MidnightLib`](https://modrinth.com/mod/midnightlib) ([#12](https://github.com/bleudev/nine_lifes/issues/12))\
 [+] Add ability turn off heartbeat in config ([#11](https://github.com/bleudev/nine_lifes/issues/11))\
-[+] Add ability choose position of lives heart ([#14](https://github.com/bleudev/nine_lifes/issues/14))
+[+] Add ability choose position of lives heart ([#14](https://github.com/bleudev/nine_lifes/issues/14))\
+[+] New `/nl revive` command ([#13](https://github.com/bleudev/nine_lifes/issues/13))
+
+## Bug fixes:
+[/] Possibility of error when using `/nl set` and `/nl reset` (without arguments) commands on the server
 
 ---
 # 1.6
