@@ -74,7 +74,7 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
 
         if (!player.hasStatusEffect(CustomEffects.AMETHYSM)) {
             if (lives <= 3) {
-                cir.setReturnValue(Either.left(ServerPlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW));
+                cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW));
                 cir.cancel();
             } else if (lives <= 5) {
                 cir.setReturnValue(Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE));
@@ -85,12 +85,7 @@ public abstract class ServerPlayerEntityMixin implements ServerPlayerEntityCusto
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo ci) {
-        ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-        var effect = player.getStatusEffect(CustomEffects.AMETHYSM);
-        var bl = (effect != null) && (!effect.isDurationBelow(15));
-
-        if (!player.getGameMode().isSurvivalLike()) return;
-        if (lives <= 3 || bl)
+        if (lives <= 3 && this.getGameMode().isSurvivalLike())
            this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(9000L, 0, true));
     }
 }

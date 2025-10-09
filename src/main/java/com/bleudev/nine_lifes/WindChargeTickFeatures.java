@@ -20,8 +20,6 @@ import java.util.Objects;
 
 public class WindChargeTickFeatures {
     public static void do_for(ServerWorld world, WindChargeEntity wind_charge) {
-        // TODO: Break amethysm potions in player inventory
-        // TODO: Clear entity amethysm effect
         Box action_box = Box.of(wind_charge.getPos(), 3, 3, 3);
         WorldUtils.forBlocksInBox(action_box, (pos) -> {
             var blockEntity = world.getBlockEntity(pos);

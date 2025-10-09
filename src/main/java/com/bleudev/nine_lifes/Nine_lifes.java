@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes;
 import com.bleudev.nine_lifes.custom.*;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
-import com.bleudev.nine_lifes.networking.payloads.AmethysmEffectUpdatePayload;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
 import com.bleudev.nine_lifes.util.ComponentUtils;
@@ -17,9 +16,7 @@ import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
@@ -52,9 +49,6 @@ public class Nine_lifes implements ModInitializer {
             ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
             ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
         });
-        ServerPlayerEvents.AFTER_RESPAWN.register((old_pl, new_pl, b) -> {
-            ServerPlayNetworking.send(new_pl, new AmethysmEffectUpdatePayload(false));
-        });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             // Custom food (amethyst shard)
             for (var player: server.getPlayerManager().getPlayerList())
@@ -77,19 +71,17 @@ public class Nine_lifes implements ModInitializer {
                         if (damage_ticks == -1) return;
 
                         if (damage_ticks == 0) {
-                            inter.nine_lifes$setDamageTicks(-1);
                             world.createExplosion(
                                     entity, CustomDamageTypes.of(world, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE), new EntityExplosionBehavior(entity),
                                     entity.getX(), entity.getY(), entity.getZ(),
-                                    7f, true, World.ExplosionSourceType.MOB,
-                                    ParticleTypes.LARGE_SMOKE, ParticleTypes.LARGE_SMOKE,
-                                    SoundEvents.ENTITY_GENERIC_EXPLODE
+                                    7f, true, World.ExplosionSourceType.MOB
                             );
                             entity.damage(world,
                                 CustomDamageTypes.of(entity, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE),
                                 1000f
                             );
-                        } else inter.nine_lifes$setDamageTicks(damage_ticks - 1);
+                        }
+                        inter.nine_lifes$setDamageTicks(--damage_ticks);
                     });
                 }
 

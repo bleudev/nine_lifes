@@ -13,7 +13,6 @@ base {
 
 repositories {
     maven { url "https://maven.shedaniel.me/" }
-    maven { url "https://maven.terraformersmc.com/releases/" }
     exclusiveContent {
         forRepository {
             maven {
@@ -25,10 +24,6 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
-//    maven {
-//        name = "Ladysnake Mods"
-//        url = 'https://maven.ladysnake.org/releases'
-//    }
 }
 
 dependencies {
@@ -41,13 +36,6 @@ dependencies {
     modApi("maven.modrinth:modmenu:${project.modrinth_mod_menu_version}")
     modApi ("me.shedaniel.cloth:basic-math:+")
     modApi("maven.modrinth:cloth-config:${project.modrinth_cloth_version}")
-
-//    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
-//        exclude(group: "net.fabricmc.fabric-api")
-//    }
-
-//    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-//    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 }
 
 processResources {
