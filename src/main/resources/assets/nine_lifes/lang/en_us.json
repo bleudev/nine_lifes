@@ -33,5 +33,13 @@
   "nine_lifes.midnightconfig.join_message_enabled": "Enable join message",
   "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Send a message every time you enter a world with the number of lives remaining",
   "nine_lifes.midnightconfig.heartbeat_enabled": "Enable heartbeat",
-  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "The heart in the center of the hotbar will beat"
+  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "The heart in the center of the hotbar will beat",
+  "nine_lifes.midnightconfig.heart_position": "Heart position",
+  "nine_lifes.midnightconfig.heart_position.tooltip": "Position of heart with lives count",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_LEFT": "Bottom left",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_CENTER": "Bottom center",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Bottom right",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Top left",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Top center",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Top right"
 }

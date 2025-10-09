@@ -1,7 +1,8 @@
 # 1.7
 ## New features
 [+] Rewrite config to [`MidnightLib`](https://modrinth.com/mod/midnightlib) ([#12](https://github.com/bleudev/nine_lifes/issues/12))\
-[+] Add ability turn off heartbeat in config ([#11](https://github.com/bleudev/nine_lifes/issues/11))
+[+] Add ability turn off heartbeat in config ([#11](https://github.com/bleudev/nine_lifes/issues/11))\
+[+] Add ability choose position of lives heart ([#14](https://github.com/bleudev/nine_lifes/issues/14))
 
 ---
 # 1.6

@@ -33,5 +33,13 @@
   "nine_lifes.midnightconfig.join_message_enabled": "Включить приветственное сообщение",
   "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
   "nine_lifes.midnightconfig.heartbeat_enabled": "Включить сердцебиение",
-  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "Сердце в центре хотбара будет биться"
+  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "Сердце в центре хотбара будет биться",
+  "nine_lifes.midnightconfig.heart_position": "Расположение сердца",
+  "nine_lifes.midnightconfig.heart_position.tooltip": "Расположение сердца с количеством жизней",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_LEFT": "Снизу слева",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_CENTER": "Снизу в центре",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Снизу справа",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Сверху слева",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Сверху в центре",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа"
 }
