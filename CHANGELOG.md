@@ -1,11 +1,17 @@
 # 1.7
+## Depends updates
+### 1.21.9+
+[/] `cloth-config` dependency was replaced with `midnightlib` version >= `1.8.3`
+### 1.21.6-1.21.8
+[/] `cloth-config` dependency was replaced with `midnightlib` version >= `1.7.5`
+
 ## New features
 [+] Rewrite config to [`MidnightLib`](https://modrinth.com/mod/midnightlib) ([#12](https://github.com/bleudev/nine_lifes/issues/12))\
 [+] Add ability turn off heartbeat in config ([#11](https://github.com/bleudev/nine_lifes/issues/11))\
 [+] Add ability choose position of lives heart ([#14](https://github.com/bleudev/nine_lifes/issues/14))\
 [+] New `/nl revive` command ([#13](https://github.com/bleudev/nine_lifes/issues/13))
 
-## Bug fixes:
+## Bug fixes
 [/] Possibility of error when using `/nl set` and `/nl reset` (without arguments) commands on the server
 
 ---
