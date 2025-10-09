@@ -20,6 +20,7 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.bleudev.nine_lifes.ClientModStorage.*;
@@ -88,7 +89,19 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         context.getMatrices().pushMatrix();
         var v = center_heart_info.getOffsetAndScale();
-        context.getMatrices().translate((float) (w - th * v.getZ()) / 2, h - 45);
+
+        // Base center heart pos
+        BiConsumer<Integer, Integer> trans_pos = (dx, dy) ->
+            context.getMatrices().translate((float) (- th * v.getZ()) / 2 + dx, h - 45 - (h - dy));
+        switch (NineLifesConfig.heart_position) {
+            case BOTTOM_LEFT -> trans_pos.accept(25, h + 20);
+            case BOTTOM_CENTER -> trans_pos.accept(w / 2, h);
+            case BOTTOM_RIGHT -> trans_pos.accept(w - 25, h + 20);
+            case TOP_LEFT -> trans_pos.accept(25, 60);
+            case TOP_CENTER -> trans_pos.accept(w / 2, 60);
+            case TOP_RIGHT -> trans_pos.accept(w - 25, 60);
+        }
+
         context.getMatrices().translate((float) v.getX(), (float) v.getY());
         context.getMatrices().scale((float) v.getZ());
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"));
