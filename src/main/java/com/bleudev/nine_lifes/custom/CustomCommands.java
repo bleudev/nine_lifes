@@ -106,7 +106,7 @@ public class CustomCommands {
     }
 
     public static void initialize(CommandDispatcher<ServerCommandSource> dispatcher) {
-        var players_arguments = CommandManager
+        var players_argument = CommandManager
             .argument("players", EntityArgumentType.players());
 
         dispatcher.register(CommandManager
@@ -114,7 +114,7 @@ public class CustomCommands {
             .then(CommandManager
                 .literal("reset").executes(CustomCommands::nl_reset)
                 .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(players_arguments.executes(CustomCommands::nl_reset_player))
+                .then(players_argument.executes(CustomCommands::nl_reset_player))
             )
             .then(CommandManager
                 .literal("set")
@@ -129,12 +129,12 @@ public class CustomCommands {
                             return CompletableFuture.completedFuture(builder.build());
                         })
                     .executes(CustomCommands::nl_set_lives)
-                    .then(players_arguments.executes(CustomCommands::nl_set_lives_players))
+                    .then(players_argument.executes(CustomCommands::nl_set_lives_players))
             ))
             .then(CommandManager
                 .literal("revive")
                 .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(players_arguments.executes(CustomCommands::nl_revive_players)))
+                .then(players_argument.executes(CustomCommands::nl_revive_players)))
         );
     }
 }
