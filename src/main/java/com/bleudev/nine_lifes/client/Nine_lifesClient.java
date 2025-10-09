@@ -1,10 +1,9 @@
 package com.bleudev.nine_lifes.client;
 
-import com.bleudev.nine_lifes.client.compat.modmenu.ModMenuConfig;
+import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -37,13 +36,9 @@ public class Nine_lifesClient implements ClientModInitializer {
 
     private static final Identifier QUESTION_MARK = Identifier.of(MOD_ID, "textures/hud/sprites/question_mark.png");
 
-    public static ModMenuConfig.ClothConfig getConfig() {
-        return AutoConfig.getConfigHolder(ModMenuConfig.ClothConfig.class).getConfig();
-    }
-
     @Override
     public void onInitializeClient() {
-        AutoConfig.register(ModMenuConfig.ClothConfig.class, JanksonConfigSerializer::new);
+        MidnightConfig.init(MOD_ID, NineLifesConfig.class);
 
         CustomEntityRenderers.initialize();
 
@@ -54,7 +49,7 @@ public class Nine_lifesClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 
         ClientPlayNetworking.registerGlobalReceiver(JoinMessagePayload.ID, ((payload, context) -> {
-            if (getConfig().join_message_enabled) {
+            if (NineLifesConfig.join_message_enabled) {
                 boolean careful = payload.lives() <= 5;
                 context.player().sendMessage(
                     Text.translatable(careful ? "chat.message.join.lives.careful" : "chat.message.join.lives", payload.lives())

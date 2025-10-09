@@ -17,19 +17,33 @@
   "chat.message.join.lives": "Ваши жизни: %1$s.",
   "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
 
-  "text.autoconfig.nine_lifes.title": "Настройки Nine lifes",
-  "text.autoconfig.nine_lifes.option.join_message_enabled": "Включить приветственное сообщение",
-  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
-
   "commands.nl.text.author": "Автор: %1$s",
   "commands.nl.text.version": "Версия: %1$s",
   "commands.nl.text.links": "Ссылки:",
 
   "commands.nl.reset.success": "Жизни были успешно сброшены",
+  "commands.nl.reset.not_a_player": "Команда доступна только для игроков",
   "commands.nl.reset.player.success": "Жизни %1$s были успешно сброшены",
 
   "commands.nl.set.success": "Количество жизней было успешно установлено на %1$s",
+  "commands.nl.set.not_a_player": "Команда доступна только для игроков",
   "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s",
 
-  "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони"
+  "commands.nl.revive.player.success": "%1$s был возрождён",
+
+  "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони",
+
+  "nine_lifes.midnightconfig.title": "Настройки Nine lifes",
+  "nine_lifes.midnightconfig.join_message_enabled": "Включить приветственное сообщение",
+  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
+  "nine_lifes.midnightconfig.heartbeat_enabled": "Включить сердцебиение",
+  "nine_lifes.midnightconfig.heartbeat_enabled.tooltip": "Сердце в центре хотбара будет биться",
+  "nine_lifes.midnightconfig.heart_position": "Расположение сердца",
+  "nine_lifes.midnightconfig.heart_position.tooltip": "Расположение сердца с количеством жизней",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_LEFT": "Снизу слева",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_CENTER": "Снизу в центре",
+  "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Снизу справа",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Сверху слева",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Сверху в центре",
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа"
 }
