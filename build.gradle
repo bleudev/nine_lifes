@@ -34,8 +34,7 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modApi("maven.modrinth:modmenu:${project.modrinth_mod_menu_version}")
-    modApi ("me.shedaniel.cloth:basic-math:+")
-    modApi("maven.modrinth:cloth-config:${project.modrinth_cloth_version}")
+    modImplementation include ("maven.modrinth:midnightlib:${project.midnightlib_version}")
 }
 
 processResources {
@@ -43,7 +42,7 @@ processResources {
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "loader_version", project.loader_version
     inputs.property "fabric_version", project.fabric_version
-    inputs.property "cloth_version", project.cloth_version
+    inputs.property "min_midnightlib_version", project.min_midnightlib_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
@@ -51,7 +50,7 @@ processResources {
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version,
                 "fabric_version": project.fabric_version,
-                "cloth_version": project.cloth_version
+                "min_midnightlib_version": project.min_midnightlib_version
     }
 }
 

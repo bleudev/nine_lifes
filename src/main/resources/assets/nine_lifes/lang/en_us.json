@@ -17,10 +17,6 @@
   "chat.message.join.lives": "Your lives: %1$s.",
   "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!",
 
-  "text.autoconfig.nine_lifes.title": "Nine lifes settings",
-  "text.autoconfig.nine_lifes.option.join_message_enabled": "Enable join message",
-  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Send a message every time you enter a world with the number of lives remaining",
-
   "commands.nl.text.author": "Author: %1$s",
   "commands.nl.text.version": "Version: %1$s",
   "commands.nl.text.links": "Links:",
@@ -31,5 +27,9 @@
   "commands.nl.set.success": "The number of lives was successfully set to %1$s",
   "commands.nl.set.player.success": "%2$s's life count was successfully set to %1$s",
 
-  "entity.nine_lifes.wandering_armor_stand": "Wandering armor stand"
+  "entity.nine_lifes.wandering_armor_stand": "Wandering armor stand",
+
+  "nine_lifes.midnightconfig.title":"Nine lifes settings",
+  "nine_lifes.midnightconfig.join_message_enabled": "Enable join message",
+  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Send a message every time you enter a world with the number of lives remaining"
 }

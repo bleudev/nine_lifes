@@ -17,10 +17,6 @@
   "chat.message.join.lives": "Ваши жизни: %1$s.",
   "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
 
-  "text.autoconfig.nine_lifes.title": "Настройки Nine lifes",
-  "text.autoconfig.nine_lifes.option.join_message_enabled": "Включить приветственное сообщение",
-  "text.autoconfig.nine_lifes.option.join_message_enabled.@Tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней",
-
   "commands.nl.text.author": "Автор: %1$s",
   "commands.nl.text.version": "Версия: %1$s",
   "commands.nl.text.links": "Ссылки:",
@@ -31,5 +27,9 @@
   "commands.nl.set.success": "Количество жизней было успешно установлено на %1$s",
   "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s",
 
-  "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони"
+  "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони",
+
+  "nine_lifes.midnightconfig.title": "Настройки Nine lifes",
+  "nine_lifes.midnightconfig.join_message_enabled": "Включить приветственное сообщение",
+  "nine_lifes.midnightconfig.join_message_enabled.tooltip": "Отправлять сообщение при каждом заходе в мир с количеством оставшихся жизней"
 }
