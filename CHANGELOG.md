@@ -1,7 +1,11 @@
 # 1.7.2
+## New features
+[+] Added ability to use `/nl revive` without `player` argument to revive player who used command\
+[+] Send join message only when player in survival like game mode
 ## Bug fixes
 [/] Disable heart rendering in non survival like game modes ([#15](https://github.com/bleudev/nine_lifes/issues/15))
-
+### 1.21.9 only
+[/] [HOTFIX] Fix Russian localisation aren't working
 
 # 1.7
 ## Depends updates

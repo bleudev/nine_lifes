@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
 
 import static com.bleudev.nine_lifes.Nine_lifes.*;
 import static net.minecraft.util.Formatting.*;
@@ -97,6 +96,16 @@ public class CustomCommands {
         return 1;
     }
 
+    public static int nl_revive(CommandContext<ServerCommandSource> context) {
+        var player = context.getSource().getPlayer();
+        if (player == null) {
+            context.getSource().sendFeedback(() -> Text.translatable("commands.nl.revive.not_a_player"), false);
+            return -1;
+        }
+        LivesUtils.revive(player);
+        context.getSource().sendFeedback(() -> Text.translatable("commands.nl.revive.success"), false);
+        return 1;
+    }
     public static int nl_revive_players(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         getPlayers(context).forEach(player -> {
             LivesUtils.revive(player);
@@ -110,11 +119,14 @@ public class CustomCommands {
             .argument("players", EntityArgumentType.players());
 
         dispatcher.register(CommandManager
-            .literal("nl").executes(CustomCommands::nl)
+            .literal("nl")
+            .executes(CustomCommands::nl)
             .then(CommandManager
-                .literal("reset").executes(CustomCommands::nl_reset)
+                .literal("reset")
                 .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(players_argument.executes(CustomCommands::nl_reset_player))
+                .executes(CustomCommands::nl_reset)
+                .then(players_argument
+                    .executes(CustomCommands::nl_reset_player))
             )
             .then(CommandManager
                 .literal("set")
@@ -126,15 +138,18 @@ public class CustomCommands {
                             builder.suggest(3);
                             builder.suggest(5);
                             builder.suggest(9);
-                            return CompletableFuture.completedFuture(builder.build());
+                            return builder.buildFuture();
                         })
                     .executes(CustomCommands::nl_set_lives)
-                    .then(players_argument.executes(CustomCommands::nl_set_lives_players))
+                    .then(players_argument
+                        .executes(CustomCommands::nl_set_lives_players))
             ))
             .then(CommandManager
                 .literal("revive")
                 .requires(PermissionLevelSource::hasElevatedPermissions)
-                .then(players_argument.executes(CustomCommands::nl_revive_players)))
+                .executes(CustomCommands::nl_revive)
+                .then(players_argument
+                    .executes(CustomCommands::nl_revive_players)))
         );
     }
 }

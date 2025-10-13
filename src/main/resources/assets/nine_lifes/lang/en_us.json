@@ -29,6 +29,8 @@
   "commands.nl.set.not_a_player": "The command is available only to players",
   "commands.nl.set.player.success": "%2$s's life count was successfully set to %1$s",
 
+  "commands.nl.revive.success": "You were revived",
+  "commands.nl.revive.not_a_player": "The command is available only to players",
   "commands.nl.revive.player.success": "%1$s was revived",
 
   "entity.nine_lifes.wandering_armor_stand": "Wandering armor stand",

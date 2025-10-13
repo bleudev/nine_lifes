@@ -50,7 +50,8 @@ public class Nine_lifesClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 
         ClientPlayNetworking.registerGlobalReceiver(JoinMessagePayload.ID, ((payload, context) -> {
-            if (NineLifesConfig.join_message_enabled) {
+            GameMode gameMode = context.player().getGameMode();
+            if (NineLifesConfig.join_message_enabled && (gameMode == null ? GameMode.SURVIVAL : gameMode).isSurvivalLike()) {
                 boolean careful = payload.lives() <= 5;
                 context.player().sendMessage(
                     Text.translatable(careful ? "chat.message.join.lives.careful" : "chat.message.join.lives", payload.lives())
