@@ -1,3 +1,8 @@
+# 1.7.2
+## Bug fixes
+[/] Disable heart rendering in non survival like game modes ([#15](https://github.com/bleudev/nine_lifes/issues/15))
+
+
 # 1.7
 ## Depends updates
 ### 1.21.9+
