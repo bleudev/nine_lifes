@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
@@ -18,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
@@ -50,7 +50,8 @@ public class Nine_lifesClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 
         ClientPlayNetworking.registerGlobalReceiver(JoinMessagePayload.ID, ((payload, context) -> {
-            if (NineLifesConfig.join_message_enabled) {
+            GameMode gameMode = context.player().getGameMode();
+            if (NineLifesConfig.join_message_enabled && (gameMode == null ? GameMode.SURVIVAL : gameMode).isSurvivalLike()) {
                 boolean careful = payload.lives() <= 5;
                 context.player().sendMessage(
                     Text.translatable(careful ? "chat.message.join.lives.careful" : "chat.message.join.lives", payload.lives())
@@ -73,7 +74,10 @@ public class Nine_lifesClient implements ClientModInitializer {
     }
 
     private void renderCenterHeart(DrawContext context, RenderTickCounter tickCounter) {
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        GameMode gameMode;
+        if (client.player != null && (gameMode = client.player.getGameMode()) != null && !gameMode.isSurvivalLike()) return;
 
         Text text = Text.literal("" + lives);
 
@@ -106,7 +110,7 @@ public class Nine_lifesClient implements ClientModInitializer {
         context.getMatrices().scale((float) v.getZ());
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/container_hardcore.png"));
         drawCenterHeart.accept(Identifier.ofVanilla("textures/gui/sprites/hud/heart/hardcore_full.png"));
-        context.drawTextWithShadow(textRenderer, text, textRenderer.getWidth(text), 0, 0xffffffff);
+        context.drawTextWithShadow(client.textRenderer, text, client.textRenderer.getWidth(text), 0, 0xffffffff);
         context.getMatrices().popMatrix();
     }
 

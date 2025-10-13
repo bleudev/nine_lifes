@@ -29,6 +29,8 @@
   "commands.nl.set.not_a_player": "Команда доступна только для игроков",
   "commands.nl.set.player.success": "Количество жизней %2$s было успешно установлено на %1$s",
 
+  "commands.nl.revive.success": "Вы были возрождены",
+  "commands.nl.revive.not_a_player": "Команда доступна только для игроков",
   "commands.nl.revive.player.success": "%1$s был возрождён",
 
   "entity.nine_lifes.wandering_armor_stand": "Бродячая стойка для брони",
