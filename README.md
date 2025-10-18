@@ -9,6 +9,6 @@
 
 Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Cool challenge for those who are tired of the vanilla hardcore. For changes in lives count - use `/nl` command. Enjoy!)
 
-For a better atmosphere:
-- Install [CTR VCR shader](https://modrinth.com/shader/ctrvcr).
-- Don't use resource packs which changes hearts because this mod changes them to hardcore ones.
+Don't use resource packs which changes hearts because this mod changes them to hardcore ones.
+
+![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
