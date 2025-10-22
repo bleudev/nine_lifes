@@ -3,8 +3,9 @@ package com.bleudev.nine_lifes;
 import com.bleudev.nine_lifes.custom.*;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
-import com.bleudev.nine_lifes.networking.payloads.JoinMessagePayload;
-import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
+import com.bleudev.nine_lifes.networking.payloads.JoinMessage;
+import com.bleudev.nine_lifes.networking.payloads.StartChargeScreenEffect;
+import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeart;
 import com.bleudev.nine_lifes.util.ComponentUtils;
 import com.bleudev.nine_lifes.util.LivesUtils;
 import net.fabricmc.api.ModInitializer;
@@ -47,8 +48,8 @@ public class Nine_lifes implements ModInitializer {
         ServerPlayerEvents.JOIN.register(player -> {
             if ((!player.isSpectator()) && (LivesUtils.getLives(player) == 0))
                 LivesUtils.resetLives(player);
-            ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(LivesUtils.getLives(player)));
-            ServerPlayNetworking.send(player, new JoinMessagePayload(LivesUtils.getLives(player)));
+            ServerPlayNetworking.send(player, new UpdateCenterHeart(LivesUtils.getLives(player)));
+            ServerPlayNetworking.send(player, new JoinMessage(LivesUtils.getLives(player)));
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             // Custom food (amethyst shard)
@@ -101,14 +102,30 @@ public class Nine_lifes implements ModInitializer {
 
     private void tryChargeItems(ServerWorld world) {
         var lightning_charging_radius = 1;
+        var charge_screen_effect_radius_min = 3;
+        var charge_screen_effect_radius_max = 20;
+        var charge_screen_effect_radius_diff = charge_screen_effect_radius_max - charge_screen_effect_radius_min;
+        var charge_screen_max_strength = 0.5;
+        var charge_screen_duration = 6;
+
+        final var CHARGE_ENCHANTMENT = CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE);
         world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning -> {
             world.getEntitiesByType(EntityType.ITEM,
                 Box.of(lightning.getEntityPos(), lightning_charging_radius, lightning_charging_radius, lightning_charging_radius),
                 entity -> entity.getStack().isIn(CustomTags.ItemTags.LIGHTNING_CHARGEABLE)
             ).forEach(item_entity -> {
                 var stack = item_entity.getStack();
-                stack.addEnchantment(CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE), 1);
-                item_entity.setStack(stack);
+                if (!stack.getEnchantments().getEnchantments().contains(CHARGE_ENCHANTMENT)) {
+                    stack.addEnchantment(CHARGE_ENCHANTMENT, 1);
+                    item_entity.setStack(stack);
+
+                    world.getPlayers().forEach(player -> {
+                        var distance = Math.max(player.getEntityPos().distanceTo(item_entity.getEntityPos()) - charge_screen_effect_radius_min, 0);
+                        var strength = charge_screen_max_strength * (charge_screen_effect_radius_diff - distance) / charge_screen_effect_radius_diff;
+                        ServerPlayNetworking.send(player, new StartChargeScreenEffect(charge_screen_duration, (float) strength));
+                        System.out.println("send effect! " + charge_screen_duration + " " + strength);
+                    });
+                }
             });
         });
     }

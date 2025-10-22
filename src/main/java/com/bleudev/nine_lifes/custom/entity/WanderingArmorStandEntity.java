@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.custom.entity;
 
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAroundGoal;
-import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEventPayload;
+import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEvent;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -114,7 +114,7 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if (source.getAttacker() instanceof ServerPlayerEntity player)
-            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getEntityPos()));
+            ServerPlayNetworking.send(player, new ArmorStandHitEvent(getEntityPos()));
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
 

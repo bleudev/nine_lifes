@@ -2,7 +2,7 @@ package com.bleudev.nine_lifes.custom.effect;
 
 import com.bleudev.nine_lifes.custom.CustomDamageTypes;
 import com.bleudev.nine_lifes.custom.CustomEffects;
-import com.bleudev.nine_lifes.networking.payloads.StartAmethysmScreenEffectPayload;
+import com.bleudev.nine_lifes.networking.payloads.StartAmethysmScreenEffect;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -51,7 +51,7 @@ public class AmethysmEffect extends StatusEffect {
         this.entity = entity;
 
         if (entity instanceof ServerPlayerEntity player) try {
-            ServerPlayNetworking.send(player, new StartAmethysmScreenEffectPayload(Objects.requireNonNull(player.getStatusEffect(CustomEffects.AMETHYSM)).getDuration()));
+            ServerPlayNetworking.send(player, new StartAmethysmScreenEffect(Objects.requireNonNull(player.getStatusEffect(CustomEffects.AMETHYSM)).getDuration()));
         } catch (NullPointerException ignored) {}
     }
 
