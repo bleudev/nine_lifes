@@ -1,14 +1,19 @@
 # 1.8
 ## Breaking changes
+[+] Items that can be enchanted with charge enchantment in enchantment table moved to `#nine_lifes:enchantable/charge_in_table` tag
 ### `com.bleudev.nine_lifes.custom.CustomTags`
 [-] Those variables are deprecated and will be deleted in `1.9`. Use `ItemTags` variables with same name
- - `CAUSE_BLAST_FURNACE_EXPLODE`
- - `CAUSE_FURNACE_EXPLODE`
- - `CAUSE_SMOKER_EXPLODE`
- - `CAUSE_CAMPFIRE_EXPLODE`
+- `CAUSE_BLAST_FURNACE_EXPLODE`
+- `CAUSE_FURNACE_EXPLODE`
+- `CAUSE_SMOKER_EXPLODE`
+- `CAUSE_CAMPFIRE_EXPLODE`
  
 ## New features
-[+] Amethyst shard is invulnerable to `#nine_lifes:is_lightning_or_fire` damage types
+[+] Amethyst shard is invulnerable to `#nine_lifes:is_lightning_or_fire` damage types\
+[+] Amethyst shard can get charged when lightning bolt struck it ([#17](https://github.com/bleudev/nine_lifes/issues/17))
+
+## Deleted
+[-] Now you can't get charge enchantment for amethyst shard in enchantment table
 
 # 1.7.2
 ## New features
