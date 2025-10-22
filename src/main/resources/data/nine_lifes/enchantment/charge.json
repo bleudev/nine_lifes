@@ -1,10 +1,11 @@
 {
   "description": {
-    "translate": "enchantment.nine_lifes.charge"
+    "translate": "enchantment.nine_lifes.charge",
+    "color": "white"
   },
   "supported_items": "#nine_lifes:enchantable/charge",
   "primary_items": "#nine_lifes:enchantable/charge_in_table",
-  "weight": 1024,
+  "weight": 1,
   "max_level": 1,
   "min_cost": {
     "base": 3,
