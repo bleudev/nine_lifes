@@ -1,6 +1,8 @@
 # 1.8
 ## Breaking changes
 [+] Items that can be enchanted with charge enchantment in enchantment table moved to `#nine_lifes:enchantable/charge_in_table` tag
+
+## Deprecations
 ### `com.bleudev.nine_lifes.custom.CustomTags`
 [-] Those variables are deprecated and will be deleted in `1.9`. Use `ItemTags` variables with same name
 - `CAUSE_BLAST_FURNACE_EXPLODE`
