@@ -17,6 +17,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
@@ -28,7 +29,7 @@ public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
     public static final String NAME = "Nine lifes";
     public static final String AUTHOR = "bleudev";
-    public static final String VERSION = "1.7.2";
+    public static final String VERSION = "1.8";
     public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
     public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
 
@@ -54,11 +55,11 @@ public class Nine_lifes implements ModInitializer {
             for (var player: server.getPlayerManager().getPlayerList())
                 ComponentUtils.player_ensure_custom_foods(player);
 
-            // Find all amethyst shard item entities in `find_radius`
-            double find_radius = 20;
-            for (var world: server.getWorlds())
+            // Find all amethyst shard item entities in `amethyst_shard_find_radius`
+            double amethyst_shard_find_radius = 20;
+            for (var world: server.getWorlds()) {
                 for (var player: world.getPlayers()) {
-                    var box = Box.of(player.getEntityPos(), find_radius, find_radius, find_radius);
+                    var box = Box.of(player.getEntityPos(), amethyst_shard_find_radius, amethyst_shard_find_radius, amethyst_shard_find_radius);
                     world.getEntitiesByType(
                         EntityType.ITEM,
                         box,
@@ -84,6 +85,8 @@ public class Nine_lifes implements ModInitializer {
                         inter.nine_lifes$setDamageTicks(--damage_ticks);
                     });
                 }
+                tryChargeItems(world);
+            }
 
             // Wind charges
             for (var world: server.getWorlds())
@@ -93,6 +96,20 @@ public class Nine_lifes implements ModInitializer {
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CustomCommands.initialize(dispatcher);
+        });
+    }
+
+    private void tryChargeItems(ServerWorld world) {
+        var lightning_charging_radius = 1;
+        world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning -> {
+            world.getEntitiesByType(EntityType.ITEM,
+                Box.of(lightning.getEntityPos(), lightning_charging_radius, lightning_charging_radius, lightning_charging_radius),
+                entity -> entity.getStack().isIn(CustomTags.ItemTags.LIGHTNING_CHARGEABLE)
+            ).forEach(item_entity -> {
+                var stack = item_entity.getStack();
+                stack.addEnchantment(CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE), 1);
+                item_entity.setStack(stack);
+            });
         });
     }
 }

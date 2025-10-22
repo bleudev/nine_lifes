@@ -14,6 +14,7 @@ public class CustomTags {
         public static final TagKey<Item> CAUSE_FURNACE_EXPLODE = of("cause_furnace_explode");
         public static final TagKey<Item> CAUSE_SMOKER_EXPLODE = of("cause_smoker_explode");
         public static final TagKey<Item> CAUSE_CAMPFIRE_EXPLODE = of("cause_campfire_explode");
+        public static final TagKey<Item> LIGHTNING_CHARGEABLE = of("lightning_chargeable");
 
         private static TagKey<Item> of(String name) {
             return TagKey.of(RegistryKeys.ITEM, get(name));
