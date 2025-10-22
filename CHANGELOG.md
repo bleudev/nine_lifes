@@ -1,3 +1,15 @@
+# 1.8
+## Breaking changes
+### `com.bleudev.nine_lifes.custom.CustomTags`
+[-] Those variables are deprecated and will be deleted in `1.9`. Use `ItemTags` variables with same name
+ - `CAUSE_BLAST_FURNACE_EXPLODE`
+ - `CAUSE_FURNACE_EXPLODE`
+ - `CAUSE_SMOKER_EXPLODE`
+ - `CAUSE_CAMPFIRE_EXPLODE`
+ 
+## New features
+[+] Amethyst shard is invulnerable to `#nine_lifes:is_lightning_or_fire` damage types
+
 # 1.7.2
 ## New features
 [+] Added ability to use `/nl revive` without `player` argument to revive player who used command\

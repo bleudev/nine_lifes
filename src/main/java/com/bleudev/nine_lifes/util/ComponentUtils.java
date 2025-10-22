@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.util;
 
+import com.bleudev.nine_lifes.custom.CustomTags;
 import com.bleudev.nine_lifes.custom.consume.AmethysmConsumeEffect;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
@@ -58,6 +59,7 @@ public class ComponentUtils {
     private static final UseCooldownComponent amethyst_shard_cooldown_component = new UseCooldownComponent(5);
     private static final EnchantableComponent amethyst_enchantable_component = new EnchantableComponent(1);
     private static final Integer amethyst_max_stack_size_component = 65;
+    private static final DamageResistantComponent amethyst_damage_resistant_component = new DamageResistantComponent(CustomTags.DamageTypeTags.IS_LIGHTNING_OR_FIRE);
 
     public static boolean should_update_amethyst_shard(ItemStack stack) {
         return CheckStackPredicateBuilder.create()
@@ -68,6 +70,7 @@ public class ComponentUtils {
                 .another_component(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component)
                 .another_component(DataComponentTypes.ENCHANTABLE, amethyst_enchantable_component)
                 .another_component(DataComponentTypes.MAX_STACK_SIZE, amethyst_max_stack_size_component)
+                .another_component(DataComponentTypes.DAMAGE_RESISTANT, amethyst_damage_resistant_component)
                 .or_no_component(DataComponentTypes.ENCHANTMENTS)
             )
         .build().test(stack);
@@ -79,6 +82,7 @@ public class ComponentUtils {
         stack.set(DataComponentTypes.USE_COOLDOWN, amethyst_shard_cooldown_component);
         stack.set(DataComponentTypes.ENCHANTABLE, amethyst_enchantable_component);
         stack.set(DataComponentTypes.MAX_STACK_SIZE, amethyst_max_stack_size_component);
+        stack.set(DataComponentTypes.DAMAGE_RESISTANT, amethyst_damage_resistant_component);
         stack.set(DataComponentTypes.RARITY, Rarity.UNCOMMON);
         if (!stack.getComponents().contains(DataComponentTypes.ENCHANTMENTS))
             stack.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);

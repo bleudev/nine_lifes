@@ -43,9 +43,9 @@ public class AbstractFurnaceBlockEntityMixin {
         ItemStack output = inv.get(2);
 
         var tags = new HashMap<RecipeType<?>, TagKey<Item>>();
-        tags.put(RecipeType.SMELTING, CustomTags.CAUSE_FURNACE_EXPLODE);
-        tags.put(RecipeType.BLASTING, CustomTags.CAUSE_BLAST_FURNACE_EXPLODE);
-        tags.put(RecipeType.SMOKING, CustomTags.CAUSE_SMOKER_EXPLODE);
+        tags.put(RecipeType.SMELTING, CustomTags.ItemTags.CAUSE_FURNACE_EXPLODE);
+        tags.put(RecipeType.BLASTING, CustomTags.ItemTags.CAUSE_BLAST_FURNACE_EXPLODE);
+        tags.put(RecipeType.SMOKING, CustomTags.ItemTags.CAUSE_SMOKER_EXPLODE);
 
         if (!tags.containsKey(mixin.type)) return;
 
