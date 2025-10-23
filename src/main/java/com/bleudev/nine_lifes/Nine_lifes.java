@@ -23,6 +23,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
 
+import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_foods;
 import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
 
@@ -60,7 +61,7 @@ public class Nine_lifes implements ModInitializer {
             double amethyst_shard_find_radius = 20;
             for (var world: server.getWorlds()) {
                 for (var player: world.getPlayers()) {
-                    var box = Box.of(player.getEntityPos(), amethyst_shard_find_radius, amethyst_shard_find_radius, amethyst_shard_find_radius);
+                    var box = Box.of(getPosCompat(player), amethyst_shard_find_radius, amethyst_shard_find_radius, amethyst_shard_find_radius);
                     world.getEntitiesByType(
                         EntityType.ITEM,
                         box,
@@ -75,7 +76,7 @@ public class Nine_lifes implements ModInitializer {
                         if (damage_ticks == 0) {
                             world.createExplosion(
                                     entity, CustomDamageTypes.of(world, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE), new EntityExplosionBehavior(entity),
-                                    entity.getEntityPos(),
+                                    getPosCompat(entity),
                                     7f, true, World.ExplosionSourceType.MOB
                             );
                             entity.damage(world,
@@ -111,7 +112,7 @@ public class Nine_lifes implements ModInitializer {
         final var CHARGE_ENCHANTMENT = CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE);
         world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning -> {
             world.getEntitiesByType(EntityType.ITEM,
-                Box.of(lightning.getEntityPos(), lightning_charging_radius, lightning_charging_radius, lightning_charging_radius),
+                Box.of(getPosCompat(lightning), lightning_charging_radius, lightning_charging_radius, lightning_charging_radius),
                 entity -> entity.getStack().isIn(CustomTags.ItemTags.LIGHTNING_CHARGEABLE)
             ).forEach(item_entity -> {
                 var stack = item_entity.getStack();
@@ -120,10 +121,9 @@ public class Nine_lifes implements ModInitializer {
                     item_entity.setStack(stack);
 
                     world.getPlayers().forEach(player -> {
-                        var distance = Math.max(player.getEntityPos().distanceTo(item_entity.getEntityPos()) - charge_screen_effect_radius_min, 0);
+                        var distance = Math.max(getPosCompat(player).distanceTo(getPosCompat(item_entity)) - charge_screen_effect_radius_min, 0);
                         var strength = charge_screen_max_strength * (charge_screen_effect_radius_diff - distance) / charge_screen_effect_radius_diff;
                         ServerPlayNetworking.send(player, new StartChargeScreenEffect(charge_screen_duration, (float) strength));
-                        System.out.println("send effect! " + charge_screen_duration + " " + strength);
                     });
                 }
             });

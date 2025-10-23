@@ -18,9 +18,11 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
+import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
+
 public class WindChargeTickFeatures {
     public static void do_for(ServerWorld world, WindChargeEntity wind_charge) {
-        Box action_box = Box.of(wind_charge.getEntityPos(), 3, 3, 3);
+        Box action_box = Box.of(getPosCompat(wind_charge), 3, 3, 3);
         WorldUtils.forBlocksInBox(action_box, (pos) -> {
             var blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof BrewingStandBlockEntity brewing) {
@@ -51,7 +53,7 @@ public class WindChargeTickFeatures {
         });
 
         world.getPlayers().forEach(player -> {
-            if (!action_box.contains(player.getEntityPos())) return;
+            if (!action_box.contains(getPosCompat(player))) return;
             var inventory = player.getInventory();
             var inventory_updated = false;
             for (int slot = 0; slot < inventory.getMainStacks().size(); slot++) {
