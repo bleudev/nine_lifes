@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.client;
 
+import com.bleudev.nine_lifes.ClientModStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
@@ -49,7 +50,7 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 
-        ClientPlayNetworking.registerGlobalReceiver(JoinMessagePayload.ID, ((payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(JoinMessage.ID, ((payload, context) -> {
             GameMode gameMode = context.player().getGameMode();
             if (NineLifesConfig.join_message_enabled && (gameMode == null ? GameMode.SURVIVAL : gameMode).isSurvivalLike()) {
                 boolean careful = payload.lives() <= 5;
@@ -58,8 +59,8 @@ public class Nine_lifesClient implements ClientModInitializer {
                     .formatted(careful ? RED : DARK_AQUA), false);
             }
         }));
-        ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeartPayload.ID, (payload, context) -> lives = payload.lives());
-        ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEventPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeart.ID, (payload, context) -> lives = payload.lives());
+        ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.ID, (payload, context) -> {
             if (!armor_stand_hit_event_running)
                 runArmorStandHitEvent();
         });
@@ -69,8 +70,10 @@ public class Nine_lifesClient implements ClientModInitializer {
             whiteness_screen_ticks = 0;
             whiteness_screen_running = true;
         });
-        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffectPayload.ID, (payload, context) ->
+        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreenEffect.ID, (payload, context) ->
             amethysm_effect_info.start(payload.effect_ticks()));
+        ClientPlayNetworking.registerGlobalReceiver(StartChargeScreenEffect.ID, (payload, context) ->
+            charge_effect_info.start(payload.duration(), payload.strength()));
     }
 
     private void renderCenterHeart(DrawContext context, RenderTickCounter tickCounter) {
@@ -118,6 +121,7 @@ public class Nine_lifesClient implements ClientModInitializer {
         Consumer<Integer> fill_overlay_color = color -> renderOverlayColor(context, color);
 
         fill_overlay_color.accept(ColorHelper.fromFloats(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f));
+        fill_overlay_color.accept(ColorHelper.fromFloats(charge_effect_info.getWhiteness(), 1f, 1f, 1f));
     }
 
     private long lastMillis = 0;
@@ -159,7 +163,7 @@ public class Nine_lifesClient implements ClientModInitializer {
     }
 
     private void tick(MinecraftClient client) {
-        amethysm_effect_info.tick();
+        ClientModStorage.tick();
         if (max_heartbeat_ticks == 0)
             max_heartbeat_ticks = get_next_heartbeat_time(client.player);
 

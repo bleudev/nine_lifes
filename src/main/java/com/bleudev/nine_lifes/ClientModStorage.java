@@ -186,4 +186,42 @@ public class ClientModStorage {
         var in_second = (float) rate / 60;
         return Math.round((1 / in_second) * 20);
     }
+
+    public static class ChargeEffectInfo {
+        private boolean running = false;
+        private int ticks = 0;
+        private int duration;
+        private float strength;
+
+        public void start(int duration, float strength) {
+            this.running = true;
+            this.ticks = 0;
+            this.duration = duration;
+            this.strength = strength;
+        }
+
+        public void tick() {
+            if (running) {
+                ticks++;
+                if (ticks >= duration) running = false;
+            }
+        }
+
+        public float getWhiteness() {
+            if (running) {
+                var half = duration / 2;
+                if (ticks <= half)
+                    return strength * ticks / half;
+                return strength - strength * (ticks - half) / half;
+            }
+            return 0;
+        }
+    }
+
+    public static ChargeEffectInfo charge_effect_info = new ChargeEffectInfo();
+
+    public static void tick() {
+        amethysm_effect_info.tick();
+        charge_effect_info.tick();
+    }
 }
