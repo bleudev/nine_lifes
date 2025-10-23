@@ -14,6 +14,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+
+import static com.bleudev.nine_lifes.compat.VersionCompat.getWorldCompat;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
@@ -58,16 +61,14 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
     public void tick(CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (entity.getWorld().isClient) return;
-
-        ServerWorld serverWorld = (ServerWorld) entity.getWorld();
+        World world = getWorldCompat(entity);
+        if (world.isClient()) return;
         boolean shouldLight = shouldEmitLight();
-        int lightLevel = shouldLight ? 15 : 0;
         BlockPos footPos = entity.getBlockPos();
 
         List<BlockPos> poses = List.of(footPos, footPos.add(0, 1, 0));
         for (var pos: poses)
-            if (tryEmitLight(serverWorld, pos, lightLevel)) break;
+            if (tryEmitLight((ServerWorld) world, pos, shouldLight ? 15 : 0)) break;
     }
 
     @Unique
@@ -103,8 +104,9 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
     public void remove(Entity.RemovalReason reason, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (!entity.getWorld().isClient && lastLightPos != null) {
-            removeLightAt((ServerWorld)entity.getWorld(), lastLightPos);
+        var world = getWorldCompat(entity);
+        if (!world.isClient() && lastLightPos != null) {
+            removeLightAt((ServerWorld)world, lastLightPos);
             lastLightPos = null;
         }
     }

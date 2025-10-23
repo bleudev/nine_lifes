@@ -2,7 +2,7 @@ package com.bleudev.nine_lifes.util;
 
 import com.bleudev.nine_lifes.custom.CustomEffects;
 import com.bleudev.nine_lifes.interfaces.mixin.ServerPlayerEntityCustomInteface;
-import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeartPayload;
+import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeart;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,7 +27,7 @@ public class LivesUtils {
     public static void setLives(ServerPlayerEntity player, int new_lives) {
         new_lives = clamp(new_lives);
         ((ServerPlayerEntityCustomInteface) player).nine_lifes$setLives(new_lives);
-        ServerPlayNetworking.send(player, new UpdateCenterHeartPayload(new_lives));
+        ServerPlayNetworking.send(player, new UpdateCenterHeart(new_lives));
     }
     public static void setLives(ServerPlayerEntity player, Function<Integer, Integer> changer) {
         setLives(player, changer.apply(getLives(player)));

@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.custom.entity;
 
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAroundGoal;
-import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEventPayload;
+import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEvent;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -28,6 +28,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
+import static com.bleudev.nine_lifes.compat.VersionCompat.getWorldCompat;
 
 public class WanderingArmorStandEntity extends PathAwareEntity {
     private static final TrackedData<Boolean> IS_ALIVE;
@@ -114,7 +117,7 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if (source.getAttacker() instanceof ServerPlayerEntity player)
-            ServerPlayNetworking.send(player, new ArmorStandHitEventPayload(getPos()));
+            ServerPlayNetworking.send(player, new ArmorStandHitEvent(getPosCompat(this)));
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
 
@@ -146,8 +149,8 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
         ItemStack stack = player.getMainHandStack();
         // Eat
         if (stack.isOf(Items.AMETHYST_SHARD)) {
-            if (getWorld() instanceof ServerWorld world) {
-                var pos = getPos();
+            if (getWorldCompat(this) instanceof ServerWorld world) {
+                var pos = getPosCompat(this);
                 for (int i = 0; i < 3; i++)
                     spawnParticle(ParticleTypes.HEART, world, pos);
             }

@@ -6,11 +6,11 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 
-public record JoinMessagePayload(Integer lives) implements CustomPayload {
-    public static final CustomPayload.Id<JoinMessagePayload> ID = new CustomPayload.Id<>(Packets.JOIN_MESSAGE);
-    public static final PacketCodec<RegistryByteBuf, JoinMessagePayload> CODEC = PacketCodec.tuple(
-            PacketCodecs.INTEGER, JoinMessagePayload::lives,
-            JoinMessagePayload::new
+public record JoinMessage(Integer lives) implements CustomPayload {
+    public static final CustomPayload.Id<JoinMessage> ID = new CustomPayload.Id<>(Packets.JOIN_MESSAGE);
+    public static final PacketCodec<RegistryByteBuf, JoinMessage> CODEC = PacketCodec.tuple(
+            PacketCodecs.INTEGER, JoinMessage::lives,
+            JoinMessage::new
     );
 
     @Override

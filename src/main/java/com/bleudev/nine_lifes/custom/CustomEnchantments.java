@@ -1,8 +1,10 @@
 package com.bleudev.nine_lifes.custom;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
@@ -12,6 +14,10 @@ public class CustomEnchantments {
 
     private static RegistryKey<Enchantment> of(String name) {
         return RegistryKey.of(RegistryKeys.ENCHANTMENT, Identifier.of(MOD_ID, name));
+    }
+
+    public static RegistryEntry<Enchantment> getEntry(DynamicRegistryManager manager, RegistryKey<Enchantment> key) {
+        return RegistryEntry.of(manager.getOrThrow(RegistryKeys.ENCHANTMENT).get(key));
     }
 
     public static void initialize() {
