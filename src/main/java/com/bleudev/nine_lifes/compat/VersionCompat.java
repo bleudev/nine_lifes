@@ -12,11 +12,4 @@ public class VersionCompat {
     public static World getWorldCompat(@NotNull Entity entity) {
         return entity.getEntityWorld();
     }
-    public static boolean isClientCompat(@NotNull World world) {
-        return world.isClient();
-    }
-
-    public static boolean isEntityWorldClient(@NotNull Entity entity) {
-        return isClientCompat(getWorldCompat(entity));
-    }
 }

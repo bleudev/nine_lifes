@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-import static com.bleudev.nine_lifes.compat.VersionCompat.*;
+import static com.bleudev.nine_lifes.compat.VersionCompat.getWorldCompat;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
@@ -62,7 +62,7 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
         LivingEntity entity = (LivingEntity) (Object) this;
 
         World world = getWorldCompat(entity);
-        if (isClientCompat(world)) return;
+        if (world.isClient()) return;
         boolean shouldLight = shouldEmitLight();
         BlockPos footPos = entity.getBlockPos();
 
@@ -104,8 +104,9 @@ public abstract class LivingEntityMixin implements LivingEntityCustomInterface {
     public void remove(Entity.RemovalReason reason, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        if (!isEntityWorldClient(entity) && lastLightPos != null) {
-            removeLightAt((ServerWorld)getWorldCompat(entity), lastLightPos);
+        var world = getWorldCompat(entity);
+        if (!world.isClient() && lastLightPos != null) {
+            removeLightAt((ServerWorld)world, lastLightPos);
             lastLightPos = null;
         }
     }
