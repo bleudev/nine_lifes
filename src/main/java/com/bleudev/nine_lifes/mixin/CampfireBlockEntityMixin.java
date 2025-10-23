@@ -38,7 +38,7 @@ public abstract class CampfireBlockEntityMixin {
         if (b_entity != null) {
             for (int slot = 0; slot < 4; slot++) {
                 var stack = b_entity.getItemsBeingCooked().get(slot);
-                if (stack.equals(ItemStack.EMPTY) || !stack.isIn(CustomTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
+                if (stack.equals(ItemStack.EMPTY) || !stack.isIn(CustomTags.ItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
                 var ticks = b_entity.cookingTotalTimes[slot] - b_entity.cookingTimes[slot];
                 if (ticks == 1) {
                     world.breakBlock(pos, false);
