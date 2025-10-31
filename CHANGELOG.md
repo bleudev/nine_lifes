@@ -1,3 +1,7 @@
+# 1.9
+## New features
+[+] Added `EntitySpawnEvents.ENTITY_SPAWN` event which provides easy way to get entities that was spawned (didn't load!)
+
 # 1.8
 ## Breaking changes
 [+] Items that can be enchanted with charge enchantment in enchantment table moved to `#nine_lifes:enchantable/charge_in_table` tag

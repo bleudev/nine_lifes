@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes;
 
 import com.bleudev.nine_lifes.custom.*;
+import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessage;
@@ -98,6 +99,9 @@ public class Nine_lifes implements ModInitializer {
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CustomCommands.initialize(dispatcher);
+        });
+        EntitySpawnEvents.ENTITY_SPAWN.register((entity, world) -> {
+            // spawn wandering armor stand instead of common
         });
     }
 
