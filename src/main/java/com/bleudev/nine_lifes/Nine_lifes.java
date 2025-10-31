@@ -1,6 +1,8 @@
 package com.bleudev.nine_lifes;
 
+import com.bleudev.nine_lifes.compat.VersionCompat;
 import com.bleudev.nine_lifes.custom.*;
+import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessage;
@@ -16,6 +18,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potions;
 import net.minecraft.server.world.ServerWorld;
@@ -23,6 +26,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
 
+import static com.bleudev.nine_lifes.NineLifesConst.*;
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_foods;
 import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
@@ -31,7 +35,7 @@ public class Nine_lifes implements ModInitializer {
     public static final String MOD_ID = "nine_lifes";
     public static final String NAME = "Nine lifes";
     public static final String AUTHOR = "bleudev";
-    public static final String VERSION = "1.8.0";
+    public static final String VERSION = "1.9.0";
     public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
     public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
 
@@ -43,9 +47,8 @@ public class Nine_lifes implements ModInitializer {
         CustomEnchantments.initialize();
         CustomPotions.initialize();
         CustomEntities.initialize();
-        FabricBrewingRecipeRegistryBuilder.BUILD.register(builder -> {
-            builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM);
-        });
+        FabricBrewingRecipeRegistryBuilder.BUILD.register(builder ->
+            builder.registerPotionRecipe(Potions.WATER, Items.AMETHYST_SHARD, CustomPotions.AMETHYSM));
         ServerPlayerEvents.JOIN.register(player -> {
             if ((!player.isSpectator()) && (LivesUtils.getLives(player) == 0))
                 LivesUtils.resetLives(player);
@@ -92,41 +95,47 @@ public class Nine_lifes implements ModInitializer {
 
             // Wind charges
             for (var world: server.getWorlds())
-                world.getEntitiesByType(EntityType.WIND_CHARGE, ignored -> true).forEach(wind_charge -> {
-                    WindChargeTickFeatures.do_for(world, wind_charge);
-                });
+                world.getEntitiesByType(EntityType.WIND_CHARGE, ignored -> true).forEach(wind_charge ->
+                    WindChargeTickFeatures.do_for(world, wind_charge));
         });
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            CustomCommands.initialize(dispatcher);
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+            CustomCommands.initialize(dispatcher));
+        EntitySpawnEvents.ENTITY_SPAWN.register((entity, world) -> {
+            // If it's armor stand
+            if (entity.getType().equals(EntityType.ARMOR_STAND)) {
+                // Then try spawn wandering one
+                if (world.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
+                    var newEntity = CustomEntities.WANDERING_ARMOR_STAND_TYPE.create(world, SpawnReason.SPAWN_ITEM_USE);
+                    if (newEntity != null) {
+                        newEntity.refreshPositionAndAngles(VersionCompat.getPosCompat(entity), entity.getYaw(), entity.getPitch());
+                        world.spawnEntity(newEntity);
+                        entity.discard();
+                    }
+                }
+            }
         });
     }
 
     private void tryChargeItems(ServerWorld world) {
-        var lightning_charging_radius = 1;
-        var charge_screen_effect_radius_min = 3;
-        var charge_screen_effect_radius_max = 20;
-        var charge_screen_effect_radius_diff = charge_screen_effect_radius_max - charge_screen_effect_radius_min;
-        var charge_screen_max_strength = 0.5;
-        var charge_screen_duration = 6;
+        var charge_screen_effect_radius_diff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN;
 
-        final var CHARGE_ENCHANTMENT = CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE);
-        world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning -> {
+        final var CHARGE_ENCHANTMENT = CustomEnchantments.Entries.create(world.getRegistryManager()).charge();
+        world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning ->
             world.getEntitiesByType(EntityType.ITEM,
-                    Box.of(getPosCompat(lightning), lightning_charging_radius, lightning_charging_radius, lightning_charging_radius),
-                    entity -> entity.getStack().isIn(CustomTags.ItemTags.LIGHTNING_CHARGEABLE)
-            ).forEach(item_entity -> {
+                Box.of(getPosCompat(lightning), LIGHTNING_CHARGING_RADIUS, LIGHTNING_CHARGING_RADIUS, LIGHTNING_CHARGING_RADIUS),
+                entity -> entity.getStack().isIn(CustomTags.ItemTags.LIGHTNING_CHARGEABLE))
+            .forEach(item_entity -> {
                 var stack = item_entity.getStack();
                 if (!stack.getEnchantments().getEnchantments().contains(CHARGE_ENCHANTMENT)) {
                     stack.addEnchantment(CHARGE_ENCHANTMENT, 1);
                     item_entity.setStack(stack);
 
                     world.getPlayers().forEach(player -> {
-                        var distance = Math.max(getPosCompat(player).distanceTo(getPosCompat(item_entity)) - charge_screen_effect_radius_min, 0);
-                        var strength = charge_screen_max_strength * (charge_screen_effect_radius_diff - distance) / charge_screen_effect_radius_diff;
-                        ServerPlayNetworking.send(player, new StartChargeScreenEffect(charge_screen_duration, (float) strength));
+                        var distance = Math.max(getPosCompat(player).distanceTo(getPosCompat(item_entity)) - CHARGE_SCREEN_EFFECT_RADIUS_MIN, 0);
+                        var strength = CHARGE_SCREEN_MAX_STRENGTH * (charge_screen_effect_radius_diff - distance) / charge_screen_effect_radius_diff;
+                        ServerPlayNetworking.send(player, new StartChargeScreenEffect(CHARGE_SCREEN_DURATION, (float) strength));
                     });
                 }
-            });
-        });
+        }));
     }
 }

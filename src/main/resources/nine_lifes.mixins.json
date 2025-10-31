@@ -8,7 +8,8 @@
     "BrewingStandBlockEntityMixin",
     "CampfireBlockEntityMixin",
     "LivingEntityMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "ServerWorldMixin"
   ],
   "client": [
     "client.DeathScreenMixin"

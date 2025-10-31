@@ -1,3 +1,21 @@
+# 1.9
+## Deprecations
+[-] `com.bleudev.nine_lifes.custom.CustomEnchantments.getEntry(DynamicRegistryManager, RegistryKey<Enchantment>)`
+now is deprecated and will be deleted in `1.10`. Use `Entries` class's functions and methods instead.
+
+## API changes
+[+] Added `EntitySpawnEvents.ENTITY_SPAWN` event which provides easy way to get entities that was spawned (didn't load!)
+[-] Some variables from `com.bleudev.nine_lifes.custom.CustomTags` were deleted:
+- `CAUSE_BLAST_FURNACE_EXPLODE`
+- `CAUSE_FURNACE_EXPLODE`
+- `CAUSE_SMOKER_EXPLODE`
+- `CAUSE_CAMPFIRE_EXPLODE`
+
+Make sure that you don't use they in your mod depends on `nine lifes`
+
+## New features
+[+] Chance of spawning Wandering Armor Stand instead of common Armor Stand ([#8](https://github.com/bleudev/nine_lifes/issues/8))
+
 # 1.8
 ## Breaking changes
 [+] Items that can be enchanted with charge enchantment in enchantment table moved to `#nine_lifes:enchantable/charge_in_table` tag
