@@ -29,15 +29,6 @@ public class CustomTags {
         }
     }
 
-    @Deprecated(since = "1.8")
-    public static final TagKey<Item> CAUSE_BLAST_FURNACE_EXPLODE = ItemTags.CAUSE_BLAST_FURNACE_EXPLODE;
-    @Deprecated(since = "1.8")
-    public static final TagKey<Item> CAUSE_FURNACE_EXPLODE = ItemTags.CAUSE_FURNACE_EXPLODE;
-    @Deprecated(since = "1.8")
-    public static final TagKey<Item> CAUSE_SMOKER_EXPLODE = ItemTags.CAUSE_SMOKER_EXPLODE;
-    @Deprecated(since = "1.8")
-    public static final TagKey<Item> CAUSE_CAMPFIRE_EXPLODE = ItemTags.CAUSE_CAMPFIRE_EXPLODE;
-
     private static Identifier get(String name) {
         return Identifier.of(MOD_ID, name);
     }
