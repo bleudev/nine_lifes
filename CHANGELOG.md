@@ -1,3 +1,7 @@
+# 1.9.1
+## Optimisations
+[+] Some platform helper functions which helps easily get mod version, name and authors
+
 # 1.9
 ## Deprecations
 [-] `com.bleudev.nine_lifes.custom.CustomEnchantments.getEntry(DynamicRegistryManager, RegistryKey<Enchantment>)`
