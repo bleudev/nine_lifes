@@ -1,4 +1,8 @@
 # 1.9.1
+## Deprecations
+[-] `com.bleudev.nine_lifes.Nine_lifes.MOD_ID` now is deprecated and will be deleted in `1.10`.
+Use `com.bleudev.nine_lifes.NineLifesConst.MOD_ID`
+
 ## New features
 [+] Beta mode
 
