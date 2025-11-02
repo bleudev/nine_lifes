@@ -1,6 +1,9 @@
 # 1.9.1
+## New features
+[+] Beta mode
+
 ## Optimisations
-[+] Some platform helper functions which helps easily get mod version, name and authors
+[+] Some platform helper functions which helps easily get mod version, name and authors\
 [+] Merge two version branches into one (`master` branch)
 
 # 1.9
