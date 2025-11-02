@@ -1,6 +1,7 @@
 # 1.9.1
 ## Optimisations
 [+] Some platform helper functions which helps easily get mod version, name and authors
+[+] Merge two version branches into one (`master` branch)
 
 # 1.9
 ## Deprecations
