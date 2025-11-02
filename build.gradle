@@ -9,12 +9,15 @@ project(":1.21.9") {
     }
 }
 
-def project_configure(String v) {
+def project_configure(String v, String max_ex_v, int yarn_mappings_build) {
     project(":"+v) {
         ext {
             mod_version=project.general_version+"+"+v
+            minecraft_version=v
+            max_exclusive_minecraft_version=max_ex_v
+            yarn_mappings = v + "+build." + yarn_mappings_build
         }
     }
 }
 
-project_configure("1.21.9")
+project_configure("1.21.9", "1.22.0", 1)
