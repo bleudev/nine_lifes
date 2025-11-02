@@ -14,7 +14,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 public class RegistryUtils {
     public static Identifier get(String name) {

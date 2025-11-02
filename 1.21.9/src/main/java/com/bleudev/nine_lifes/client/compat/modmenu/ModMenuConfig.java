@@ -4,7 +4,7 @@ import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import eu.midnightdust.lib.config.MidnightConfig;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 public class ModMenuConfig implements ModMenuApi {
     @Override

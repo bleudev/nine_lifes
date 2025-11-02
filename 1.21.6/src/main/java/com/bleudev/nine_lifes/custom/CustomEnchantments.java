@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 /**
  * Class which provides custom {@link Enchantment enchantments} added in Nine lifes mod(

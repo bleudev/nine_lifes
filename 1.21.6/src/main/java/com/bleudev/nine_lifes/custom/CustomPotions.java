@@ -7,7 +7,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 
 public class CustomPotions {

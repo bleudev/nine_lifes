@@ -5,7 +5,7 @@ import com.bleudev.nine_lifes.networking.payloads.*;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.util.Identifier;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 public class Packets {
     public static final Identifier UPDATE_CENTER_HEART = Identifier.of(MOD_ID, "update_center_heart");

@@ -8,7 +8,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 public class CustomDamageTypes {
     public static final RegistryKey<DamageType> AMETHYSM_DAMAGE_TYPE = getDamageType("amethysm");
