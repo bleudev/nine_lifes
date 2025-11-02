@@ -3,12 +3,6 @@ plugins {
     id 'maven-publish'
 }
 
-project(":1.21.9") {
-    ext {
-        mod_version=project.general_version+"+1.21.9"
-    }
-}
-
 def project_configure(String v, String max_ex_v, int yarn_mappings_build) {
     var version_suffix = (project.beta_mode == "true") ? "_beta" : ""
     project(":"+v) {
