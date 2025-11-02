@@ -16,6 +16,7 @@
 
   "chat.message.join.lives": "Ваши жизни: %1$s.",
   "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
+  "chat.message.join.beta": "Внимание! Вы запустили бета-версию мода. Если вы обнаружите баг, то отправьте его по этому адресу:",
 
   "commands.nl.text.author": "Автор: %1$s",
   "commands.nl.text.version": "Версия: %1$s",

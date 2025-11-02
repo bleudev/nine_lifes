@@ -30,15 +30,10 @@ import static com.bleudev.nine_lifes.NineLifesConst.*;
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_foods;
 import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
-import static com.bleudev.nine_lifes.util.PlatformHelper.*;
 
 public class Nine_lifes implements ModInitializer {
-    public static final String MOD_ID = "nine_lifes";
-    public static final String NAME = getModName(MOD_ID);
-    public static final String AUTHOR = getModAuthors(MOD_ID).stream().findFirst().orElse("Unknown");
-    public static final String VERSION = getModVersion(MOD_ID, "+");
-    public static final String GITHUB_LINK = "https://github.com/bleudev/nine_lifes";
-    public static final String MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes";
+    @Deprecated(since = "1.9.1")
+    public static final String MOD_ID = NineLifesConst.MOD_ID;
 
     @Override
     public void onInitialize() {
@@ -55,6 +50,7 @@ public class Nine_lifes implements ModInitializer {
                 LivesUtils.resetLives(player);
             ServerPlayNetworking.send(player, new UpdateCenterHeart(LivesUtils.getLives(player)));
             ServerPlayNetworking.send(player, new JoinMessage(LivesUtils.getLives(player)));
+            BetaModeHelper.trySendBetaModeMessage(player);
         });
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             // Custom food (amethyst shard)

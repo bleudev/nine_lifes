@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.util;
+package com.bleudev.nine_lifes;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -12,7 +12,7 @@ public class PlatformHelper {
     private static <T> Optional<T> getModInfo(String modId, Function<ModMetadata, T> getter) {
         try {
             return FabricLoader.getInstance().getModContainer(modId)
-                .map(c -> getter.apply(c.getMetadata()));
+                    .map(c -> getter.apply(c.getMetadata()));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
@@ -27,7 +27,7 @@ public class PlatformHelper {
      * */
     public static String getModVersion(String modId) {
         return getModInfo(modId, m -> m.getVersion().getFriendlyString())
-            .orElse("0.0.0");
+                .orElse("0.0.0");
     }
     /**
      * Get version substring before first occurrence of {@code before} of mod which has specified {@code modId}
@@ -59,7 +59,7 @@ public class PlatformHelper {
      * */
     public static String getModName(String modId) {
         return getModInfo(modId, ModMetadata::getName)
-            .orElse("Unknown");
+                .orElse("Unknown");
     }
     /**
      * Get authors names of mod which has specified {@code modId}
@@ -69,6 +69,6 @@ public class PlatformHelper {
      * */
     public static List<String> getModAuthors(String modId) {
         return getModInfo(modId, m -> m.getAuthors().stream().map(Person::getName).toList())
-            .orElse(List.of());
+                .orElse(List.of());
     }
 }

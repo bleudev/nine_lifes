@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.bleudev.nine_lifes.Nine_lifes.*;
+import static com.bleudev.nine_lifes.NineLifesConst.*;
 import static net.minecraft.util.Formatting.*;
 
 public class CustomCommands {

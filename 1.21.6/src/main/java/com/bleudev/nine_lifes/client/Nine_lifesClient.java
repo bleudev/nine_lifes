@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.ClientModStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
+import com.bleudev.nine_lifes.util.TextUtils;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -15,6 +16,7 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
@@ -25,7 +27,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.bleudev.nine_lifes.ClientModStorage.*;
-import static com.bleudev.nine_lifes.Nine_lifes.MOD_ID;
+import static com.bleudev.nine_lifes.NineLifesConst.ISSUES_LINK;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 import static com.bleudev.nine_lifes.client.util.RenderingUtils.renderAnaglyph;
 import static net.minecraft.SharedConstants.TICKS_PER_SECOND;
 import static net.minecraft.util.Formatting.DARK_AQUA;
@@ -50,7 +53,7 @@ public class Nine_lifesClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tick);
 
-        ClientPlayNetworking.registerGlobalReceiver(JoinMessage.ID, ((payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(JoinMessage.ID, (payload, context) -> {
             GameMode gameMode = context.player().getGameMode();
             if (NineLifesConfig.join_message_enabled && (gameMode == null ? GameMode.SURVIVAL : gameMode).isSurvivalLike()) {
                 boolean careful = payload.lives() <= 5;
@@ -58,7 +61,15 @@ public class Nine_lifesClient implements ClientModInitializer {
                     Text.translatable(careful ? "chat.message.join.lives.careful" : "chat.message.join.lives", payload.lives())
                     .formatted(careful ? RED : DARK_AQUA), false);
             }
-        }));
+        });
+        ClientPlayNetworking.registerGlobalReceiver(BetaModeMessage.ID, (payload, context) -> {
+            context.player().sendMessage(
+                Text.translatable("chat.message.join.beta")
+                    .append("\n")
+                    .append(TextUtils.link(ISSUES_LINK))
+                    .formatted(Formatting.GOLD),
+                false);
+        });
         ClientPlayNetworking.registerGlobalReceiver(UpdateCenterHeart.ID, (payload, context) -> lives = payload.lives());
         ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.ID, (payload, context) -> {
             if (!armor_stand_hit_event_running)
