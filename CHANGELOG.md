@@ -1,3 +1,8 @@
+# 1.9.2
+## Depends updates
+[+] Loom version was updated up to `1.13.3`\
+[+] Fabric loader version was updated up to `0.17.3`
+
 # 1.9.1
 ## Deprecations
 [-] `com.bleudev.nine_lifes.Nine_lifes.MOD_ID` now is deprecated and will be deleted in `1.10`.

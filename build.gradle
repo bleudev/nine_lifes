@@ -1,15 +1,15 @@
 plugins {
-    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+    id 'fabric-loom' version '1.13.3' apply false
     id 'maven-publish'
 }
 
 def project_configure(String v, String max_ex_v, int yarn_mappings_build) {
     var version_suffix = (project.beta_mode == "true") ? "_beta" : ""
-    project(":"+v) {
+    project(":" + v) {
         ext {
-            mod_version=project.general_version + version_suffix + "+" + v
-            minecraft_version=v
-            max_exclusive_minecraft_version=max_ex_v
+            mod_version = project.general_version + version_suffix + "+" + v
+            minecraft_version = v
+            max_exclusive_minecraft_version = max_ex_v
             yarn_mappings = v + "+build." + yarn_mappings_build
         }
     }
