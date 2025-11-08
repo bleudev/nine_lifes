@@ -3,6 +3,22 @@ plugins {
     id 'maven-publish'
 }
 
+subprojects {
+    repositories {
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = "Modrinth"
+                    url = "https://api.modrinth.com/maven"
+                }
+            }
+            filter {
+                includeGroup "maven.modrinth"
+            }
+        }
+    }
+}
+
 def project_configure(String v, String max_ex_v, int yarn_mappings_build) {
     var version_suffix = (project.beta_mode == "true") ? "_beta" : ""
     project(":" + v) {
