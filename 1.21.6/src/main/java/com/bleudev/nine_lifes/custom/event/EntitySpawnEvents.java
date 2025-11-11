@@ -1,18 +1,10 @@
 package com.bleudev.nine_lifes.custom.event;
 
+import com.bleudev.nine_lifes.api.event.EntitySpawnEvents.EntitySpawn;
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
 
+@Deprecated(forRemoval = true)
 public class EntitySpawnEvents {
-    public static final Event<EntitySpawn> ENTITY_SPAWN = EventFactory.createArrayBacked(EntitySpawn.class, callbacks -> ((entity, world) -> {
-        for (EntitySpawn callback : callbacks)
-            callback.onEntitySpawn(entity, world);
-    }));
-
-    @FunctionalInterface
-    public interface EntitySpawn {
-        void onEntitySpawn(Entity entity, ServerWorld world);
-    }
+    @Deprecated
+    public static final Event<EntitySpawn> ENTITY_SPAWN = com.bleudev.nine_lifes.api.event.EntitySpawnEvents.ENTITY_SPAWN;
 }

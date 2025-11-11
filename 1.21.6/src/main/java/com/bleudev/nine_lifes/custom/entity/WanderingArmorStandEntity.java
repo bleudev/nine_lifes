@@ -20,14 +20,13 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 import static com.bleudev.nine_lifes.compat.VersionCompat.getWorldCompat;
@@ -69,90 +68,82 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
 
     public static DefaultAttributeContainer.Builder createLivingAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 1)
-                .add(EntityAttributes.FOLLOW_RANGE)
-                .add(EntityAttributes.TEMPT_RANGE);
+                           .add(EntityAttributes.MAX_HEALTH, 1)
+                           .add(EntityAttributes.FOLLOW_RANGE)
+                           .add(EntityAttributes.TEMPT_RANGE);
     }
 
     @Override
     public boolean canUsePortals(boolean allowVehicles) {
         return false;
     }
-
     @Override
     public boolean canBeHitByProjectile() {
         return false;
     }
-
     @Override
     protected boolean canGlide() {
         return false;
     }
-
     @Override
     public boolean canBreatheInWater() {
         return true;
     }
-
     @Override
     public boolean isPushable() {
         return false;
     }
-
     @Override
     protected void pushAway(Entity entity) {
     }
-
     @Override
     public void pushAwayFrom(Entity entity) {
     }
-
     @Override
-    public void kill(ServerWorld world) {
+    public void kill(@NotNull ServerWorld world) {
         if (!world.isClient) {
             this.remove(RemovalReason.KILLED);
         }
     }
-
     @Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, @NotNull DamageSource source, float amount) {
         if (source.getAttacker() instanceof ServerPlayerEntity player)
             ServerPlayNetworking.send(player, new ArmorStandHitEvent(getPosCompat(this)));
         return source.isOf(DamageTypes.GENERIC_KILL);
     }
 
     @Override
-    public boolean isInvulnerableTo(ServerWorld world, DamageSource source) {
+    public boolean isInvulnerableTo(ServerWorld world, @NotNull DamageSource source) {
         return !source.isOf(DamageTypes.GENERIC_KILL);
     }
 
+    public boolean canWander() {
+        return this.dataTracker.get(IS_ALIVE);
+    }
     public boolean cannotWander() {
-        return (!this.dataTracker.get(IS_ALIVE));
+        return !canWander();
     }
 
     public void setWander(boolean is_alive) {
         this.dataTracker.set(IS_ALIVE, is_alive);
     }
 
-    private static void spawnParticle(ParticleEffect particle, ServerWorld world, Vec3d pos) {
-        double offsetX = (world.random.nextDouble() - 0.5) * 2.0;
-        double offsetY = world.random.nextDouble() * 2.0;
-        double offsetZ = (world.random.nextDouble() - 0.5) * 2.0;
-
-        world.spawnParticles(particle,
-            pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ,
-            1, 0, 0, 0, 1
-        );
-    }
-
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+    public ActionResult interactMob(@NotNull PlayerEntity player, Hand hand) {
         ItemStack stack = player.getMainHandStack();
         // Eat
         if (stack.isOf(Items.AMETHYST_SHARD)) {
             if (getWorldCompat(this) instanceof ServerWorld world) {
                 var pos = getPosCompat(this);
-                for (int i = 0; i < 3; i++)
-                    spawnParticle(ParticleTypes.HEART, world, pos);
+                for (int i = 0; i < 3; i++) {
+                    double offsetX = (world.random.nextDouble() - 0.5) * 2;
+                    double offsetY = world.random.nextDouble() * 2;
+                    double offsetZ = (world.random.nextDouble() - 0.5) * 2;
+
+                    world.spawnParticles(ParticleTypes.HEART,
+                        pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ,
+                        1, 0, 0, 0, 1
+                    );
+                }
             }
 
             // Consume amethyst shard

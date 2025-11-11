@@ -1,7 +1,14 @@
 # 1.9.2
+## Deprecations
+[-] `com.bleudev.nine_lifes.custom.event.EntitySpawnEvents` is deprecated and will be deleted in `1.10`.
+Use `com.bleudev.nine_lifes.api.event.EntitySpawnEvents`
+
 ## Depends updates
 [+] Loom version was updated up to `1.13.3`\
 [+] Fabric loader version was updated up to `0.17.3`
+
+## Fixes
+[-] Deleted debug printing in `WindChargeTickFeatures`
 
 # 1.9.1
 ## Deprecations
