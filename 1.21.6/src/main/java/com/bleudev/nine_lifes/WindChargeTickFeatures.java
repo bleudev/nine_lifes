@@ -11,19 +11,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 
 public class WindChargeTickFeatures {
-    protected static void doWindChargeTick(@NotNull ServerWorld world, WindChargeEntity wind_charge) {
-        Box action_box = NineLifesConst.windChargeActionBox(wind_charge);
+    public static void do_for(ServerWorld world, WindChargeEntity wind_charge) {
+        Box action_box = Box.of(getPosCompat(wind_charge), 3, 3, 3);
         WorldUtils.forBlocksInBox(action_box, (pos) -> {
             var blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof BrewingStandBlockEntity brewing) {
@@ -46,6 +45,8 @@ public class WindChargeTickFeatures {
                 );
             }
         });
+
+        System.out.println(TypeFilter.instanceOf(LivingEntity.class));
 
         world.getEntitiesByClass(LivingEntity.class, action_box, ignored -> true).forEach(entity -> {
             entity.removeStatusEffect(CustomEffects.AMETHYSM);
@@ -74,7 +75,7 @@ public class WindChargeTickFeatures {
             }
 
             if (inventory_updated)
-                world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.PLAYERS);
+                player.sendMessage(Text.of("Broke potions!"), false);
         });
     }
 }

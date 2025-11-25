@@ -9,10 +9,7 @@ import static com.bleudev.nine_lifes.util.RegistryUtils.registerEntity;
 
 public class CustomEntities {
     public static final EntityType<WanderingArmorStandEntity> WANDERING_ARMOR_STAND_TYPE = registerEntity(
-        "wandering_armor_stand", EntityType.Builder
-            .create(WanderingArmorStandEntity::new, SpawnGroup.MISC)
-            .makeFireImmune()
-            .dimensions(0.6f, 1.8f)
+        "wandering_armor_stand", EntityType.Builder.create(WanderingArmorStandEntity::new, SpawnGroup.MISC).makeFireImmune().dimensions(0.6f, 1.8f)
     );
 
     public static void initialize() {

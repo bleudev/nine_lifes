@@ -20,7 +20,7 @@ public class WanderingArmorStandLookAroundGoal extends Goal {
     }
 
     public boolean canStart() {
-        if (!mob.cannotWander()) return false;
+        if (mob.cannotWander()) return false;
         return this.mob.getRandom().nextFloat() < 0.02F;
     }
 

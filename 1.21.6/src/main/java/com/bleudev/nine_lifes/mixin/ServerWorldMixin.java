@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.api.event.EntitySpawnEvents;
+import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;

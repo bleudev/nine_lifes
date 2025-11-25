@@ -1,8 +1,8 @@
 package com.bleudev.nine_lifes;
 
-import com.bleudev.nine_lifes.api.event.EntitySpawnEvents;
 import com.bleudev.nine_lifes.compat.VersionCompat;
 import com.bleudev.nine_lifes.custom.*;
+import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.Packets;
 import com.bleudev.nine_lifes.networking.payloads.JoinMessage;
@@ -32,7 +32,7 @@ import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_food
 import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
 
 public class Nine_lifes implements ModInitializer {
-    @Deprecated
+    @Deprecated(since = "1.9.1")
     public static final String MOD_ID = NineLifesConst.MOD_ID;
 
     @Override
@@ -93,7 +93,7 @@ public class Nine_lifes implements ModInitializer {
             // Wind charges
             for (var world: server.getWorlds())
                 world.getEntitiesByType(EntityType.WIND_CHARGE, ignored -> true).forEach(wind_charge ->
-                    WindChargeTickFeatures.doWindChargeTick(world, wind_charge));
+                    WindChargeTickFeatures.do_for(world, wind_charge));
         });
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
             CustomCommands.initialize(dispatcher));

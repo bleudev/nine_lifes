@@ -1,13 +1,6 @@
 package com.bleudev.nine_lifes;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 import static com.bleudev.nine_lifes.PlatformHelper.*;
-import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 
 public class NineLifesConst {
     public static final String MOD_ID = "nine_lifes";
@@ -25,13 +18,4 @@ public class NineLifesConst {
     public static final int CHARGE_SCREEN_EFFECT_RADIUS_MAX = 20;
     public static final double CHARGE_SCREEN_MAX_STRENGTH = 0.5;
     public static final int CHARGE_SCREEN_DURATION = 6;
-
-    @Contract(value = "_ -> new", pure = true)
-    protected static @NotNull Box windChargeActionBox(@NotNull Vec3d pos) {
-        return Box.of(pos, 3, 3, 3);
-    }
-    @Contract("_ -> new")
-    protected static @NotNull Box windChargeActionBox(@NotNull Entity wind_charge) {
-        return windChargeActionBox(getPosCompat(wind_charge));
-    }
 }

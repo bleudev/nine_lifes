@@ -4,8 +4,11 @@ import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-import static com.bleudev.nine_lifes.util.RegistryUtils.getId;
+import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 public class CustomTags {
     public static class ItemTags {
@@ -16,7 +19,7 @@ public class CustomTags {
         public static final TagKey<Item> LIGHTNING_CHARGEABLE = of("lightning_chargeable");
 
         private static TagKey<Item> of(String name) {
-            return TagKey.of(RegistryKeys.ITEM, getId(name));
+            return TagKey.of(RegistryKeys.ITEM, get(name));
         }
     }
 
@@ -24,7 +27,12 @@ public class CustomTags {
         public static final TagKey<DamageType> IS_LIGHTNING_OR_FIRE = of("is_lightning_or_fire");
 
         private static TagKey<DamageType> of(String name) {
-            return TagKey.of(RegistryKeys.DAMAGE_TYPE, getId(name));
+            return TagKey.of(RegistryKeys.DAMAGE_TYPE, get(name));
         }
+    }
+
+    @Contract("_ -> new")
+    private static @NotNull Identifier get(String name) {
+        return Identifier.of(MOD_ID, name);
     }
 }

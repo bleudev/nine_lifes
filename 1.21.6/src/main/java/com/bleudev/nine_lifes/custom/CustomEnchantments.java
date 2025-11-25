@@ -9,11 +9,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import static com.bleudev.nine_lifes.NineLifesConst.MOD_ID;
 
 /**
@@ -45,34 +40,26 @@ public class CustomEnchantments {
      * */
     public static class Entries {
         private final DynamicRegistryManager manager;
-        private final Map<RegistryKey<Enchantment>, RegistryEntry<Enchantment>> entries;
 
-        @SafeVarargs
-        private Map<RegistryKey<Enchantment>, RegistryEntry<Enchantment>> getEntries(RegistryKey<Enchantment>... enchantments) {
-            var r = new HashMap<RegistryKey<Enchantment>, RegistryEntry<Enchantment>>();
-            for (RegistryKey<Enchantment> key: enchantments)
-                r.put(key, getEntry(key));
-            return Collections.unmodifiableMap(r);
-        }
-
-        private Entries(@NotNull DynamicRegistryManager manager) {
+        private Entries(DynamicRegistryManager manager) {
             this.manager = manager;
-            this.entries = getEntries(CustomEnchantments.CHARGE);
         }
 
         private @NotNull RegistryEntry<Enchantment> getEntry(RegistryKey<Enchantment> key) {
             return RegistryEntry.of(manager.getOrThrow(RegistryKeys.ENCHANTMENT).get(key));
         }
 
+        // Public nonstatic
         /**
          * {@link RegistryEntry} of {@code nine_lifes:charge} enchantment
          *
          * @return registry entry of enchantment
          * */
         public RegistryEntry<Enchantment> charge() {
-            return this.entries.get(CustomEnchantments.CHARGE);
+            return getEntry(CustomEnchantments.CHARGE);
         }
 
+        // Public static
         /**
          * Create new {@link Entries} object from provided {@link DynamicRegistryManager}
          *
@@ -80,7 +67,7 @@ public class CustomEnchantments {
          * @return new {@link Entries} object
          * */
         @Contract(value = "_ -> new", pure = true)
-        public static @NotNull Entries create(@NotNull DynamicRegistryManager manager) {
+        public static @NotNull Entries create(DynamicRegistryManager manager) {
             return new Entries(manager);
         }
 
@@ -90,7 +77,7 @@ public class CustomEnchantments {
          * @param manager Registry manager where to get entry
          * @return registry entry of enchantment
          * */
-        public static RegistryEntry<Enchantment> charge(@NotNull DynamicRegistryManager manager) {
+        public static RegistryEntry<Enchantment> charge(DynamicRegistryManager manager) {
             return create(manager).charge();
         }
     }
@@ -103,15 +90,12 @@ public class CustomEnchantments {
      * CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE)
      * // With
      * CustomEnchantments.Entries.create(world.getRegistryManager()).charge()
-     * // Or
-     * CustomEnchantments.charge(world.getRegistryManager())
      * }</pre>
      * */
-    @Deprecated
-    @Contract("!null, _ -> new; null, _ -> fail")
-    public static RegistryEntry<Enchantment> getEntry(DynamicRegistryManager manager, RegistryKey<Enchantment> key) {
-        Objects.requireNonNull(manager);
-        return Entries.create(manager).entries.get(key);
+    @Contract("_, _ -> new")
+    @Deprecated(since = "1.9")
+    public static @NotNull RegistryEntry<Enchantment> getEntry(DynamicRegistryManager manager, RegistryKey<Enchantment> key) {
+        return Entries.create(manager).getEntry(key);
     }
 
     /**
