@@ -83,22 +83,6 @@ public class CustomEnchantments {
     }
 
     /**
-     * Deprecated since 1.9 version and will be deleted in 1.10.
-     * Use {@link Entries} functions or methods instead
-     * <pre>{@code
-     * // Replace this line
-     * CustomEnchantments.getEntry(world.getRegistryManager(), CustomEnchantments.CHARGE)
-     * // With
-     * CustomEnchantments.Entries.create(world.getRegistryManager()).charge()
-     * }</pre>
-     * */
-    @Contract("_, _ -> new")
-    @Deprecated(since = "1.9")
-    public static @NotNull RegistryEntry<Enchantment> getEntry(DynamicRegistryManager manager, RegistryKey<Enchantment> key) {
-        return Entries.create(manager).getEntry(key);
-    }
-
-    /**
      * [DANGER]
      * Do not use in mods depends on Nine Lifes!
      * */

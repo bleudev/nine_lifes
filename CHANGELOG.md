@@ -1,7 +1,13 @@
-# 1.9.2
+# 1.10
 ## Depends updates
-[+] Loom version was updated up to `1.13.3`\
+[+] \[DEV] Loom version was updated up to `1.13.3`\
 [+] Fabric loader version was updated up to `0.17.3`
+
+## Breaking changes
+[-] `com.bleudev.nine_lifes.Nine_lifes.MOD_ID` was deleted.
+Use `com.bleudev.nine_lifes.NineLifesConst.MOD_ID` instead.\
+[-] `com.bleudev.nine_lifes.custom.CustomEnchantments.getEntry()` was deleted.
+Use `Entries` class's functions and methods instead.
 
 # 1.9.1
 ## Deprecations

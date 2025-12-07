@@ -25,6 +25,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.EntityExplosionBehavior;
+import org.jetbrains.annotations.NotNull;
 
 import static com.bleudev.nine_lifes.NineLifesConst.*;
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
@@ -32,9 +33,6 @@ import static com.bleudev.nine_lifes.util.ComponentUtils.item_ensure_custom_food
 import static com.bleudev.nine_lifes.util.ComponentUtils.should_update_amethyst_shard;
 
 public class Nine_lifes implements ModInitializer {
-    @Deprecated(since = "1.9.1")
-    public static final String MOD_ID = NineLifesConst.MOD_ID;
-
     @Override
     public void onInitialize() {
         Packets.initialize();
@@ -114,7 +112,7 @@ public class Nine_lifes implements ModInitializer {
         });
     }
 
-    private void tryChargeItems(ServerWorld world) {
+    private void tryChargeItems(@NotNull ServerWorld world) {
         final int charge_screen_effect_radius_diff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN;
 
         final var CHARGE_ENCHANTMENT = CustomEnchantments.Entries.create(world.getRegistryManager()).charge();
