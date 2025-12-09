@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.custom.consume;
 
 import com.bleudev.nine_lifes.custom.CustomEffects;
-import com.bleudev.nine_lifes.custom.CustomEnchantments;
+import com.bleudev.nine_lifes.custom.NineLifesEnchantments;
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface;
 import com.bleudev.nine_lifes.networking.payloads.StartWhitenessScreenEvent;
 import com.bleudev.nine_lifes.util.LivesUtils;
@@ -36,7 +36,7 @@ public record AmethysmConsumeEffect() implements ConsumeEffect {
     public boolean onConsume(World world, ItemStack stack, LivingEntity entity) {
         if (stack.getEnchantments().getEnchantments().stream()
             .anyMatch(entry -> entry.getKey()
-                .map(key -> key.equals(CustomEnchantments.CHARGE))
+                .map(key -> key.equals(NineLifesEnchantments.KEY_CHARGE))
                 .orElse(false))) {
             if (entity instanceof ServerPlayerEntity player) {
                 LivesUtils.setLives(player, o -> o + 2);

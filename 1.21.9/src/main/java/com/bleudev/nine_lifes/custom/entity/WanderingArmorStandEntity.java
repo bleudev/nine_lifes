@@ -4,19 +4,14 @@ import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAroun
 import com.bleudev.nine_lifes.networking.payloads.ArmorStandHitEvent;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -27,15 +22,20 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.Level;
 
 import static com.bleudev.nine_lifes.compat.VersionCompat.getPosCompat;
 import static com.bleudev.nine_lifes.compat.VersionCompat.getWorldCompat;
 
-public class WanderingArmorStandEntity extends PathAwareEntity {
+public class WanderingArmorStandEntity extends PathfinderMob {
     private static final TrackedData<Boolean> IS_ALIVE;
 
-    public WanderingArmorStandEntity(EntityType<? extends PathAwareEntity> entityType, World world) {
+    public WanderingArmorStandEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
         this.setHealth(1);
     }
@@ -67,11 +67,11 @@ public class WanderingArmorStandEntity extends PathAwareEntity {
         this.goalSelector.add(4, new WanderingArmorStandLookAroundGoal(this));
     }
 
-    public static DefaultAttributeContainer.Builder createLivingAttributes() {
+    public static AttributeSupplier.Builder createLivingAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 1)
-                .add(EntityAttributes.FOLLOW_RANGE)
-                .add(EntityAttributes.TEMPT_RANGE);
+                .add(Attributes.MAX_HEALTH, 1)
+                .add(Attributes.FOLLOW_RANGE)
+                .add(Attributes.TEMPT_RANGE);
     }
 
     @Override

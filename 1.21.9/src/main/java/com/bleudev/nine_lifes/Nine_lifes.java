@@ -38,7 +38,7 @@ public class Nine_lifes implements ModInitializer {
         Packets.initialize();
         CustomEffects.initialize();
         CustomConsumeEffectTypes.initialize();
-        CustomEnchantments.initialize();
+        NineLifesEnchantments.initialize();
         CustomPotions.initialize();
         CustomEntities.initialize();
         FabricBrewingRecipeRegistryBuilder.BUILD.register(builder ->
@@ -115,7 +115,7 @@ public class Nine_lifes implements ModInitializer {
     private void tryChargeItems(@NotNull ServerWorld world) {
         final int charge_screen_effect_radius_diff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN;
 
-        final var CHARGE_ENCHANTMENT = CustomEnchantments.Entries.create(world.getRegistryManager()).charge();
+        final var CHARGE_ENCHANTMENT = NineLifesEnchantments.Holders.create(world.getRegistryManager()).charge();
         world.getEntitiesByType(EntityType.LIGHTNING_BOLT, ignored -> true).forEach(lightning ->
             world.getEntitiesByType(EntityType.ITEM,
                 Box.of(getPosCompat(lightning), LIGHTNING_CHARGING_RADIUS, LIGHTNING_CHARGING_RADIUS, LIGHTNING_CHARGING_RADIUS),
