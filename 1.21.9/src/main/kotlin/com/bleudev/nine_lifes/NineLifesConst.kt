@@ -1,8 +1,10 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.util.helper.PlatformHelper
+
 const val MOD_ID = "nine_lifes"
 val NAME = PlatformHelper.getModName(MOD_ID)
-val AUTHOR = PlatformHelper.getModAuthors(MOD_ID).stream().findFirst().orElse("Unknown")
+val AUTHOR = PlatformHelper.getModAuthorsNames(MOD_ID).stream().findFirst().orElse("Unknown")
 val VERSION = PlatformHelper.getModVersion(MOD_ID, "+")
 const val GITHUB_LINK = "https://github.com/bleudev/nine_lifes"
 const val ISSUES_LINK = "https://github.com/bleudev/nine_lifes/issues"
@@ -15,3 +17,5 @@ const val CHARGE_SCREEN_EFFECT_RADIUS_MIN = 3
 const val CHARGE_SCREEN_EFFECT_RADIUS_MAX = 20
 const val CHARGE_SCREEN_MAX_STRENGTH = 0.5
 const val CHARGE_SCREEN_DURATION = 6
+
+fun isInBetaMode(): Boolean = VERSION.endsWith("_beta")

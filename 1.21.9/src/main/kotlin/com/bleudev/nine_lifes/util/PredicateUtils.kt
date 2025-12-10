@@ -18,3 +18,8 @@ fun <T> P<T>.and(vararg other: P<T>): P<T> = {
     for (i in other) p = p && i(it)
     p
 }
+fun <T> P<T>.or(vararg other: P<T>): P<T> = {
+    var p = this(it)
+    for (i in other) p = p || i(it)
+    p
+}

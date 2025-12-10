@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND_TYP
 import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface
 import com.bleudev.nine_lifes.networking.Packets
+import com.bleudev.nine_lifes.networking.payloads.BetaModeMessage
 import com.bleudev.nine_lifes.networking.payloads.JoinMessage
 import com.bleudev.nine_lifes.networking.payloads.StartChargeScreenEffect
 import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeart
@@ -17,7 +18,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
-import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
@@ -26,7 +26,6 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.projectile.windcharge.WindCharge
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import net.minecraft.world.item.alchemy.PotionBrewing
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.crafting.Ingredient
@@ -34,32 +33,28 @@ import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
-import java.util.*
 
 class NineLifes : ModInitializer {
     override fun onInitialize() {
         Packets.initialize()
-        CustomEffects.initialize()
+        NineLifesMobEffects.initialize()
         CustomConsumeEffectTypes.initialize()
         NineLifesEnchantments.initialize()
         CustomPotions.initialize()
-        CustomEntities.initialize()
-        FabricBrewingRecipeRegistryBuilder.BUILD.register(FabricBrewingRecipeRegistryBuilder.BuildCallback { builder: PotionBrewing.Builder? ->
-            builder!!.registerPotionRecipe(
-                Potions.WATER,
-                Ingredient.of(Items.AMETHYST_SHARD),
-                CustomPotions.AMETHYSM
-            )
-        })
+        NineLifesEntities.initialize()
+        FabricBrewingRecipeRegistryBuilder.BUILD.register { it.registerPotionRecipe(
+            Potions.WATER,
+            Ingredient.of(Items.AMETHYST_SHARD),
+            CustomPotions.AMETHYSM
+        ) }
         ServerPlayerEvents.JOIN.register { player ->
             if ((!player!!.isSpectator) && (LivesUtils.getLives(player) == 0)) LivesUtils.resetLives(player)
             ServerPlayNetworking.send(player, UpdateCenterHeart(LivesUtils.getLives(player)))
             ServerPlayNetworking.send(player, JoinMessage(LivesUtils.getLives(player)))
-            BetaModeHelper.trySendBetaModeMessage(player)
+            if (isInBetaMode()) ServerPlayNetworking.send(player, BetaModeMessage())
         }
-        ServerTickEvents.END_SERVER_TICK.register(ServerTickEvents.EndTick { server: MinecraftServer? ->
-            // Custom food (amethyst shard)
-            for (player in server!!.playerList.players) ComponentUtils.player_ensure_custom_foods(player)
+        ServerTickEvents.END_SERVER_TICK.register { server ->
+            for (player in server.playerList.players) player_ensure_custom_foods(player)
 
             for (world in server.allLevels) {
                 for (player in world.players()) {
@@ -67,8 +62,8 @@ class NineLifes : ModInitializer {
                     world.getEntities(EntityType.ITEM) { entity ->
                         entityIn<ItemEntity>(box)(entity) &&
                         entity.item.`is`(Items.AMETHYST_SHARD) &&
-                        ComponentUtils.should_update_amethyst_shard(entity.item)
-                    }.forEach { entity -> entity.item = ComponentUtils.item_ensure_custom_foods(entity.item) }
+                        should_update_amethyst_shard(entity.item)
+                    }.forEach { entity -> entity.item = item_ensure_custom_foods(entity.item) }
                     world.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
                         val inter = entity as LivingEntityCustomInterface
                         var damage_ticks = inter.`nine_lifes$getDamageTicks`()
@@ -98,7 +93,7 @@ class NineLifes : ModInitializer {
 
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
-        })
+        }
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             CustomCommands.initialize(dispatcher)
         }
@@ -106,7 +101,7 @@ class NineLifes : ModInitializer {
             // If it's armor stand
             if (entity.type.equals(EntityType.ARMOR_STAND)) {
                 // Then try spawn wandering one
-                if (world.getRandom().nextFloat() < NineLifesConst.WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
+                if (world.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND_TYPE.create(world, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
                         newEntity.setPos(entity.position())
@@ -120,8 +115,7 @@ class NineLifes : ModInitializer {
     }
 
     private fun tryChargeItems(world: ServerLevel) {
-        val chargeScreenEffectRadiusDiff =
-            NineLifesConst.CHARGE_SCREEN_EFFECT_RADIUS_MAX - NineLifesConst.CHARGE_SCREEN_EFFECT_RADIUS_MIN
+        val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
 
         val chargeEnchantment = NineLifesEnchantments.Holders.charge(world.registryAccess())
         world.getEntities(EntityType.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
@@ -148,20 +142,18 @@ class NineLifes : ModInitializer {
 
     fun tryWindChargeFeatures(world: ServerLevel, wind_charge: WindCharge) {
         val action_box = ofDXYZ(wind_charge.position(), 3)
-        WorldUtils.forBlocksInBox(action_box) { pos: BlockPos ->
+        forBlocksInBox(action_box) { pos: BlockPos ->
             val blockEntity = world.getBlockEntity(pos)
             if (blockEntity is BrewingStandBlockEntity) {
                 if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
                     try {
-                        for (eff in Objects.requireNonNull<T?>(potion.get(DataComponentTypes.POTION_CONTENTS))
-                            .getEffects()) if (eff.getEffectType()
-                                .equals(CustomEffects.AMETHYSM)
-                        ) return@noneMatch true
+                        for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
+                            if (eff.effect.equals(CustomEffects.AMETHYSM)) return@noneMatch true
                         return@noneMatch false
-                    } catch (ignored: NullPointerException) {
+                    } catch (_: NullPointerException) {
                         return@noneMatch false
                     }
-                } ?: true) return@forBlocksInBox
+                } ?: true) return@forBlocksInBox 0
 
                 world.removeBlock(pos, false)
                 world.explode(
@@ -170,6 +162,7 @@ class NineLifes : ModInitializer {
                     3f, true, Level.ExplosionInteraction.BLOCK
                 )
             }
+            0
         }
 
         world.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(action_box)).forEach { entity ->
