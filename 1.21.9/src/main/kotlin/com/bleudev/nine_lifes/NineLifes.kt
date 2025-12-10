@@ -3,18 +3,16 @@ package com.bleudev.nine_lifes
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND_TYPE
 import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents
+import com.bleudev.nine_lifes.custom.packet.payload.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.JoinMessage
+import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
+import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
 import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface
-import com.bleudev.nine_lifes.networking.Packets
-import com.bleudev.nine_lifes.networking.payloads.BetaModeMessage
-import com.bleudev.nine_lifes.networking.payloads.JoinMessage
-import com.bleudev.nine_lifes.networking.payloads.StartChargeScreenEffect
-import com.bleudev.nine_lifes.networking.payloads.UpdateCenterHeart
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
 import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
@@ -36,7 +34,7 @@ import net.minecraft.world.level.entity.EntityTypeTest
 
 class NineLifes : ModInitializer {
     override fun onInitialize() {
-        Packets.initialize()
+        NineLifesPackets.initialize()
         NineLifesMobEffects.initialize()
         CustomConsumeEffectTypes.initialize()
         NineLifesEnchantments.initialize()
@@ -49,9 +47,9 @@ class NineLifes : ModInitializer {
         ) }
         ServerPlayerEvents.JOIN.register { player ->
             if ((!player!!.isSpectator) && (LivesUtils.getLives(player) == 0)) LivesUtils.resetLives(player)
-            ServerPlayNetworking.send(player, UpdateCenterHeart(LivesUtils.getLives(player)))
-            ServerPlayNetworking.send(player, JoinMessage(LivesUtils.getLives(player)))
-            if (isInBetaMode()) ServerPlayNetworking.send(player, BetaModeMessage())
+            val lifes = LivesUtils.getLives(player)
+            player.sendPackets(UpdateLifesCount(lifes), JoinMessage(lifes))
+            if (isInBetaMode()) player.sendPacket(BetaModeMessage())
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             for (player in server.playerList.players) player_ensure_custom_foods(player)
@@ -129,11 +127,8 @@ class NineLifes : ModInitializer {
                         world.players().forEach { player ->
                             val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
                                 .coerceAtLeast(.0)
-                            val strength =
-                                CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
-                            ServerPlayNetworking.send(player,
-                                StartChargeScreenEffect(CHARGE_SCREEN_DURATION, strength.toFloat())
-                            )
+                            val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
+                            player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                         }
                     }
                 }
