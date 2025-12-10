@@ -1,13 +1,12 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.api.event.EntitySpawnEvents
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND_TYPE
-import com.bleudev.nine_lifes.custom.event.EntitySpawnEvents
 import com.bleudev.nine_lifes.custom.packet.payload.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.JoinMessage
 import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
 import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
-import com.bleudev.nine_lifes.interfaces.mixin.LivingEntityCustomInterface
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
@@ -36,23 +35,23 @@ class NineLifes : ModInitializer {
     override fun onInitialize() {
         NineLifesPackets.initialize()
         NineLifesMobEffects.initialize()
-        CustomConsumeEffectTypes.initialize()
+        NineLifesConsumeEffects.initialize()
         NineLifesEnchantments.initialize()
-        CustomPotions.initialize()
+        NineLifesPotions.initialize()
         NineLifesEntities.initialize()
         FabricBrewingRecipeRegistryBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
-            CustomPotions.AMETHYSM
+            NineLifesPotions.AMETHYSM
         ) }
         ServerPlayerEvents.JOIN.register { player ->
-            if ((!player!!.isSpectator) && (LivesUtils.getLives(player) == 0)) LivesUtils.resetLives(player)
-            val lifes = LivesUtils.getLives(player)
+            if ((!player.isSpectator) && player.lifes == 0) player.resetLifes()
+            val lifes = player.lifes
             player.sendPackets(UpdateLifesCount(lifes), JoinMessage(lifes))
             if (isInBetaMode()) player.sendPacket(BetaModeMessage())
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            for (player in server.playerList.players) player_ensure_custom_foods(player)
+            for (player in server.playerList.players) playerEnsureCustomFoods(player)
 
             for (level in server.allLevels) {
                 for (player in level.players()) {
@@ -60,20 +59,19 @@ class NineLifes : ModInitializer {
                     level.getEntities(EntityType.ITEM) { entity ->
                         entityIn<ItemEntity>(box)(entity) &&
                         entity.item.`is`(Items.AMETHYST_SHARD) &&
-                        should_update_amethyst_shard(entity.item)
-                    }.forEach { entity -> entity.item = item_ensure_custom_foods(entity.item) }
+                        shouldUpdateAmethystShard(entity.item)
+                    }.forEach { entity -> entity.item = itemEnsureCustomFoods(entity.item) }
                     level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
-                        val inter = entity as LivingEntityCustomInterface
-                        var damageTicks = inter.`nine_lifes$getDamageTicks`()
-                        if (damageTicks == -1) return@forEach
-
-                        if (damageTicks == 0) {
-                            level.explode(entity, NineLifesDamageSources.charged(level),
-                                ExplosionDamageCalculator(), entity.position(),
-                                7f, true, Level.ExplosionInteraction.MOB)
-                            entity.hurtServer(level, NineLifesDamageSources.charged(level), 1000f)
+                        when (entity.damageTicks) {
+                            -1 -> return@forEach
+                            0 -> {
+                                level.explode(entity, NineLifesDamageSources.charged(level),
+                                    ExplosionDamageCalculator(), entity.position(),
+                                    7f, true, Level.ExplosionInteraction.MOB)
+                                entity.hurtServer(level, NineLifesDamageSources.charged(level), Float.MAX_VALUE)
+                            }
                         }
-                        inter.`nine_lifes$setDamageTicks`(--damageTicks)
+                        entity.damageTicks -= 1
                     }
                 }
                 tryChargeItems(level)

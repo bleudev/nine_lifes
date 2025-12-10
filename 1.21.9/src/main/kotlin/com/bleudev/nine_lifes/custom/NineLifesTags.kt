@@ -12,9 +12,13 @@ private fun <T> ofRegistry(registry: ResourceKey<Registry<T>>, name: String): Ta
     TagKey.create(registry, createResourceLocation(name))
 
 object NineLifesItemTags {
+    @JvmField
     val CAUSE_BLAST_FURNACE_EXPLODE: TagKey<Item> = of("cause_blast_furnace_explode")
+    @JvmField
     val CAUSE_FURNACE_EXPLODE: TagKey<Item> = of("cause_furnace_explode")
+    @JvmField
     val CAUSE_SMOKER_EXPLODE: TagKey<Item> = of("cause_smoker_explode")
+    @JvmField
     val CAUSE_CAMPFIRE_EXPLODE: TagKey<Item> = of("cause_campfire_explode")
     val LIGHTNING_CHARGEABLE: TagKey<Item> = of("lightning_chargeable")
 

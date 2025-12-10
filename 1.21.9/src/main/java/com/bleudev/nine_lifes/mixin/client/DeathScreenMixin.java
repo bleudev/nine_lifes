@@ -1,8 +1,7 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -18,13 +17,10 @@ public class DeathScreenMixin {
     @Mutable
     @Shadow
     @Final
-    private boolean isHardcore;
+    private boolean hardcore;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(Text message, boolean isHardcore, CallbackInfo ci) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if ((client.player != null) && (client.getServer() != null))
-            this.isHardcore = lives <= 1;
-        else this.isHardcore = false;
+    private void onInit(Component component, boolean bl, CallbackInfo ci) {
+        this.hardcore = lives <= 1;
     }
 }

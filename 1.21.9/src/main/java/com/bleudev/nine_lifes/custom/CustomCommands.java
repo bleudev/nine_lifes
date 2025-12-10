@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.custom;
 
-import com.bleudev.nine_lifes.util.LivesUtils;
 import com.bleudev.nine_lifes.util.TextUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;

@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.custom.event;
+package com.bleudev.nine_lifes.api.event;
 
 
 import net.fabricmc.fabric.api.event.Event;

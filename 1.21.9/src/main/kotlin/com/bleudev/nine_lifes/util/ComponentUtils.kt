@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.util
 
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.consume.AmethysmConsumeEffect
+import com.bleudev.nine_lifes.custom.effect.consume.AmethysmConsumeEffect
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerPlayer
@@ -18,9 +18,9 @@ import net.minecraft.world.item.enchantment.ItemEnchantments
 
 private class CheckStackPredicateBuilder private constructor(private val predicate: P<ItemStack>) {
     fun of(item: Item): CheckStackPredicateBuilder = of(this.predicate.and({ stack -> stack.`is`(item) }))
-    fun <T> another_component(type: DataComponentType<T>, component: T): CheckStackPredicateBuilder = of(
+    fun <T> anotherComponent(type: DataComponentType<T>, component: T): CheckStackPredicateBuilder = of(
         this.predicate.or({ stack -> stack.get(type) == component }))
-    fun <T> or_no_component(type: DataComponentType<T>): CheckStackPredicateBuilder = of(
+    fun <T> orNoComponent(type: DataComponentType<T>): CheckStackPredicateBuilder = of(
         this.predicate.or({ stack -> stack.getComponents().get(type) != null }))
 
     fun with(predicate: P<ItemStack>): CheckStackPredicateBuilder = of(this.predicate.and(predicate))
@@ -40,20 +40,20 @@ private val amethyst_enchantable_component = Enchantable(1)
 private const val amethyst_max_stack_size_component = 65
 private val amethyst_damage_resistant_component = DamageResistant(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE)
 
-fun should_update_amethyst_shard(stack: ItemStack): Boolean = CheckStackPredicateBuilder.create()
+fun shouldUpdateAmethystShard(stack: ItemStack): Boolean = CheckStackPredicateBuilder.create()
     .of(Items.AMETHYST_SHARD)
     .with(
         CheckStackPredicateBuilder.create()
-            .another_component(DataComponents.FOOD, amethyst_shard_food_component)
-            .another_component(DataComponents.CONSUMABLE, amethyst_shard_consumable_component)
-            .another_component(DataComponents.USE_COOLDOWN, amethyst_shard_cooldown_component)
-            .another_component(DataComponents.ENCHANTABLE, amethyst_enchantable_component)
-            .another_component(DataComponents.MAX_STACK_SIZE, amethyst_max_stack_size_component)
-            .another_component(DataComponents.DAMAGE_RESISTANT, amethyst_damage_resistant_component)
-            .or_no_component(DataComponents.ENCHANTMENTS)
+            .anotherComponent(DataComponents.FOOD, amethyst_shard_food_component)
+            .anotherComponent(DataComponents.CONSUMABLE, amethyst_shard_consumable_component)
+            .anotherComponent(DataComponents.USE_COOLDOWN, amethyst_shard_cooldown_component)
+            .anotherComponent(DataComponents.ENCHANTABLE, amethyst_enchantable_component)
+            .anotherComponent(DataComponents.MAX_STACK_SIZE, amethyst_max_stack_size_component)
+            .anotherComponent(DataComponents.DAMAGE_RESISTANT, amethyst_damage_resistant_component)
+            .orNoComponent(DataComponents.ENCHANTMENTS)
     ).build()(stack)
 
-fun item_ensure_custom_foods(stack: ItemStack): ItemStack {
+fun itemEnsureCustomFoods(stack: ItemStack): ItemStack {
     stack.set(DataComponents.FOOD, amethyst_shard_food_component)
     stack.set(DataComponents.CONSUMABLE, amethyst_shard_consumable_component)
     stack.set(DataComponents.USE_COOLDOWN, amethyst_shard_cooldown_component)
@@ -65,10 +65,10 @@ fun item_ensure_custom_foods(stack: ItemStack): ItemStack {
     return stack
 }
 
-fun player_ensure_custom_foods(player: ServerPlayer) {
+fun playerEnsureCustomFoods(player: ServerPlayer) {
     val inventory = player.getInventory()
     for (slot in 0..<inventory.nonEquipmentItems.size) {
         val stack = inventory.getItem(slot)
-        if (should_update_amethyst_shard(stack)) inventory.setItem(slot, item_ensure_custom_foods(stack))
+        if (shouldUpdateAmethystShard(stack)) inventory.setItem(slot, itemEnsureCustomFoods(stack))
     }
 }
