@@ -54,39 +54,29 @@ class NineLifes : ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register { server ->
             for (player in server.playerList.players) player_ensure_custom_foods(player)
 
-            for (world in server.allLevels) {
-                for (player in world.players()) {
+            for (level in server.allLevels) {
+                for (player in level.players()) {
                     val box = ofDXYZ(player.position(), 20)
-                    world.getEntities(EntityType.ITEM) { entity ->
+                    level.getEntities(EntityType.ITEM) { entity ->
                         entityIn<ItemEntity>(box)(entity) &&
                         entity.item.`is`(Items.AMETHYST_SHARD) &&
                         should_update_amethyst_shard(entity.item)
                     }.forEach { entity -> entity.item = item_ensure_custom_foods(entity.item) }
-                    world.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
+                    level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
                         val inter = entity as LivingEntityCustomInterface
-                        var damage_ticks = inter.`nine_lifes$getDamageTicks`()
-                        if (damage_ticks == -1) return@forEach
+                        var damageTicks = inter.`nine_lifes$getDamageTicks`()
+                        if (damageTicks == -1) return@forEach
 
-                        if (damage_ticks == 0) {
-                            world.explode(
-                                entity,
-                                CustomDamageTypes.of(world, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE),
-                                ExplosionDamageCalculator(),
-                                entity.position(),
-                                7f,
-                                true,
-                                Level.ExplosionInteraction.MOB
-                            )
-                            entity.hurtServer(
-                                world,
-                                CustomDamageTypes.of(entity, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE),
-                                1000f
-                            )
+                        if (damageTicks == 0) {
+                            level.explode(entity, NineLifesDamageSources.charged(level),
+                                ExplosionDamageCalculator(), entity.position(),
+                                7f, true, Level.ExplosionInteraction.MOB)
+                            entity.hurtServer(level, NineLifesDamageSources.charged(level), 1000f)
                         }
-                        inter.`nine_lifes$setDamageTicks`(--damage_ticks)
+                        inter.`nine_lifes$setDamageTicks`(--damageTicks)
                     }
                 }
-                tryChargeItems(world)
+                tryChargeItems(level)
             }
 
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
@@ -95,16 +85,16 @@ class NineLifes : ModInitializer {
         CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
             CustomCommands.initialize(dispatcher)
         }
-        EntitySpawnEvents.ENTITY_SPAWN.register { entity, world ->
+        EntitySpawnEvents.ENTITY_SPAWN.register { entity, level ->
             // If it's armor stand
             if (entity.type.equals(EntityType.ARMOR_STAND)) {
                 // Then try spawn wandering one
-                if (world.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
-                    val newEntity = WANDERING_ARMOR_STAND_TYPE.create(world, EntitySpawnReason.SPAWN_ITEM_USE)
+                if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
+                    val newEntity = WANDERING_ARMOR_STAND_TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
                         newEntity.setPos(entity.position())
                         newEntity.copyPosition(entity)
-                        world.addFreshEntity(newEntity)
+                        level.addFreshEntity(newEntity)
                         entity.discard()
                     }
                 }
@@ -112,19 +102,19 @@ class NineLifes : ModInitializer {
         }
     }
 
-    private fun tryChargeItems(world: ServerLevel) {
+    private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
 
-        val chargeEnchantment = NineLifesEnchantments.Holders.charge(world.registryAccess())
-        world.getEntities(EntityType.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
-            world.getEntities(
+        val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
+        level.getEntities(EntityType.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
+            level.getEntities(
                 EntityType.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
                 .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))
                 .forEach { itemEntity ->
                     if (itemEntity.item.enchantments.getLevel(chargeEnchantment) == 0) {
                         itemEntity.item.enchant(chargeEnchantment, 1)
-                        world.players().forEach { player ->
+                        level.players().forEach { player ->
                             val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
                                 .coerceAtLeast(.0)
                             val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
@@ -135,24 +125,24 @@ class NineLifes : ModInitializer {
         }
     }
 
-    fun tryWindChargeFeatures(world: ServerLevel, wind_charge: WindCharge) {
-        val action_box = ofDXYZ(wind_charge.position(), 3)
-        forBlocksInBox(action_box) { pos: BlockPos ->
-            val blockEntity = world.getBlockEntity(pos)
+    fun tryWindChargeFeatures(level: ServerLevel, windCharge: WindCharge) {
+        val actionBox = ofDXYZ(windCharge.position(), 3)
+        forBlocksInBox(actionBox) { pos: BlockPos ->
+            val blockEntity = level.getBlockEntity(pos)
             if (blockEntity is BrewingStandBlockEntity) {
                 if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
                     try {
                         for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
-                            if (eff.effect.equals(CustomEffects.AMETHYSM)) return@noneMatch true
+                            if (eff.effect.equals(NineLifesMobEffects.AMETHYSM)) return@noneMatch true
                         return@noneMatch false
                     } catch (_: NullPointerException) {
                         return@noneMatch false
                     }
                 } ?: true) return@forBlocksInBox 0
 
-                world.removeBlock(pos, false)
-                world.explode(
-                    null, CustomDamageTypes.of(world, CustomDamageTypes.CHARGED_AMETHYST_DAMAGE_TYPE), null,
+                level.removeBlock(pos, false)
+                level.explode(
+                    null, NineLifesDamageSources.charged(level), null,
                     pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
                     3f, true, Level.ExplosionInteraction.BLOCK
                 )
@@ -160,28 +150,28 @@ class NineLifes : ModInitializer {
             0
         }
 
-        world.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(action_box)).forEach { entity ->
-            entity.removeEffect(CustomEffects.AMETHYSM)
+        level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(actionBox)).forEach { entity ->
+            entity.removeEffect(NineLifesMobEffects.AMETHYSM)
         }
 
-        world.players().forEach { player ->
-            if (!action_box.contains(player.position())) return@forEach
+        level.players().forEach { player ->
+            if (!actionBox.contains(player.position())) return@forEach
             val inventory = player.getInventory()
-            var inventory_updated = false
+            var inventoryUpdated = false
             for (slot in 0..<inventory.toList().size) {
                 val stack = inventory.getItem(slot)
-                var new_stack = stack.copy()
+                var newStack = stack.copy()
 
                 val potion: PotionContents?
                 if ((stack.get(DataComponents.POTION_CONTENTS).also { potion = it }) != null)
-                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect.equals(CustomEffects.AMETHYSM)) {
-                    new_stack = ItemStack.EMPTY
+                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect.equals(NineLifesMobEffects.AMETHYSM)) {
+                    newStack = ItemStack.EMPTY
                     break
                 }
 
-                if (!ItemStack.isSameItem(stack, new_stack)) {
-                    inventory.setItem(slot, new_stack)
-                    inventory_updated = true
+                if (!ItemStack.isSameItem(stack, newStack)) {
+                    inventory.setItem(slot, newStack)
+                    inventoryUpdated = true
                 }
             }
 
