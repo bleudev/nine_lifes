@@ -4,7 +4,6 @@ import com.bleudev.nine_lifes.ClientModStorage;
 import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig;
 import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers;
 import com.bleudev.nine_lifes.networking.payloads.*;
-import com.bleudev.nine_lifes.util.TextUtils;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

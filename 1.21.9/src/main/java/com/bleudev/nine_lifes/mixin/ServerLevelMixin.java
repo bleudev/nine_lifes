@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ServerLevelMixin {
     @Inject(method = "addFreshEntity", at = @At("RETURN"))
     private void callbackSpawnEvent(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        EntitySpawnEvents.ENTITY_SPAWN.invoker().onEntitySpawn(entity, (ServerLevel) (Object) this);
+        EntitySpawnEvents.ENTITY_SPAWN.invoker().invoke(entity, (ServerLevel) (Object) this);
     }
 }

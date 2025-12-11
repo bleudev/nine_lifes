@@ -9,7 +9,6 @@ import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
 import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
@@ -39,6 +38,7 @@ class NineLifes : ModInitializer {
         NineLifesEnchantments.initialize()
         NineLifesPotions.initialize()
         NineLifesEntities.initialize()
+        NineLifesCommands.initialize()
         FabricBrewingRecipeRegistryBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
@@ -79,9 +79,6 @@ class NineLifes : ModInitializer {
 
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
-        }
-        CommandRegistrationCallback.EVENT.register { dispatcher, _, _ ->
-            CustomCommands.initialize(dispatcher)
         }
         EntitySpawnEvents.ENTITY_SPAWN.register { entity, level ->
             // If it's armor stand
