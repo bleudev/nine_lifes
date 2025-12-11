@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nine_lifes.ClientModStorage.lives;
+import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
 
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin {
@@ -21,6 +21,6 @@ public class DeathScreenMixin {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(Component component, boolean bl, CallbackInfo ci) {
-        this.hardcore = lives <= 1;
+        this.hardcore = lifes <= 1;
     }
 }

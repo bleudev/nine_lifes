@@ -8,11 +8,11 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import org.jetbrains.annotations.Range
 
-class StartAmethysmScreen(val ticks: @Range(from = 20, to = Int.MAX_VALUE.toLong()) Int) : CustomPacketPayload {
+class StartAmethysmScreen(val duration: @Range(from = 20, to = Int.MAX_VALUE.toLong()) Int) : CustomPacketPayload {
     companion object : PacketPayloadCompanion<StartAmethysmScreen> {
         override val idLocation = NineLifesPackets.START_AMETHYSM_SCREEN
         override val codec: StreamCodec<RegistryFriendlyByteBuf, StartAmethysmScreen> = StreamCodec.composite(
-            ByteBufCodecs.INT, StartAmethysmScreen::ticks,
+            ByteBufCodecs.INT, StartAmethysmScreen::duration,
             ::StartAmethysmScreen
         )
     }

@@ -30,6 +30,8 @@ fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
     return this
 }
 
+fun Float.lerp(start: Float = 0f, end: Float = 1f): Float = start + this.coerceIn(0f, 1f) * (end - start)
+
 // Mixin
 val BrewingStandBlockEntity.items: NonNullList<ItemStack>?
     get() = this.getPrivateProperty<BrewingStandBlockEntity, NonNullList<ItemStack>>("items")
