@@ -2,7 +2,7 @@ package com.bleudev.nine_lifes
 
 import com.bleudev.nine_lifes.api.event.EntitySpawnEvents
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND_TYPE
+import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.JoinMessage
 import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
@@ -85,7 +85,7 @@ class NineLifes : ModInitializer {
             if (entity.type.equals(EntityType.ARMOR_STAND)) {
                 // Then try spawn wandering one
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
-                    val newEntity = WANDERING_ARMOR_STAND_TYPE.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
+                    val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
                         newEntity.setPos(entity.position())
                         newEntity.copyPosition(entity)

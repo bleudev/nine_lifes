@@ -1,7 +1,6 @@
 package com.bleudev.nine_lifes.client.custom.entity.render;
 
 import com.bleudev.nine_lifes.client.custom.entity.model.WanderingArmorStandModel;
-import com.bleudev.nine_lifes.custom.entity.WanderingArmorStandEntity;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

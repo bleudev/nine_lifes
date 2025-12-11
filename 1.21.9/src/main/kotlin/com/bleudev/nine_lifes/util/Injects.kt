@@ -10,7 +10,9 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.NonNullList
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.InteractionHand
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import kotlin.reflect.full.declaredMemberProperties
@@ -44,6 +46,15 @@ fun ServerPlayer.revive() = revive(this)
 
 fun ServerPlayer.sendPacket(payload: CustomPacketPayload) = ServerPlayNetworking.send(this, payload)
 fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) { for (i in payloads) this.sendPacket(i) }
+
+fun Player.consumeOneItemInHand(hand: InteractionHand) {
+    val stack = this.getItemInHand(hand)
+    if (stack.count == 1) setItemInHand(hand, ItemStack.EMPTY)
+    else {
+        stack.count -= 1
+        setItemInHand(hand, stack)
+    }
+}
 
 // Commands
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =
