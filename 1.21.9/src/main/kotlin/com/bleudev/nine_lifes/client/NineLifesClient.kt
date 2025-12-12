@@ -23,7 +23,6 @@ import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig
 import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig.HeartPosition
-import com.bleudev.nine_lifes.client.custom.CustomEntityRenderers
 import com.bleudev.nine_lifes.client.util.anaglyph
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.custom.packet.payload.*
