@@ -41,7 +41,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
 
@@ -54,6 +53,7 @@ class NineLifesClient : ClientModInitializer {
 
     object Sprites {
         val QUESTION_MARK = createResourceLocation("textures/hud/sprites/question_mark.png")
+        val HARDCORE = createResourceLocation("textures/hud/sprites/hardcore.png")
     }
 
     override fun onInitializeClient() {
@@ -82,7 +82,10 @@ class NineLifesClient : ClientModInitializer {
         }
         ClientPlayNetworking.registerGlobalReceiver(UpdateLifesCount.id) { payload, _ -> lifes = payload.lifes }
         ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.id) { _, _ ->
-            if (!armor_stand_hit_event_running) runArmorStandHitEvent()
+            if (!armor_stand_hit_event_running) {
+                armor_stand_hit_event_running = true
+                armor_stand_hit_event_ticks = 40
+            }
         }
         ClientPlayNetworking.registerGlobalReceiver(StartWhitenessScreen.id) { payload, _ ->
             max_whiteness_screen_ticks = payload.duration
@@ -98,29 +101,25 @@ class NineLifesClient : ClientModInitializer {
         }
     }
 
-    private fun renderLifesCount(context: GuiGraphics) {
+    private fun renderLifesCount(graphics: GuiGraphics) {
         val client = Minecraft.getInstance()
         if (client.player?.gameMode()?.isSurvival?.let { (!it) } == true) return
 
         val text = Component.literal(lifes.toString())
 
-        val w: Int = context.guiWidth()
-        val h: Int = context.guiHeight()
+        val w: Int = graphics.guiWidth()
+        val h: Int = graphics.guiHeight()
         val th = 18
 
         val delta = lifes.toFloat() / 9
         val color: Int = ARGB.colorFromFloat(0.75f, delta, delta, delta)
 
-        val drawCenterHeart = { texture: ResourceLocation ->
-            context.blitSprite(RenderPipelines.GUI_TEXTURED, texture,
-                0, -5, 0, 0, th, th, th, th, color) }
-
-        context.pose().pushMatrix()
+        graphics.pose().pushMatrix()
         val v = center_heart_info.offsetAndScale
-        val translatePosition = { dx: Int, dy: Int ->
-            context.pose().translate((-th * v.z()).toFloat() / 2 + dx, (h - 45 - (h - dy)).toFloat())
-        }
 
+        val translatePosition = { dx: Int, dy: Int ->
+            graphics.pose().translate((-th * v.z()).toFloat() / 2 + dx, (h - 45 - (h - dy)).toFloat())
+        }
         when (NineLifesConfig.heart_position) {
             NineLifesConfig.HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
             NineLifesConfig.HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
@@ -129,26 +128,27 @@ class NineLifesClient : ClientModInitializer {
             NineLifesConfig.HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
             NineLifesConfig.HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
         }
+        graphics.pose().translate(v.x().toFloat(), v.y().toFloat())
+        graphics.pose().scale(v.z().toFloat())
 
-        context.pose().translate(v.x().toFloat(), v.y().toFloat())
-        context.pose().scale(v.z().toFloat())
-        drawCenterHeart(ResourceLocation.withDefaultNamespace("hud/heart/container_hardcore.png"))
-        drawCenterHeart(ResourceLocation.withDefaultNamespace("hud/heart/hardcore_full.png"))
-        context.drawString(client.font, text, client.font.width(text), 0, -0x1)
-        context.pose().popMatrix()
+        graphics.blit(RenderPipelines.GUI_TEXTURED, Sprites.HARDCORE,
+            0, -5, 0f, 0f, th, th, th, th, color)
+        graphics.drawString(client.font, text, client.font.width(text), 0, -0x1)
+
+        graphics.pose().popMatrix()
     }
 
-    private fun renderOverlayBeforeHotBar(guiGraphics: GuiGraphics) {
-        guiGraphics.overlayWithColor(ARGB.colorFromFloat(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f))
-        guiGraphics.overlayWithColor(ARGB.colorFromFloat(charge_effect_info.getWhiteness(), 1f, 1f, 1f))
+    private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
+        graphics.overlayWithColor(ARGB.colorFromFloat(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f))
+        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, charge_effect_info.getWhiteness()))
     }
 
     private var lastMillis = 0L
 
-    private fun renderOverlay(guiGraphics: GuiGraphics) {
-        guiGraphics.overlayWithColor(ARGB.setBrightness(0xffffff, amethysm_purpleness))
-        guiGraphics.overlayWithColor(ARGB.setBrightness(0xff0000, redness))
-        guiGraphics.overlayWithColor(ARGB.setBrightness(0xffffff, whiteness))
+    private fun renderOverlay(graphics: GuiGraphics) {
+        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, amethysm_purpleness))
+        graphics.overlayWithColor(ARGB.setBrightness(0xff0000, redness))
+        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, whiteness))
 
         // Question marks
         val newTime = System.currentTimeMillis()
@@ -158,19 +158,18 @@ class NineLifesClient : ClientModInitializer {
 
         center_heart_info.tick(deltaTime / 50)
 
-        val w: Int = guiGraphics.guiWidth()
-        val h: Int = guiGraphics.guiHeight()
+        val w: Int = graphics.guiWidth()
+        val h: Int = graphics.guiHeight()
         val qmh = h / 5
 
         question_marks.forEach { i ->
             val v = i.tick(deltaTime / 50)
-            guiGraphics.pose().pushMatrix()
-            guiGraphics.pose().translate((w * v.x()).toFloat() - qmh.toFloat() / 2, (h * v.y()).toFloat() - qmh.toFloat() / 2)
-            guiGraphics.anaglyph({ c: Int ->
-                    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, Sprites.QUESTION_MARK,
-                        0, 0, 0, 0, qmh, qmh, qmh, qmh, c) },
+            graphics.pose().pushMatrix()
+            graphics.pose().translate((w * v.x()).toFloat() - qmh.toFloat() / 2, (h * v.y()).toFloat() - qmh.toFloat() / 2)
+            graphics.anaglyph({ c -> graphics.blit(RenderPipelines.GUI_TEXTURED,
+                Sprites.QUESTION_MARK, 0, 0, 0f, 0f, qmh, qmh, qmh, qmh, c) },
                 i.offset, baseColor = ARGB.setBrightness(0xffffff, v.z().toFloat()))
-            guiGraphics.pose().popMatrix()
+            graphics.pose().popMatrix()
         }
         question_marks.removeIf { i -> i.time >= i.duration }
     }
@@ -207,10 +206,5 @@ class NineLifesClient : ClientModInitializer {
                 whiteness = (whiteness_screen_ticks.toFloat() / max_whiteness_screen_ticks).lerp(end = max_whiteness_screen)
             }
         } else whiteness = 0f
-    }
-
-    private fun runArmorStandHitEvent() {
-        armor_stand_hit_event_running = true
-        armor_stand_hit_event_ticks = 2 * SharedConstants.TICKS_PER_SECOND
     }
 }
