@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.custom.NineLifesDamageSources
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.bleudev.nine_lifes.custom.packet.payload.StartAmethysmScreen
 import com.bleudev.nine_lifes.util.sendPacket
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffect
@@ -25,8 +26,11 @@ class AmethysmEffect : MobEffect(MobEffectCategory.NEUTRAL, 0xff00ff) {
             if (!entity.isSleeping) {
                 if (ticks % 20 == 0)
                     entity.hurtServer(level, NineLifesDamageSources.amethysm(level), 1f)
-                entity.setDeltaMovement(.0, 0.1, .0)
+                entity.setDeltaMovement(.0, 0.05, .0)
                 entity.hasImpulse = true
+
+                if (entity is ServerPlayer)
+                    entity.connection.send(ClientboundSetEntityMotionPacket(entity))
             }
             entity.setGlowingTag(true)
         }

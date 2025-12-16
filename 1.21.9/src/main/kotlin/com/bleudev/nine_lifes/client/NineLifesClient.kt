@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesClientData
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
+import com.bleudev.nine_lifes.NineLifesClientData.amethysm_whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_running
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_redness
@@ -16,14 +17,13 @@ import com.bleudev.nine_lifes.NineLifesClientData.lifes
 import com.bleudev.nine_lifes.NineLifesClientData.max_heartbeat_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen
 import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.question_marks
 import com.bleudev.nine_lifes.NineLifesClientData.redness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.client.config.NineLifesConfig
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
-import com.bleudev.nine_lifes.client.util.anaglyph
+import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.util.createResourceLocation
@@ -52,7 +52,6 @@ class NineLifesClient : ClientModInitializer {
     }
 
     object Sprites {
-        val QUESTION_MARK = createResourceLocation("textures/hud/sprites/question_mark.png")
         val HARDCORE = createResourceLocation("textures/hud/sprites/hardcore.png")
     }
 
@@ -76,10 +75,9 @@ class NineLifesClient : ClientModInitializer {
                 ).withStyle(if (careful) ChatFormatting.RED else ChatFormatting.DARK_AQUA), false)
             }
         }
-        ClientPlayNetworking.registerGlobalReceiver(BetaModeMessage.id) { _, ctx ->
-            ctx.player().displayClientMessage(Component.translatable("chat.message.join.beta")
-                .append("\n").append(link(ISSUES_LINK)).withStyle(ChatFormatting.GOLD), false)
-        }
+        ClientPlayNetworking.registerGlobalReceiver(BetaModeMessage.id) { _, ctx -> ctx.player().displayClientMessage(
+            Component.translatable("chat.message.join.beta").append("\n").append(link(ISSUES_LINK))
+            .withStyle(ChatFormatting.GOLD), false) }
         ClientPlayNetworking.registerGlobalReceiver(UpdateLifesCount.id) { payload, _ -> lifes = payload.lifes }
         ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.id) { _, _ ->
             if (!armor_stand_hit_event_running) {
@@ -115,10 +113,9 @@ class NineLifesClient : ClientModInitializer {
         val color: Int = ARGB.colorFromFloat(0.75f, delta, delta, delta)
 
         graphics.pose().pushMatrix()
-        val v = center_heart_info.offsetAndScale
 
         val translatePosition = { dx: Int, dy: Int ->
-            graphics.pose().translate((-th * v.z()).toFloat() / 2 + dx, (h - 45 - (h - dy)).toFloat())
+            graphics.pose().translate(-th * center_heart_info.scale / 2 + dx, (h - 45 - (h - dy)).toFloat())
         }
         when (NineLifesConfig.heart_position) {
             NineLifesConfig.HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
@@ -128,8 +125,7 @@ class NineLifesClient : ClientModInitializer {
             NineLifesConfig.HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
             NineLifesConfig.HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
         }
-        graphics.pose().translate(v.x().toFloat(), v.y().toFloat())
-        graphics.pose().scale(v.z().toFloat())
+        graphics.pose().scale(center_heart_info.scale)
 
         graphics.blit(RenderPipelines.GUI_TEXTURED, Sprites.HARDCORE,
             0, -5, 0f, 0f, th, th, th, th, color)
@@ -140,38 +136,23 @@ class NineLifesClient : ClientModInitializer {
 
     private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
         graphics.overlayWithColor(ARGB.colorFromFloat(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f))
-        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, charge_effect_info.getWhiteness()))
+        graphics.overlayWithColor(0xffffff.asColorWithAlpha(amethysm_whiteness))
+        graphics.overlayWithColor(0xffffff.asColorWithAlpha(charge_effect_info.getWhiteness()))
     }
 
     private var lastMillis = 0L
 
     private fun renderOverlay(graphics: GuiGraphics) {
-        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, amethysm_purpleness))
-        graphics.overlayWithColor(ARGB.setBrightness(0xff0000, redness))
-        graphics.overlayWithColor(ARGB.setBrightness(0xffffff, whiteness))
+        graphics.overlayWithColor(0xff0000.asColorWithAlpha(redness))
+        graphics.overlayWithColor(0xffffff.asColorWithAlpha(whiteness))
 
-        // Question marks
         val newTime = System.currentTimeMillis()
         if (lastMillis == 0L) lastMillis = newTime
         val deltaTime = (newTime - lastMillis).toFloat()
         lastMillis = newTime
-
         center_heart_info.tick(deltaTime / 50)
 
-        val w: Int = graphics.guiWidth()
-        val h: Int = graphics.guiHeight()
-        val qmh = h / 5
-
-        question_marks.forEach { i ->
-            val v = i.tick(deltaTime / 50)
-            graphics.pose().pushMatrix()
-            graphics.pose().translate((w * v.x()).toFloat() - qmh.toFloat() / 2, (h * v.y()).toFloat() - qmh.toFloat() / 2)
-            graphics.anaglyph({ c -> graphics.blit(RenderPipelines.GUI_TEXTURED,
-                Sprites.QUESTION_MARK, 0, 0, 0f, 0f, qmh, qmh, qmh, qmh, c) },
-                i.offset, baseColor = ARGB.setBrightness(0xffffff, v.z().toFloat()))
-            graphics.pose().popMatrix()
-        }
-        question_marks.removeIf { i -> i.time >= i.duration }
+        // Do not render question marks
     }
 
     private fun tick(client: Minecraft) {

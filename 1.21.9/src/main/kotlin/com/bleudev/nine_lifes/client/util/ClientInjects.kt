@@ -22,3 +22,8 @@ fun GuiGraphics.anaglyph(renderer: (Int) -> Unit, offsetX: Float, offsetY: Float
     this.pose().popMatrix()
 }
 fun GuiGraphics.overlayWithColor(color: Int) = fill(0, 0, guiWidth(), guiHeight(), color)
+
+// Color
+fun Int.asColorWithAlpha(alpha: Float) =
+    ARGB.colorFromFloat(alpha, ARGB.redFloat(this), ARGB.greenFloat(this), ARGB.blueFloat(this))
+fun Int.asColorWithAlpha(alpha: Double) = asColorWithAlpha(alpha.toFloat())

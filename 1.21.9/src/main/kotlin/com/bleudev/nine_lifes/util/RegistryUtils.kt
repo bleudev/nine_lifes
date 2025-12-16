@@ -18,7 +18,7 @@ import net.minecraft.world.item.consume_effects.ConsumeEffect
 fun createResourceLocation(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 
 fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
-    Holder.direct(Registry.register(BuiltInRegistries.MOB_EFFECT, name, effect))
+    Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, createResourceLocation(name), effect)
 
 fun <T : ConsumeEffect> registerConsumeEffectType(name: String, codec: MapCodec<T>,
                                                   streamCodec: StreamCodec<RegistryFriendlyByteBuf, T>

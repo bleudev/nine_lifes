@@ -12,7 +12,6 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
-import net.minecraft.core.BlockPos
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntitySpawnReason
@@ -122,7 +121,7 @@ class NineLifes : ModInitializer {
 
     fun tryWindChargeFeatures(level: ServerLevel, windCharge: WindCharge) {
         val actionBox = ofDXYZ(windCharge.position(), 3)
-        forBlocksInBox(actionBox) { pos: BlockPos ->
+        forBlocksInBox(actionBox) { pos ->
             val blockEntity = level.getBlockEntity(pos)
             if (blockEntity is BrewingStandBlockEntity) {
                 if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
@@ -144,9 +143,8 @@ class NineLifes : ModInitializer {
             }
             0
         }
-
-        level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(actionBox)).forEach { entity ->
-            entity.removeEffect(NineLifesMobEffects.AMETHYSM)
+        level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(actionBox)).forEach {
+            it.removeEffect(NineLifesMobEffects.AMETHYSM)
         }
 
         level.players().forEach { player ->

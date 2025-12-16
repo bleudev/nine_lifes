@@ -162,7 +162,7 @@ object NineLifesClientData {
                 return ((time - HEARTBEAT_TIME / 2) * 2 / HEARTBEAT_TIME).lerp(heartbeatStrength, 0f)
             }
 
-        val offsetAndScale: Vec3 get() = Vec3(.0, .0, 1.0 + this.currentStrength / 20)
+        val scale: Float get() = 1f + this.currentStrength / 20
 
         companion object {
             private const val HEARTBEAT_TIME = 5f
