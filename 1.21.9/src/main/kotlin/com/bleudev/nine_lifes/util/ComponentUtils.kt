@@ -34,7 +34,7 @@ private class CheckStackPredicateBuilder private constructor(private val predica
 }
 
 private val amethyst_shard_food_component = FoodProperties(3, 0.3f, true)
-private val amethyst_shard_consumable_component = Consumables.defaultFood().onConsume(AmethysmConsumeEffect()).build()
+private val amethyst_shard_consumable_component = Consumables.defaultFood().onConsume(AmethysmConsumeEffect.INSTANCE).build()
 private val amethyst_shard_cooldown_component = UseCooldown(5f)
 private val amethyst_enchantable_component = Enchantable(1)
 private const val amethyst_max_stack_size_component = 65

@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes
 
-import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig
+import com.bleudev.nine_lifes.client.config.NineLifesConfig
 import com.bleudev.nine_lifes.util.lerp
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment

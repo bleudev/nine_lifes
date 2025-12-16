@@ -48,7 +48,7 @@ class NineLifes : ModInitializer {
             if ((!player.isSpectator) && player.lifes == 0) player.resetLifes()
             val lifes = player.lifes
             player.sendPackets(UpdateLifesCount(lifes), JoinMessage(lifes))
-            if (isInBetaMode()) player.sendPacket(BetaModeMessage())
+            if (isInBetaMode()) player.sendPacket(BetaModeMessage.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             for (player in server.playerList.players) playerEnsureCustomFoods(player)

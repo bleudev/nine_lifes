@@ -21,8 +21,8 @@ import com.bleudev.nine_lifes.NineLifesClientData.redness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
-import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig
-import com.bleudev.nine_lifes.client.compat.modmenu.NineLifesConfig.HeartPosition
+import com.bleudev.nine_lifes.client.config.NineLifesConfig
+import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.anaglyph
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.custom.packet.payload.*
@@ -59,7 +59,7 @@ class NineLifesClient : ClientModInitializer {
     override fun onInitializeClient() {
         MidnightConfig.init(MOD_ID, NineLifesConfig::class.java)
 
-        CustomEntityRenderers.initialize()
+        NineLifesEntityRenderers.initialize()
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
@@ -122,18 +122,18 @@ class NineLifesClient : ClientModInitializer {
         }
 
         when (NineLifesConfig.heart_position) {
-            HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
-            HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
-            HeartPosition.BOTTOM_RIGHT -> translatePosition(w - 25, h + 20)
-            HeartPosition.TOP_LEFT -> translatePosition(25, 60)
-            HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
-            HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
+            NineLifesConfig.HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
+            NineLifesConfig.HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
+            NineLifesConfig.HeartPosition.BOTTOM_RIGHT -> translatePosition(w - 25, h + 20)
+            NineLifesConfig.HeartPosition.TOP_LEFT -> translatePosition(25, 60)
+            NineLifesConfig.HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
+            NineLifesConfig.HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
         }
 
         context.pose().translate(v.x().toFloat(), v.y().toFloat())
         context.pose().scale(v.z().toFloat())
-        drawCenterHeart(ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/heart/container_hardcore.png"))
-        drawCenterHeart(ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/heart/hardcore_full.png"))
+        drawCenterHeart(ResourceLocation.withDefaultNamespace("hud/heart/container_hardcore.png"))
+        drawCenterHeart(ResourceLocation.withDefaultNamespace("hud/heart/hardcore_full.png"))
         context.drawString(client.font, text, client.font.width(text), 0, -0x1)
         context.pose().popMatrix()
     }

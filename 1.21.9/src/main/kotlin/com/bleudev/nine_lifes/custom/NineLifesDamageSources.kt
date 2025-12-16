@@ -11,10 +11,10 @@ object NineLifesDamageSources {
     private fun key(name: String): ResourceKey<DamageType> =
         ResourceKey.create(Registries.DAMAGE_TYPE, createResourceLocation(name))
 
-    private fun source(world: Level, key: ResourceKey<DamageType>): DamageSource = world.damageSources().source(key)
+    private fun source(level: Level, key: ResourceKey<DamageType>): DamageSource = level.damageSources().source(key)
 
     private val KEY_AMETHYSM: ResourceKey<DamageType> = key("amethysm")
-    private val KEY_CHARGED: ResourceKey<DamageType> = key("charged")
+    private val KEY_CHARGED: ResourceKey<DamageType> = key("charged_amethyst")
     private val KEY_UNKNOWN: ResourceKey<DamageType> = key("unknown")
 
     fun amethysm(level: Level): DamageSource = source(level, KEY_AMETHYSM)
