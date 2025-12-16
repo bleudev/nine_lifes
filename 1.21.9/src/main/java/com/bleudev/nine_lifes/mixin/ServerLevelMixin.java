@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.api.event.EntitySpawnEvents;
+import com.bleudev.nine_lifes.api.event.EntityLifecycleEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ServerLevelMixin {
     @Inject(method = "addFreshEntity", at = @At("RETURN"))
     private void callbackSpawnEvent(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        EntitySpawnEvents.ENTITY_SPAWN.invoker().invoke(entity, (ServerLevel) (Object) this);
+        EntityLifecycleEvents.ENTITY_SPAWN.invoker().invoke(entity, (ServerLevel) (Object) this);
     }
 }

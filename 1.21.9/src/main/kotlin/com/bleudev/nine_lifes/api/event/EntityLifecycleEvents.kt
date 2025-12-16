@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity
 
 typealias EntitySpawn = (entity: Entity, level: ServerLevel) -> Unit
 
-object EntitySpawnEvents {
+object EntityLifecycleEvents {
     @JvmField
     val ENTITY_SPAWN: Event<EntitySpawn> = EventFactory.createArrayBacked(EntitySpawn::class.java) { callbacks ->
         { a, b -> for (callback in callbacks) callback(a, b) }

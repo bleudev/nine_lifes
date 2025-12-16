@@ -6,7 +6,6 @@ import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.bleudev.nine_lifes.custom.packet.payload.StartWhitenessScreen
 import com.bleudev.nine_lifes.interfaces.mixin.CustomLivingEntity
 import com.bleudev.nine_lifes.util.sendPacket
-import com.bleudev.nine_lifes.util.setLifes
 import com.mojang.serialization.MapCodec
 import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants.TICKS_PER_SECOND
@@ -32,10 +31,8 @@ class AmethysmConsumeEffect : ConsumeEffect {
 
     override fun apply(level: Level, itemStack: ItemStack, livingEntity: LivingEntity): Boolean {
         if (itemStack.enchantments.keySet().any { it.`is`(NineLifesEnchantments.KEY_CHARGE) }) {
-            if (livingEntity is ServerPlayer) {
-                livingEntity.setLifes { o -> o + 2 }
+            if (livingEntity is ServerPlayer)
                 livingEntity.sendPacket(StartWhitenessScreen(TICKS_PER_SECOND, 1f))
-            }
             (livingEntity as CustomLivingEntity).`nl$setDamageTicks`(TICKS_PER_SECOND)
             return true
         }

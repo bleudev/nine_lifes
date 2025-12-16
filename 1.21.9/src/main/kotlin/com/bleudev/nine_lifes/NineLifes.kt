@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes
 
-import com.bleudev.nine_lifes.api.event.EntitySpawnEvents
+import com.bleudev.nine_lifes.api.event.EntityLifecycleEvents
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.BetaModeMessage
@@ -9,11 +9,13 @@ import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
 import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
 import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
@@ -25,6 +27,7 @@ import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.ExplosionDamageCalculator
+import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
@@ -79,10 +82,8 @@ class NineLifes : ModInitializer {
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
         }
-        EntitySpawnEvents.ENTITY_SPAWN.register { entity, level ->
-            // If it's armor stand
+        EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
             if (entity.type.equals(EntityType.ARMOR_STAND)) {
-                // Then try spawn wandering one
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
@@ -94,6 +95,11 @@ class NineLifes : ModInitializer {
                 }
             }
         }
+        ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
+            if (entity is ServerPlayer && entity.gameMode().isSurvival) {
+                entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
+                if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
+            } }
     }
 
     private fun tryChargeItems(level: ServerLevel) {

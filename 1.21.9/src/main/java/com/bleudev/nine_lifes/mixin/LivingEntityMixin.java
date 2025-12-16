@@ -51,7 +51,7 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    public void tick(CallbackInfo ci) {
+    private void tick(CallbackInfo ci) {
         var entity = (LivingEntity) (Object) this;
 
         var level = entity.level();
@@ -92,7 +92,7 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
-    public void remove(Entity.RemovalReason removalReason, CallbackInfo ci) {
+    private void remove(Entity.RemovalReason removalReason, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
         var level = entity.level();

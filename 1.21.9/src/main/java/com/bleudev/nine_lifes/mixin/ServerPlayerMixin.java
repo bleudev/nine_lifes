@@ -2,7 +2,7 @@ package com.bleudev.nine_lifes.mixin;
 
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects;
 import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer;
-import com.bleudev.nine_lifes.util.LifesUtilsKt;
+import com.bleudev.nine_lifes.util.InjectsKt;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,25 +35,16 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
     protected void writeCustomData(ValueOutput valueOutput, CallbackInfo ci) {
         valueOutput.putInt("lifes", this.lifes);
     }
-
-    // TODO: (help wanted) Rewrite with server events
-//    @Inject(method = "restoreFrom", at = @At("TAIL"))
-//    private void onRespawn(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
-//        if (!alive && oldPlayer.gameMode().isSurvival())
-//            LivesUtils.setLives((ServerPlayer) (Object) this,
-//                o -> Math.max(((CustomServerPlayer) oldPlayer).nl$getLifes() - 1, 0));
-//    }
-
-//    @Inject(method = "onDeath", at = @At("RETURN"))
-//    private void onDeath(DamageSource damageSource, CallbackInfo ci) {
-//        if (this.nl$getLifes() <= 1 && getGameMode().isSurvivalLike())
-//            this.changeGameMode(GameMode.SPECTATOR);
-//    }
+    @Inject(method = "restoreFrom", at = @At("TAIL"))
+    private void onRespawn(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
+        var player = (ServerPlayer) (Object) this;
+        InjectsKt.setLifes(player, InjectsKt.getLifes(oldPlayer));
+    }
 
     @Inject(method = "startSleepInBed", at = @At("HEAD"), cancellable = true)
     private void onTrySleep(BlockPos blockPos, CallbackInfoReturnable<Either<Player.BedSleepingProblem, net.minecraft.util.Unit>> cir) {
         var player = (ServerPlayer) (Object) this;
-        int lifes = LifesUtilsKt.getLifes(player);
+        int lifes = InjectsKt.getLifes(player);
 
         if (!player.hasEffect(NineLifesMobEffects.AMETHYSM)) {
             if (lifes <= 3) {
