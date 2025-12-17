@@ -1,7 +1,6 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.ISSUES_LINK
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesClientData
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
@@ -31,7 +30,6 @@ import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.util.createResourceLocation
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
-import eu.midnightdust.lib.config.MidnightConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -58,7 +56,8 @@ class NineLifesClient : ClientModInitializer {
     }
 
     override fun onInitializeClient() {
-        MidnightConfig.init(MOD_ID, NineLifesConfig::class.java)
+        NineLifesConfig.init()
+//        MidnightConfig.init(MOD_ID, NineLifesConfig::class.java)
 
         NineLifesEntityRenderers.initialize()
 

@@ -54,6 +54,7 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
+    modImplementation("maven.modrinth:yacl:${project.property("yacl_version")}")
     modImplementation("maven.modrinth:midnightlib:${project.property("min_midnightlib_version")}")
 }
 
