@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom
 
-import com.bleudev.nine_lifes.util.createResourceLocation
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.damagesource.DamageSource
@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level
 
 object NineLifesDamageSources {
     private fun key(name: String): ResourceKey<DamageType> =
-        ResourceKey.create(Registries.DAMAGE_TYPE, createResourceLocation(name))
+        ResourceKey.create(Registries.DAMAGE_TYPE, createIdentifier(name))
 
     private fun source(level: Level, key: ResourceKey<DamageType>): DamageSource = level.damageSources().source(key)
 

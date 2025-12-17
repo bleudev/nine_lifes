@@ -28,7 +28,7 @@ import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.custom.packet.payload.*
-import com.bleudev.nine_lifes.util.createResourceLocation
+import com.bleudev.nine_lifes.util.createIdentifier
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
 import eu.midnightdust.lib.config.MidnightConfig
@@ -48,13 +48,13 @@ import net.minecraft.world.level.GameType
 
 class NineLifesClient : ClientModInitializer {
     object Layers {
-        val OVERLAY_BEFORE_HOTBAR = createResourceLocation("overlay_before_hotbar")
-        val OVERLAY = createResourceLocation("overlay")
-        val LIFES_COUNT = createResourceLocation("lifes_count")
+        val OVERLAY_BEFORE_HOTBAR = createIdentifier("overlay_before_hotbar")
+        val OVERLAY = createIdentifier("overlay")
+        val LIFES_COUNT = createIdentifier("lifes_count")
     }
 
     object Sprites {
-        val HARDCORE = createResourceLocation("textures/hud/sprites/hardcore.png")
+        val HARDCORE = createIdentifier("textures/hud/sprites/hardcore.png")
     }
 
     override fun onInitializeClient() {

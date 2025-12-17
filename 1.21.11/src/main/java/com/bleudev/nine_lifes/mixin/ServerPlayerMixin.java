@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer;
 import com.bleudev.nine_lifes.util.InjectsKt;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
@@ -48,7 +49,8 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
 
         if (!player.hasEffect(NineLifesMobEffects.AMETHYSM)) {
             if (lifes <= 3) {
-                cir.setReturnValue(Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_NOW));
+                cir.setReturnValue(Either.left(Player.BedSleepingProblem.OTHER_PROBLEM));
+                player.displayClientMessage(Component.translatable("block.minecraft.bed.no_sleep"), true);
                 cir.cancel();
             } else if (lifes <= 5) {
                 cir.setReturnValue(Either.left(Player.BedSleepingProblem.NOT_SAFE));

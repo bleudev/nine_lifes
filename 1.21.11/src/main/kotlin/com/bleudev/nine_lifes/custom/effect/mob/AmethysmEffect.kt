@@ -27,7 +27,7 @@ class AmethysmEffect : MobEffect(MobEffectCategory.NEUTRAL, 0xff00ff) {
                 if (ticks % 20 == 0)
                     entity.hurtServer(level, NineLifesDamageSources.amethysm(level), 1f)
                 entity.setDeltaMovement(.0, 0.05, .0)
-                entity.hasImpulse = true
+                entity.needsSync = true
 
                 if (entity is ServerPlayer)
                     entity.connection.send(ClientboundSetEntityMotionPacket(entity))

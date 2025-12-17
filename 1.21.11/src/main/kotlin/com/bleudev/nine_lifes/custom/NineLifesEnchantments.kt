@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom
 
-import com.bleudev.nine_lifes.util.createResourceLocation
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.core.Holder
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
@@ -15,7 +15,7 @@ object NineLifesEnchantments {
     val KEY_CHARGE: ResourceKey<Enchantment> = of("charge")
 
     private fun of(name: String): ResourceKey<Enchantment> {
-        return ResourceKey.create(Registries.ENCHANTMENT, createResourceLocation(name))
+        return ResourceKey.create(Registries.ENCHANTMENT, createIdentifier(name))
     }
 
     /**

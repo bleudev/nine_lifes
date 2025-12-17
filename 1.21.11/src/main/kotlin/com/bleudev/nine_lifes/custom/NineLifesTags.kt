@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom
 
-import com.bleudev.nine_lifes.util.createResourceLocation
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -8,8 +8,8 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.damagesource.DamageType
 import net.minecraft.world.item.Item
 
-private fun <T> ofRegistry(registry: ResourceKey<Registry<T>>, name: String): TagKey<T> =
-    TagKey.create(registry, createResourceLocation(name))
+private fun <T : Any> ofRegistry(registry: ResourceKey<Registry<T>>, name: String): TagKey<T> =
+    TagKey.create(registry, createIdentifier(name))
 
 object NineLifesItemTags {
     @JvmField

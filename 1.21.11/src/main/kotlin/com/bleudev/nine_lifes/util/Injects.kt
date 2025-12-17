@@ -14,6 +14,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.NonNullList
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.permissions.Permissions
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.entity.LivingEntity
@@ -85,6 +86,6 @@ fun Player.consumeOneItemInHand(hand: InteractionHand) {
 
 // Commands
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =
-    requires { it.hasPermission(3) }
+    requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }
 
 fun SuggestionsBuilder.suggestMany(vararg integers: Int) = this.apply { for (i in integers) this.suggest(i) }

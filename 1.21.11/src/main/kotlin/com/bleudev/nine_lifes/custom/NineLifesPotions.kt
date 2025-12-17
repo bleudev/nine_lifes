@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom
 
-import com.bleudev.nine_lifes.util.createResourceLocation
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.core.Holder
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -11,7 +11,7 @@ object NineLifesPotions {
     val AMETHYSM: Holder<Potion> = of("amethysm", MobEffectInstance(NineLifesMobEffects.AMETHYSM, 300))
 
     private fun of(name: String, vararg effects: MobEffectInstance): Holder<Potion> = Registry.registerForHolder(
-        BuiltInRegistries.POTION, createResourceLocation(name), Potion(name, *effects))
+        BuiltInRegistries.POTION, createIdentifier(name), Potion(name, *effects))
 
     fun initialize() {}
 }

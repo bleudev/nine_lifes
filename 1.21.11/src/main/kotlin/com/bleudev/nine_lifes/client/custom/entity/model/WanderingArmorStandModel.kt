@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.client.custom.entity.model
 
-import net.minecraft.client.model.ArmorStandModel
 import net.minecraft.client.model.geom.ModelPart
+import net.minecraft.client.model.`object`.armorstand.ArmorStandModel
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState
 import kotlin.math.cos
 

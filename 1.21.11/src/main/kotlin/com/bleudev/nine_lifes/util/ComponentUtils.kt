@@ -18,9 +18,9 @@ import net.minecraft.world.item.enchantment.ItemEnchantments
 
 private class CheckStackPredicateBuilder private constructor(private val predicate: P<ItemStack>) {
     fun of(item: Item): CheckStackPredicateBuilder = of(this.predicate.and({ stack -> stack.`is`(item) }))
-    fun <T> anotherComponent(type: DataComponentType<T>, component: T): CheckStackPredicateBuilder = of(
+    fun <T : Any> anotherComponent(type: DataComponentType<T>, component: T): CheckStackPredicateBuilder = of(
         this.predicate.or({ stack -> stack.get(type) == component }))
-    fun <T> orNoComponent(type: DataComponentType<T>): CheckStackPredicateBuilder = of(
+    fun <T : Any> orNoComponent(type: DataComponentType<T>): CheckStackPredicateBuilder = of(
         this.predicate.or({ stack -> stack.getComponents().get(type) != null }))
 
     fun with(predicate: P<ItemStack>): CheckStackPredicateBuilder = of(this.predicate.and(predicate))

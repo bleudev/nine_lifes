@@ -7,11 +7,11 @@ import net.minecraft.client.renderer.entity.ArmorStandRenderer
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.entity.LivingEntityRenderer
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 class WanderingArmorStandRenderer(ctx: EntityRendererProvider.Context) : LivingEntityRenderer<WanderingArmorStand, ArmorStandRenderState, WanderingArmorStandModel>(
     ctx, WanderingArmorStandModel(ctx.bakeLayer(ModelLayers.ARMOR_STAND)), 0f) {
-    override fun getTextureLocation(state: ArmorStandRenderState): ResourceLocation = ArmorStandRenderer.DEFAULT_SKIN_LOCATION
+    override fun getTextureLocation(state: ArmorStandRenderState): Identifier = ArmorStandRenderer.DEFAULT_SKIN_LOCATION
     override fun createRenderState(): ArmorStandRenderState = ArmorStandRenderState()
 
     protected override fun shouldShowName(entity: WanderingArmorStand, d: Double): Boolean {
