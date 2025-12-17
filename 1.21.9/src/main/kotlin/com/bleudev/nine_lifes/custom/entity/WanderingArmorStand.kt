@@ -6,7 +6,6 @@ import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoi
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nine_lifes.util.sendPacket
-import net.minecraft.core.particles.ParticleOptions
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -26,8 +25,8 @@ import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
-import net.minecraft.world.phys.Vec3
 
+// TODO: After feeding will be alive for the time, not forever
 class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level) {
     init { this.health = 1f }
 
@@ -62,10 +61,13 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun mobInteract(player: Player, hand: InteractionHand): InteractionResult {
         val stack = player.mainHandItem
         if (stack.`is`(Items.AMETHYST_SHARD)) {
-            if (level() is ServerLevel) repeat(3) {
-                spawnParticle(ParticleTypes.HEART, level() as ServerLevel, position())
+            repeat(3) {
+                level().addParticle(ParticleTypes.HEART,
+                    getRandomX(1.0), randomY + 0.5, getRandomZ(1.0),
+                    random.nextGaussian() * 0.02, random.nextGaussian() * 0.02, random.nextGaussian() * 0.02
+                )
             }
-            if (!player.isCreative) player.consumeOneItemInHand(hand)
+            player.consumeOneItemInHand(hand)
             this.canWander = true
             return InteractionResult.SUCCESS
         }
@@ -75,15 +77,6 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     var canWander: Boolean
         get() = this.entityData.get(CAN_WANDER)
         set(v) = this.entityData.set(CAN_WANDER, v)
-
-    private fun spawnParticle(particle: ParticleOptions, level: ServerLevel, pos: Vec3) {
-        val particlePos = pos.add(
-            (level.random.nextDouble() - 0.5) * 2.0,
-            level.random.nextDouble() * 2.0,
-            (level.random.nextDouble() - 0.5) * 2.0
-        )
-        level.addParticle(particle, particlePos.x(), particlePos.y(), particlePos.z(), .0, .0, .0)
-    }
 
     companion object {
         private val CAN_WANDER: EntityDataAccessor<Boolean> = SynchedEntityData

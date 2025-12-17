@@ -24,28 +24,29 @@ public abstract class CampfireBlockEntityMixin {
     @Shadow
     public abstract NonNullList<ItemStack> getItems();
 
-    @Shadow
-    @Final
+    @Shadow @Final
     private int[] cookingProgress;
 
-    @Shadow
-    @Final
+    @Shadow @Final
     private int[] cookingTime;
 
-    @Inject(method = "cookTick", at = @At("HEAD"))
-    private static void explode(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, CampfireBlockEntity campfireBlockEntity, RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> cachedCheck, CallbackInfo ci) {
-        var b = (CampfireBlockEntityMixin) (Object) campfireBlockEntity;
-        if (b != null) {
-            for (int slot = 0; slot < 4; slot++) {
-                var stack = b.getItems().get(slot);
-                if (stack.equals(ItemStack.EMPTY) || !stack.is(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
-                var ticks = b.cookingProgress[slot] - b.cookingTime[slot];
-                if (ticks == 1) {
-                    serverLevel.removeBlock(blockPos, false);
-                    Vec3 vec = blockPos.getCenter();
-                    serverLevel.explode(null, vec.x(), vec.y(), vec.z(), 4f, true, Level.ExplosionInteraction.BLOCK);
-                }
+    @Inject(method = "cookTick", at = @At("TAIL"))
+    private static void explode(
+        ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire,
+        RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> recipe,
+        CallbackInfo ci) {
+        var self = (CampfireBlockEntityMixin) (Object) campfire;
+        if (self == null) return;
+        for (int slot = 0; slot < 4; slot++) {
+            ItemStack stack = self.getItems().get(slot);
+            if (stack.isEmpty() || !stack.is(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
+            if (self.cookingProgress[slot] == self.cookingTime[slot] - 1) {
+                Vec3 center = pos.getCenter();
+                level.removeBlock(pos, false);
+                level.explode(null, center.x, center.y, center.z, 4f, true, Level.ExplosionInteraction.BLOCK);
+                return;
             }
         }
     }
 }
+

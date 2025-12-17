@@ -187,7 +187,7 @@ class NineLifesClient : ClientModInitializer {
             }
         }
 
-        redness = armor_stand_hit_redness.lerp(0f, .2f)
+        redness = armor_stand_hit_redness.lerp(end = .2f)
 
         if (whiteness_screen_running) {
             if (whiteness_screen_ticks == max_whiteness_screen_ticks) whiteness_screen_running = false

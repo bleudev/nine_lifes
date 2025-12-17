@@ -74,6 +74,7 @@ fun ServerPlayer.sendPackets(vararg payloads: CustomPacketPayload) { for (i in p
 
 // Utils
 fun Player.consumeOneItemInHand(hand: InteractionHand) {
+    if (this.gameMode()?.isSurvival == false) return
     val stack = this.getItemInHand(hand)
     if (stack.count == 1) setItemInHand(hand, ItemStack.EMPTY)
     else {
