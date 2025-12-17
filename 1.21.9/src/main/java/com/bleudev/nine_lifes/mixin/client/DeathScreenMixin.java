@@ -1,8 +1,9 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.text.Text;
+import com.bleudev.nine_lifes.client.util.ClientInjectsKt;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -11,20 +12,25 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nine_lifes.ClientModStorage.lives;
+import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
+import static com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white;
 
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin {
     @Mutable
     @Shadow
     @Final
-    private boolean isHardcore;
+    private boolean hardcore;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(Text message, boolean isHardcore, CallbackInfo ci) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if ((client.player != null) && (client.getServer() != null))
-            this.isHardcore = lives <= 1;
-        else this.isHardcore = false;
+    private void onInit(Component component, boolean bl, CallbackInfo ci) {
+        this.hardcore = lifes <= 1;
+    }
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+//        ClientInjectsKt.overlayWithColor(guiGraphics, ClientInjectsKt.asColorWithAlpha(0xffffff, whiteness));
+        if (should_death_screen_be_white)
+            ClientInjectsKt.overlayWithColor(guiGraphics, 0xffffffff);
     }
 }

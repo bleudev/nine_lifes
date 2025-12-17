@@ -1,7 +1,32 @@
-# 1.9.2
+# 2.0
+## Minecraft versions
+[-] Minimal minecraft version bumped to 1.21.9
+
 ## Depends updates
-[+] Loom version was updated up to `1.13.3`\
+[+] New dependency: `fabric-language-kotlin >= 1.13.7+kotlin.2.2.21`
+
+## Breaking changes
+[/] All code was rewritten to Kotlin\
+[/] All code was rewritten to official Mojang Mappings (instead of `jarn`s)\
+[-] \[DEV] Almost every class in mod was rewritten and renamed. If your mod wants to migrate to `2.0` see [#26](https://github.com/bleudev/nine_lifes/pull/26)\
+[-] \[DEV] Signatures of many functions, methods etc. was edited, please see [#26](https://github.com/bleudev/nine_lifes/pull/26)\
+[-] If you have world with nine lifes 1.x be careful and backup it.
+
+## Fixes
+[/] Death screen after death from charged amethyst shard is white\
+[-] With amethysm effect question marks now doesn't appear.\
+[+] Optimised and fixes many things such as lifes system
+
+# 1.10 (unreleased)
+## Depends updates
+[+] \[DEV] Loom version was updated up to `1.13.3`\
 [+] Fabric loader version was updated up to `0.17.3`
+
+## Breaking changes
+[-] `com.bleudev.nine_lifes.Nine_lifes.MOD_ID` was deleted.
+Use `com.bleudev.nine_lifes.NineLifesConst.MOD_ID` instead.\
+[-] `com.bleudev.nine_lifes.custom.CustomEnchantments.getEntry()` was deleted.
+Use `Entries` class's functions and methods instead.
 
 # 1.9.1
 ## Deprecations
