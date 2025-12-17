@@ -1,22 +1,23 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "com.bleudev.nine_lifes.mixin",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "AbstractFurnaceBlockEntityMixin",
-    "CampfireBlockEntityMixin",
-    "LivingEntityMixin",
-    "ServerLevelMixin",
-    "ServerPlayerMixin"
-  ],
-  "client": [
-    "client.DeathScreenMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "overwrites": {
-    "requireAnnotations": true
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.bleudev.nine_lifes.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "AbstractFurnaceBlockEntityMixin",
+        "CampfireBlockEntityMixin",
+        "LivingEntityMixin",
+        "ServerLevelMixin",
+        "ServerPlayerMixin"
+    ],
+    "client": [
+        "client.ClientLevelDataMixin",
+        "client.DeathScreenMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
   }
 }

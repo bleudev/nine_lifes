@@ -56,11 +56,4 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
             }
         }
     }
-
-    // TODO: (help wanted) Rewrite on client side
-//    @Inject(method = "tick", at = @At("RETURN"))
-//    private void tick(CallbackInfo ci) {
-//        if (lifes <= 3 && this.gameMode().isSurvival())
-//            this.networkHandler.sendPacket(new WorldTimeUpdateS2CPacket(9000L, 0, true));
-//    }
 }
