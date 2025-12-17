@@ -27,6 +27,8 @@ object NineLifesClientData {
     var whiteness_screen_running = false
 
     var whiteness = 0f
+    @JvmField
+    var should_death_screen_be_white = false
     var redness = 0f
     var amethysm_whiteness = 0f
     var amethysm_purpleness = 0f

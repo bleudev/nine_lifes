@@ -3,10 +3,7 @@ package com.bleudev.nine_lifes
 import com.bleudev.nine_lifes.api.event.EntityLifecycleEvents
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
-import com.bleudev.nine_lifes.custom.packet.payload.BetaModeMessage
-import com.bleudev.nine_lifes.custom.packet.payload.JoinMessage
-import com.bleudev.nine_lifes.custom.packet.payload.StartChargeScreen
-import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
+import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
@@ -51,6 +48,9 @@ class NineLifes : ModInitializer {
             val lifes = player.lifes
             player.sendPackets(UpdateLifesCount(lifes), JoinMessage(lifes))
             if (isInBetaMode()) player.sendPacket(BetaModeMessage.INSTANCE)
+        }
+        ServerPlayerEvents.AFTER_RESPAWN.register { _, newPlayer, _ ->
+            newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             for (player in server.playerList.players) playerEnsureCustomFoods(player)

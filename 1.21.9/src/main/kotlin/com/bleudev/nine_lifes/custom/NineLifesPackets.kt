@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 object NineLifesPackets {
+    val AFTER_PLAYER_RESPAWN = createResourceLocation("after_player_respawn")
     val ARMOR_STAND_HIT_EVENT = createResourceLocation("armor_stand_hit_event")
     val BETA_MODE_MESSAGE = createResourceLocation("beta_mode_message")
     val JOIN_MESSAGE = createResourceLocation("join_message")
@@ -19,6 +20,7 @@ object NineLifesPackets {
         PayloadTypeRegistry.playS2C().register(packet.id, packet.codec)
 
     fun initialize() {
+        registerS2CPacket(AfterPlayerRespawn.Companion)
         registerS2CPacket(ArmorStandHitEvent.Companion)
         registerS2CPacket(BetaModeMessage.Companion)
         registerS2CPacket(JoinMessage.Companion)

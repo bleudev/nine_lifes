@@ -18,9 +18,11 @@ import com.bleudev.nine_lifes.NineLifesClientData.max_heartbeat_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen
 import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.redness
+import com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
+import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.client.config.NineLifesConfig
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
@@ -64,8 +66,9 @@ class NineLifesClient : ClientModInitializer {
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
         HudElementRegistry.addLast(Layers.OVERLAY) { g, _ -> renderOverlay(g) }
 
-        ClientTickEvents.END_CLIENT_TICK.register(::tick)
-
+        ClientPlayNetworking.registerGlobalReceiver(AfterPlayerRespawn.id) { _, ctx ->
+            ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
+        }
         ClientPlayNetworking.registerGlobalReceiver(JoinMessage.id) { payload, ctx ->
             if (NineLifesConfig.join_message_enabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
                 val careful = payload.lifes <= 5
@@ -90,12 +93,18 @@ class NineLifesClient : ClientModInitializer {
             max_whiteness_screen = payload.strength
             whiteness_screen_ticks = 0
             whiteness_screen_running = true
+            should_death_screen_be_white = true
         }
         ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreen.id) { payload, _ ->
             amethysm_effect_info.start(payload.duration)
         }
         ClientPlayNetworking.registerGlobalReceiver(StartChargeScreen.id) { payload, _ ->
             charge_effect_info.start(payload.duration, payload.strength)
+        }
+
+        ClientTickEvents.END_CLIENT_TICK.register(::tick)
+        ClientRespawnEvents.RESPAWN.register { _ ->
+            should_death_screen_be_white = false
         }
     }
 
