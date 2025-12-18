@@ -1,3 +1,7 @@
+# 2.0.1
+## Minecraft versions
+[+] Backport to Minecraft 1.21.6-1.21.8
+
 # 2.0
 ## Minecraft versions
 [-] Minimal minecraft version bumped to 1.21.9
