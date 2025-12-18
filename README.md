@@ -14,3 +14,14 @@ Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Coo
 Don't use resource packs which changes hearts because this mod changes them to hardcore ones.
 
 ![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
+
+### Supported Minecraft versions
+| Minecraft version | Max Nine lifes version |
+|-------------------|------------------------|
+| 1.21.11           | ✅ 2.0 (1.21.11)        |
+| 1.21.10           | ✅ 2.0 (1.21.9)         |
+| 1.21.9            | ✅ 2.0 (1.21.9)         |
+| 1.21.8            | ❌ 1.9.1 (1.21.6)       |
+| 1.21.7            | ❌ 1.9.1 (1.21.6)       |
+| 1.21.6            | ❌ 1.9.1 (1.21.6)       |
+| 1.21.5            | ❌ 1.5.3 (1.21.5)       |
