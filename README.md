@@ -15,13 +15,13 @@ Don't use resource packs which changes hearts because this mod changes them to h
 
 ![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
 
-### Supported Minecraft versions
-| Minecraft version | Max Nine lifes version |
-|-------------------|------------------------|
-| 1.21.11           | ✅ 2.0 (1.21.11)        |
-| 1.21.10           | ✅ 2.0 (1.21.9)         |
-| 1.21.9            | ✅ 2.0 (1.21.9)         |
-| 1.21.8            | ❌ 1.9.1 (1.21.6)       |
-| 1.21.7            | ❌ 1.9.1 (1.21.6)       |
-| 1.21.6            | ❌ 1.9.1 (1.21.6)       |
-| 1.21.5            | ❌ 1.5.3 (1.21.5)       |
+### Supported Minecraft versions and minimal requirements
+| Minecraft version | Max Nine lifes version | Fabric Language Kotlin   | Fabric API  | MidnightLib  |
+|-------------------|------------------------|:-------------------------|:------------|:-------------|
+| 1.21.11           | ✅ 2.0.1 (1.21.11)      | \>= 1.13.7+kotlin.2.2.21 | \>= 0.140.0 | \>= 1.9.2    |
+| 1.21.10           | ✅ 2.0.1 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
+| 1.21.9            | ✅ 2.0.1 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
+| 1.21.8            | ✅ 2.0.1 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.7            | ✅ 2.0.1 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.6            | ✅ 2.0.1 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.5            | ❌ 1.5.3 (1.21.5)       | -                        | \>= 0.128.2 | Cloth config |
