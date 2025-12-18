@@ -3,7 +3,13 @@
 [-] Minimal minecraft version bumped to 1.21.9
 
 ## Depends updates
-[+] New dependency: `fabric-language-kotlin >= 1.13.7+kotlin.2.2.21`
+[+] New dependency: `fabric-language-kotlin >= 1.13.7+kotlin.2.2.21`\
+[/] \[DEV] Minimal Fabric Loom version was bumped to `1.14`\
+[/] \[DEV] Minimal Gradle version was bumped to `9.2`\
+[/] Minimal `fabricloader` version was bumped to `0.18.0`
+### 1.21.11+ only
+[/] Minimal `fabric` (Fabric API) version was bumped to `0.140.0+1.21.11`\
+[/] Minimal `midnightlib` version was bumped to `1.9.2`
 
 ## Breaking changes
 [/] All code was rewritten to Kotlin\

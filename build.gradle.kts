@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.21"
-    id("fabric-loom") version "1.13.6" apply false
+    id("fabric-loom") version "1.14-SNAPSHOT" apply false
     id("maven-publish")
 }
 
@@ -19,4 +19,5 @@ fun configure(v: String, maxExv: String) {
     }
 }
 
-configure("1.21.9", "1.21.12")
+configure("1.21.9", "1.21.11")
+configure("1.21.11", "1.21.12")
