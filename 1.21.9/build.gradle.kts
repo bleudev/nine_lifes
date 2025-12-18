@@ -69,13 +69,13 @@ tasks.processResources {
 
     filesMatching("fabric.mod.json") {
         expand("version" to project.version,
-            "minecraft_version" to project.property("minecraft_version"),
-            "max_exc_version" to project.property("max_exc_version"),
-            "loader_version" to project.property("loader_version"),
-            "fabric_version" to project.property("fabric_version"),
-            "modmenu_version" to project.property("modmenu_version"),
-            "min_midnightlib_version" to project.property("min_midnightlib_version"),
-            "kotlin_loader_version" to project.property("kotlin_loader_version"))
+            "minecraft_version" to project.property("minecraft_version")!!,
+            "max_exc_version" to project.property("max_exc_version")!!,
+            "loader_version" to project.property("loader_version")!!,
+            "fabric_version" to project.property("fabric_version")!!,
+            "modmenu_version" to project.property("modmenu_version")!!,
+            "min_midnightlib_version" to project.property("min_midnightlib_version")!!,
+            "kotlin_loader_version" to project.property("kotlin_loader_version")!!)
     }
 }
 
