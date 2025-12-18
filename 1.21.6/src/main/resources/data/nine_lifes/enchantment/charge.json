@@ -1,0 +1,21 @@
+{
+  "description": {
+    "translate": "enchantment.nine_lifes.charge",
+    "color": "white"
+  },
+  "supported_items": "#nine_lifes:enchantable/charge",
+  "primary_items": "#nine_lifes:enchantable/charge_in_table",
+  "weight": 1,
+  "max_level": 1,
+  "min_cost": {
+    "base": 3,
+    "per_level_above_first": 0
+  },
+  "max_cost": {
+    "base": 7,
+    "per_level_above_first": 0
+  },
+  "anvil_cost": 4,
+  "slots": ["mainhand"],
+  "effects": {}
+}
