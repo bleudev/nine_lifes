@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,7 +26,7 @@ import java.util.List;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements CustomLivingEntity {
     @Shadow
-    public abstract boolean hasEffect(Holder<MobEffect> holder);
+    public abstract boolean hasEffect(Holder<@NotNull MobEffect> holder);
 
     @Unique
     private BlockPos lastLightPos;

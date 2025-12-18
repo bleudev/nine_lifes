@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(CampfireBlockEntity.class)
 public abstract class CampfireBlockEntityMixin {
     @Shadow
-    public abstract NonNullList<ItemStack> getItems();
+    public abstract NonNullList<@NotNull ItemStack> getItems();
 
     @Shadow @Final
     private int[] cookingProgress;
@@ -33,7 +34,7 @@ public abstract class CampfireBlockEntityMixin {
     @Inject(method = "cookTick", at = @At("TAIL"))
     private static void explode(
         ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire,
-        RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> recipe,
+        RecipeManager.CachedCheck<@NotNull SingleRecipeInput, @NotNull CampfireCookingRecipe> recipe,
         CallbackInfo ci) {
         var self = (CampfireBlockEntityMixin) (Object) campfire;
         if (self == null) return;
