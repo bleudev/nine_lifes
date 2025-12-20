@@ -1,3 +1,7 @@
+# 2.0.2 (DEV)
+## Depends updates
+[/] Mod now requires `fabric-language-kotlin >= 1.13.8+kotlin.2.3.0`
+
 # 2.0.1
 ## Minecraft versions
 [+] Backport to Minecraft 1.21.6-1.21.8
