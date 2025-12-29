@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm")
     id("fabric-loom")
+    id("com.modrinth.minotaur")
     id("maven-publish")
 }
 
@@ -23,8 +24,6 @@ java {
     withSourcesJar()
     withJavadocJar()
 }
-
-
 
 repositories {
     maven {
@@ -96,6 +95,28 @@ tasks.jar {
     from("LICENSE") {
         rename { "${it}_${project.base.archivesName.get()}" }
     }
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    projectId.set("nine_lifes")
+    versionNumber.set(project.version as String)
+    versionType.set("release")
+    uploadFile.set(tasks.remapJar)
+    additionalFiles.add(tasks.remapSourcesJar)
+    changelog.set(project.property("changelog") as String)
+    syncBodyFrom.set(project.property("readme") as String)
+    gameVersions.addAll("1.21.9", "1.21.10")
+    loaders.add("fabric")
+    dependencies {
+        required.project("fabric-api")
+        required.project("midnightlib")
+        required.project("fabric-language-kotlin")
+        optional.project("modmenu")
+    }
+}
+tasks.named("modrinth") {
+    dependsOn("modrinthSyncBody")
 }
 
 // configure the maven publication
