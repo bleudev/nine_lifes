@@ -18,6 +18,7 @@ Don't use resource packs which changes hearts because this mod changes them to h
 ### Supported Minecraft versions and minimal requirements
 | Minecraft version | Max Nine lifes version | Fabric Language Kotlin   | Fabric API  | MidnightLib  |
 |-------------------|------------------------|:-------------------------|:------------|:-------------|
+| 26.1              | ❌                      | -                        | -           | -            |
 | 1.21.11           | ✅ 2.0.2 (1.21.11)      | \>= 1.13.7+kotlin.2.2.21 | \>= 0.140.0 | \>= 1.9.2    |
 | 1.21.10           | ✅ 2.0.2 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
 | 1.21.9            | ✅ 2.0.2 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
