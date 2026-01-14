@@ -26,10 +26,6 @@ java {
 }
 
 repositories {
-    maven {
-        name = "Terraformers"
-        url = uri("https://maven.terraformersmc.com/")
-    }
     exclusiveContent {
         forRepository {
             maven {
@@ -52,7 +48,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
+    modImplementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
     modImplementation("maven.modrinth:midnightlib:${project.property("min_midnightlib_version")}")
 }
 
