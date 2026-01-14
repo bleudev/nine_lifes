@@ -12,7 +12,8 @@
     ],
     "client": [
         "client.ClientLevelDataMixin",
-        "client.DeathScreenMixin"
+        "client.DeathScreenMixin",
+        "client.FogRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
