@@ -15,4 +15,7 @@ public class NineLifesConfig extends MidnightConfig {
     public enum HeartPosition {
         BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT, TOP_LEFT, TOP_CENTER, TOP_RIGHT
     }
+
+    @Entry
+    public static boolean low_lifes_red_sky = true;
 }
