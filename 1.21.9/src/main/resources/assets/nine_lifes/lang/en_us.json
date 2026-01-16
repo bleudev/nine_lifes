@@ -14,6 +14,14 @@
 
   "enchantment.nine_lifes.charge": "Charge",
 
+  "tag.item.nine_lifes.cause_blast_furnace_explode": "Cause blast furnace explode",
+  "tag.item.nine_lifes.cause_campfire_explode": "Cause campfires explode",
+  "tag.item.nine_lifes.cause_furnace_explode": "Cause furnace explode",
+  "tag.item.nine_lifes.cause_smoker_explode": "Cause smoker explode",
+  "tag.item.nine_lifes.lightning_chargeable": "Lightning chargeable",
+  "tag.item.nine_lifes.enchantable/charge": "Enchantable with charge",
+  "tag.item.nine_lifes.enchantable/charge_in_table": "Enchantable with charge in enchanting table",
+
   "chat.message.join.lives": "Your lives: %1$s.",
   "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!",
   "chat.message.join.beta": "Warning! You're running a beta version of the mod. If you find a bug, please report it to this link:",

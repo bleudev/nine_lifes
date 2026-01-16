@@ -14,6 +14,14 @@
 
   "enchantment.nine_lifes.charge": "Заряд",
 
+  "tag.item.nine_lifes.cause_blast_furnace_explode": "Взрывает плавильные печи",
+  "tag.item.nine_lifes.cause_campfire_explode": "Взрывает костры",
+  "tag.item.nine_lifes.cause_furnace_explode": "Взрывает печки",
+  "tag.item.nine_lifes.cause_smoker_explode": "Взрывает коптильни",
+  "tag.item.nine_lifes.lightning_chargeable": "Заряжается электричеством",
+  "tag.item.nine_lifes.enchantable/charge": "Способно быть заряженным",
+  "tag.item.nine_lifes.enchantable/charge_in_table": "Способно заряжаться в столе зачарований",
+
   "chat.message.join.lives": "Ваши жизни: %1$s.",
   "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
   "chat.message.join.beta": "Внимание! Вы запустили бета-версию мода. Если вы обнаружите баг, то отправьте его по этому адресу:",
