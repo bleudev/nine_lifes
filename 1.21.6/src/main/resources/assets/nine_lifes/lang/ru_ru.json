@@ -48,5 +48,6 @@
   "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Снизу справа",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Сверху слева",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Сверху в центре",
-  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа"
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Сверху справа",
+  "nine_lifes.midnightconfig.low_lifes_red_sky": "Красное небо когда мало жизней"
 }
