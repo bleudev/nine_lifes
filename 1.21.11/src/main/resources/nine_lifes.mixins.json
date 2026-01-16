@@ -8,7 +8,8 @@
         "CampfireBlockEntityMixin",
         "LivingEntityMixin",
         "ServerLevelMixin",
-        "ServerPlayerMixin"
+        "ServerPlayerMixin",
+        "client.EnvironmentAttributeProbeMixin"
     ],
     "client": [
         "client.ClientLevelDataMixin",

@@ -48,5 +48,6 @@
   "nine_lifes.midnightconfig.enum.HeartPosition.BOTTOM_RIGHT": "Bottom right",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_LEFT": "Top left",
   "nine_lifes.midnightconfig.enum.HeartPosition.TOP_CENTER": "Top center",
-  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Top right"
+  "nine_lifes.midnightconfig.enum.HeartPosition.TOP_RIGHT": "Top right",
+  "nine_lifes.midnightconfig.low_lifes_red_sky": "Red sky when there are few lifes"
 }
