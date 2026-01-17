@@ -3,7 +3,7 @@
 ![9 lifes indicator](./readme_assets/9lifes_indicator.png)
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
-[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.9--1.21.11-green)](https://modrinth.com/mod/nine_lifes)
+[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.6--1.21.11-green)](https://modrinth.com/mod/nine_lifes)
 [![Environment](https://img.shields.io/badge/Environment-Client%2BServer-blue)](https://modrinth.com/mod/nine_lifes)
 [![GitHub contributors](https://img.shields.io/github/contributors/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)
@@ -19,10 +19,10 @@ Don't use resource packs which changes hearts because this mod changes them to h
 | Minecraft version | Max Nine lifes version | Fabric Language Kotlin   | Fabric API  | MidnightLib  |
 |-------------------|------------------------|:-------------------------|:------------|:-------------|
 | 26.1              | ❌                      | -                        | -           | -            |
-| 1.21.11           | ✅ 2.0.2 (1.21.11)      | \>= 1.13.7+kotlin.2.2.21 | \>= 0.140.0 | \>= 1.9.2    |
-| 1.21.10           | ✅ 2.0.2 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
-| 1.21.9            | ✅ 2.0.2 (1.21.9)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
-| 1.21.8            | ✅ 2.0.2 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
-| 1.21.7            | ✅ 2.0.2 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
-| 1.21.6            | ✅ 2.0.2 (1.21.6)       | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.11           | ✅ 2.1 (1.21.11)        | \>= 1.13.7+kotlin.2.2.21 | \>= 0.140.0 | \>= 1.9.2    |
+| 1.21.10           | ✅ 2.1 (1.21.9)         | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
+| 1.21.9            | ✅ 2.1 (1.21.9)         | \>= 1.13.7+kotlin.2.2.21 | \>= 0.134.0 | \>= 1.9.2    |
+| 1.21.8            | ✅ 2.1 (1.21.6)         | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.7            | ✅ 2.1 (1.21.6)         | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
+| 1.21.6            | ✅ 2.1 (1.21.6)         | \>= 1.13.7+kotlin.2.2.21 | \>= 0.128.2 | \>= 1.9.2    |
 | 1.21.5            | ❌ 1.5.3 (1.21.5)       | -                        | \>= 0.128.2 | Cloth config |
