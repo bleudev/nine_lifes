@@ -21,6 +21,8 @@
   "tag.item.nine_lifes.lightning_chargeable": "Lightning chargeable",
   "tag.item.nine_lifes.enchantable/charge": "Enchantable with charge",
   "tag.item.nine_lifes.enchantable/charge_in_table": "Enchantable with charge in enchanting table",
+  "tag.damage_type.nine_lifes.gives_life": "Gives life on death",
+  "tag.damage_type.nine_lifes.is_lightning_or_fire": "Lightning or fire",
 
   "chat.message.join.lives": "Your lives: %1$s.",
   "chat.message.join.lives.careful": "Your lives: %1$s. Be careful!",

@@ -21,6 +21,8 @@
   "tag.item.nine_lifes.lightning_chargeable": "Заряжается электричеством",
   "tag.item.nine_lifes.enchantable/charge": "Способно быть заряженным",
   "tag.item.nine_lifes.enchantable/charge_in_table": "Способно заряжаться в столе зачарований",
+  "tag.damage_type.nine_lifes.gives_life": "Даёт жизнь при смерти",
+  "tag.damage_type.nine_lifes.is_lightning_or_fire": "Молния или огонь",
 
   "chat.message.join.lives": "Ваши жизни: %1$s.",
   "chat.message.join.lives.careful": "Ваши жизни: %1$s. Будьте начеку!",
