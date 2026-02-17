@@ -38,6 +38,10 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
+    exclusiveContent {
+        forRepository { maven("https://maven.quiltmc.org/repository/release") }
+        filter { includeGroupAndSubgroups("org.quiltmc") }
+    }
     mavenCentral()
 }
 
@@ -50,8 +54,10 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     modImplementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
+    modImplementation("maven.modrinth:yacl:${project.property("yacl_version")}")
     modImplementation("maven.modrinth:midnightlib:${project.property("min_midnightlib_version")}")
 
+    implementation("org.quiltmc.parsers:gson:0.3.1")
     include(implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")!!)
 }
 
