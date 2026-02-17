@@ -6,17 +6,20 @@ import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder
 import net.minecraft.core.component.DataComponents
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -96,10 +99,18 @@ class NineLifes : ModInitializer {
             }
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
-            if (entity is ServerPlayer && entity.gameMode().isSurvival) {
+            if (entity is ServerPlayer && entity.gameMode()!!.isSurvival) {
                 entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
-            } }
+        } }
+        EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
+            if (player is ServerPlayer && !player.hasEffect(NineLifesMobEffects.AMETHYSM))
+                when (player.lifes) {
+                    in 0..3 -> return@register Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+                    in 4..5 -> return@register Player.BedSleepingProblem.NOT_SAFE
+                }
+            null
+        }
     }
 
     private fun tryChargeItems(level: ServerLevel) {
