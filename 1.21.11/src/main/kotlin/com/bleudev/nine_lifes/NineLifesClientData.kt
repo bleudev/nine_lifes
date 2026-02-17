@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes
 
-import com.bleudev.nine_lifes.client.config.NineLifesConfig
+import com.bleudev.nine_lifes.client.config.heartbeatEnabled
 import com.bleudev.nine_lifes.util.lerp
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -40,7 +40,7 @@ object NineLifesClientData {
     var charge_effect_info = ChargeEffectInfo()
     var center_heart_info = CenterHeartInfo()
 
-    private fun <T : Player> get_next_heartbeat_rate(player: T?): Int {
+    private fun <T : Player> getNextHeartbeatRate(player: T?): Int {
         val random = Random()
         var ans = random.nextInt(70, 90)
         if (player != null) {
@@ -55,8 +55,8 @@ object NineLifesClientData {
     var heartbeat_ticks: Int = 0
     var max_heartbeat_ticks: Int = 1
 
-    fun <T : Player> get_next_heartbeat_time(player: T?): Int {
-        val rate = get_next_heartbeat_rate(player)
+    fun <T : Player> getNextHeartbeatTime(player: T?): Int {
+        val rate = getNextHeartbeatRate(player)
         if (rate == 0) return 1
         return (1200 / rate.toFloat()).roundToInt()
     }
@@ -150,8 +150,8 @@ object NineLifesClientData {
             this.time += deltaTickProgress
         }
 
-        fun do_heartbeat(strength: Float) {
-            if (!NineLifesConfig.heartbeat_enabled) return
+        fun doHeartbeat(strength: Float) {
+            if (!heartbeatEnabled) return
             time = 0f
             heartbeatStrength = strength
         }

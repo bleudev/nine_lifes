@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.3.0"
+    kotlin("plugin.serialization") version "2.3.0"
     id("fabric-loom") version "1.14-SNAPSHOT" apply false
     id("com.modrinth.minotaur") version "2.+" apply false
     id("maven-publish")

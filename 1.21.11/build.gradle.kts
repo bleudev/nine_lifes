@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
     id("fabric-loom")
     id("com.modrinth.minotaur")
     id("maven-publish")
@@ -50,6 +51,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     modImplementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
     modImplementation("maven.modrinth:midnightlib:${project.property("min_midnightlib_version")}")
+
+    include(implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")!!)
 }
 
 tasks.processResources {

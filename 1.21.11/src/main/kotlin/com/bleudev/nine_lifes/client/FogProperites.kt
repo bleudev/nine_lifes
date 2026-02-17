@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.NineLifesClientData.lifes
-import com.bleudev.nine_lifes.client.config.NineLifesConfig
+import com.bleudev.nine_lifes.client.config.lowLifesRedSkyEnabled
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ARGB
 import net.minecraft.world.phys.Vec3
@@ -14,7 +14,7 @@ private val clientInSurvivalLikeGameMode: Boolean
 
 val fogColor: Transformer<Vector4f>
     get() = { color ->
-        if (NineLifesConfig.low_lifes_red_sky && clientInSurvivalLikeGameMode) {
+        if (lowLifesRedSkyEnabled && clientInSurvivalLikeGameMode) {
             val target = Vector4f(1f, 0f, 0f, 1f)
             when (lifes) {
                 5 -> color.lerp(target, .1f)

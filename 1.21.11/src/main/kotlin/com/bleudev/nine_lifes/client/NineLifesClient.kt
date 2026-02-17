@@ -1,7 +1,6 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.ISSUES_LINK
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesClientData
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
@@ -11,7 +10,7 @@ import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_redness
 import com.bleudev.nine_lifes.NineLifesClientData.center_heart_info
 import com.bleudev.nine_lifes.NineLifesClientData.charge_effect_info
-import com.bleudev.nine_lifes.NineLifesClientData.get_next_heartbeat_time
+import com.bleudev.nine_lifes.NineLifesClientData.getNextHeartbeatTime
 import com.bleudev.nine_lifes.NineLifesClientData.heartbeat_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.lifes
 import com.bleudev.nine_lifes.NineLifesClientData.max_heartbeat_ticks
@@ -23,7 +22,10 @@ import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
-import com.bleudev.nine_lifes.client.config.NineLifesConfig
+import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.configInit
+import com.bleudev.nine_lifes.client.config.heartPosition
+import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -31,7 +33,6 @@ import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
-import eu.midnightdust.lib.config.MidnightConfig
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -58,7 +59,7 @@ class NineLifesClient : ClientModInitializer {
     }
 
     override fun onInitializeClient() {
-        MidnightConfig.init(MOD_ID, NineLifesConfig::class.java)
+        configInit()
 
         NineLifesEntityRenderers.initialize()
 
@@ -70,7 +71,7 @@ class NineLifesClient : ClientModInitializer {
             ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
         }
         ClientPlayNetworking.registerGlobalReceiver(JoinMessage.id) { payload, ctx ->
-            if (NineLifesConfig.join_message_enabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
+            if (joinMessageEnabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
                 val careful = payload.lifes <= 5
                 ctx.player().displayClientMessage(Component.translatable(
                     if (careful) "chat.message.join.lives.careful" else "chat.message.join.lives",
@@ -126,13 +127,13 @@ class NineLifesClient : ClientModInitializer {
         val translatePosition = { dx: Int, dy: Int ->
             graphics.pose().translate(-th * center_heart_info.scale / 2 + dx, (h - 45 - (h - dy)).toFloat())
         }
-        when (NineLifesConfig.heart_position) {
-            NineLifesConfig.HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
-            NineLifesConfig.HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
-            NineLifesConfig.HeartPosition.BOTTOM_RIGHT -> translatePosition(w - 25, h + 20)
-            NineLifesConfig.HeartPosition.TOP_LEFT -> translatePosition(25, 60)
-            NineLifesConfig.HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
-            NineLifesConfig.HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
+        when (heartPosition) {
+            HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
+            HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
+            HeartPosition.BOTTOM_RIGHT -> translatePosition(w - 25, h + 20)
+            HeartPosition.TOP_LEFT -> translatePosition(25, 60)
+            HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
+            HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
         }
         graphics.pose().scale(center_heart_info.scale)
 
@@ -160,19 +161,17 @@ class NineLifesClient : ClientModInitializer {
         val deltaTime = (newTime - lastMillis).toFloat()
         lastMillis = newTime
         center_heart_info.tick(deltaTime / 50)
-
-        // Do not render question marks
     }
 
     private fun tick(client: Minecraft) {
         NineLifesClientData.tick()
-        if (max_heartbeat_ticks == 0) max_heartbeat_ticks = get_next_heartbeat_time(client.player)
+        if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
 
-        if (heartbeat_ticks == 0 && client.player != null && client.player!!.isAlive) center_heart_info.do_heartbeat(2f)
+        if (heartbeat_ticks == 0 && client.player != null && client.player!!.isAlive) center_heart_info.doHeartbeat(2f)
         heartbeat_ticks++
         if (heartbeat_ticks == max_heartbeat_ticks) {
             heartbeat_ticks = 0
-            max_heartbeat_ticks = get_next_heartbeat_time(client.player)
+            max_heartbeat_ticks = getNextHeartbeatTime(client.player)
         }
 
         if (armor_stand_hit_event_running) {
