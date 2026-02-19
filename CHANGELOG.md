@@ -11,6 +11,10 @@
   - 0.141.3 (1.21.11)
   - 0.138.3 (1.21.10)
 
+## Bug fixes
+- Hardcore buttons when player ate charged amethyst with 1 life
+- Hardcore title don't appear when game over
+
 ## Optimisations
 - Use Fabric Api events for bed sleeping problems instead of Mixin's
 
