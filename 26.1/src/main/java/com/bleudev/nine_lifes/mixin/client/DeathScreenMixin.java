@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
@@ -23,9 +24,16 @@ public class DeathScreenMixin {
     @Final
     private boolean hardcore;
 
+    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;<init>(Lnet/minecraft/network/chat/Component;)V"))
+    private static Component changeTitle(Component original) {
+        if (lifes <= 1 && !should_death_screen_be_white) {
+            return Component.translatable("deathScreen.title.hardcore");
+        } else return original;
+    }
+
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(Component component, boolean bl, LocalPlayer localPlayer, CallbackInfo ci) {
-        this.hardcore = lifes <= 1;
+    private void changeHardcore(Component causeOfDeath, boolean hardcore, LocalPlayer player, CallbackInfo ci) {
+        if (lifes <= 1 && !should_death_screen_be_white) this.hardcore = true;
     }
 
     @Inject(method = "render", at = @At("HEAD"))

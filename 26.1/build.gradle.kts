@@ -101,7 +101,7 @@ modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
     projectId.set("nine_lifes")
     versionNumber.set(project.version as String)
-    versionType.set("release")
+    versionType.set("alpha")
     uploadFile.set(tasks.jar)
     additionalFiles.add(tasks.kotlinSourcesJar)
     changelog.set(project.property("changelog") as String)
