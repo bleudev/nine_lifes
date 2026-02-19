@@ -114,7 +114,7 @@ modrinth {
     loaders.add("fabric")
     dependencies {
         required.project("fabric-api")
-        required.project("midnightlib")
+        required.project("yacl")
         required.project("fabric-language-kotlin")
         optional.project("modmenu")
     }
