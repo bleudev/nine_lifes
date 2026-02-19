@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.3.0"
-    id("fabric-loom") version "1.14-SNAPSHOT" apply false
+    kotlin("plugin.serialization") version "2.3.0"
+    id("fabric-loom") version "1.15.2" apply false
     id("com.modrinth.minotaur") version "2.+" apply false
     id("maven-publish")
 }
@@ -23,5 +24,5 @@ fun configure(v: String, maxExv: String) {
         }
     }
 }
-configure("1.21.9", "1.21.11")
+configure("1.21.10", "1.21.11")
 configure("1.21.11", "1.21.12")

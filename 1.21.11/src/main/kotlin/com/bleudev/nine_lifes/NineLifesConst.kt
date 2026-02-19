@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes
 
 import com.bleudev.nine_lifes.util.helper.PlatformHelper
+import org.slf4j.LoggerFactory
 
 const val MOD_ID = "nine_lifes"
 val NAME = PlatformHelper.getModName(MOD_ID)
@@ -19,3 +20,5 @@ const val CHARGE_SCREEN_MAX_STRENGTH = 0.5
 const val CHARGE_SCREEN_DURATION = 6
 
 fun isInBetaMode(): Boolean = VERSION.endsWith("_beta")
+
+val LOGGER = LoggerFactory.getLogger(NAME)
