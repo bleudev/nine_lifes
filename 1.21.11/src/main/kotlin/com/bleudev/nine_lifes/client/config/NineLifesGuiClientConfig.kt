@@ -39,6 +39,7 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
             cachePending(::cachedHeartbeat::set)
             descriptionBuilder {
                 addDefaultText(1)
+                framedConfigImage("heartbeat", 20, 20, { cachedHeartbeat ?: heartbeatEnabled }, true)
             }
         }
         rootOptions.register("heart_position") {
@@ -66,17 +67,13 @@ private fun OptionDsl<Boolean>.yesNoFormat() = controller { BooleanControllerBui
 private inline fun <reified T : Enum<T>> OptionDsl<T>.enumFormat() = controller { EnumControllerBuilder.create(it).enumClass(T::class.java) }
 private fun <T : Any> OptionDsl<T>.binding(default: T, property: KMutableProperty<T>) = binding(default, {property.getter.call()}, {property.setter.call(it)})
 private fun <T : Any> OptionDsl<T>.cachePending(cacher: (T) -> Unit) = addListener { option, event -> if (event == OptionEventListener.Event.STATE_CHANGE) cacher(option.pendingValue()) }
-private fun OptionDescription.Builder.localisedConfigImage(name: String, condition: (() -> Boolean) = {true}) = customImage(LocalisedImageRenderer(name, condition))
+private fun OptionDescription.Builder.localisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, condition))
 private fun <T : Enum<T>> OptionDescription.Builder.enumConfigImage(name: String, enumGetter: () -> T) = customImage(EnumImageRenderer(name, enumGetter))
+private fun OptionDescription.Builder.framedConfigImage(name: String, duration: Int, fps: Int, condition: () -> Boolean = {true}, useFirstFrameWhenFalse: Boolean = false) = customImage(
+    AnimatedConditionImageRenderer(name, { ((it % (duration * 1000 / fps)) / (1000 / fps)).toInt() }, condition, useFirstFrameWhenFalse))
 
 private abstract class MethodBasedImageRenderer : ImageRenderer {
-    override fun render(
-        graphics: GuiGraphics,
-        x: Int,
-        y: Int,
-        renderWidth: Int,
-        tickDelta: Float
-    ): Int {
+    override fun render(graphics: GuiGraphics, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
         val id = getImagePath()
         val t = Minecraft.getInstance().textureManager.getTexture(id)
         val h = renderWidth * t.texture.getHeight(0) / t.texture.getWidth(0)
@@ -109,4 +106,28 @@ private class EnumImageRenderer<T : Enum<T>>(val name: String, val enumGetter: (
     override fun getImagePath(): Identifier = createIdentifier(
         "textures/config/description/$name/${enumGetter().ordinal}.png"
     )
+}
+
+private class AnimatedConditionImageRenderer(val name: String, val frameProvder: (Long) -> Int, val condition: () -> Boolean, val useFirstFrameWhenFalse: Boolean) : ImageRenderer {
+    private var time: Long = 0
+    private var first: Long = System.currentTimeMillis()
+
+    override fun render(graphics: GuiGraphics, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
+        val base = "textures/config/description/$name"
+        if (condition()) {
+            time = System.currentTimeMillis() - first
+            val height = 9 * renderWidth / 16
+            graphics.blit(RenderPipelines.GUI_TEXTURED, createIdentifier("$base/${frameProvder(time)}.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
+            return height
+        } else {
+            time = 0
+            first = System.currentTimeMillis()
+            val height = 9 * renderWidth / 16
+            graphics.blit(RenderPipelines.GUI_TEXTURED, if (useFirstFrameWhenFalse) createIdentifier("$base/0.png") else createIdentifier("${base}_disabled.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
+            return height
+        }
+    }
+
+    override fun close() {
+    }
 }
