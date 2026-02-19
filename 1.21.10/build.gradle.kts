@@ -110,7 +110,7 @@ modrinth {
     additionalFiles.add(tasks.remapSourcesJar)
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
-    gameVersions.addAll("1.21.11")
+    gameVersions.addAll("1.21.9", "1.21.10")
     loaders.add("fabric")
     dependencies {
         required.project("fabric-api")
