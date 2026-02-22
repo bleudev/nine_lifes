@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
+import com.bleudev.nine_lifes.custom.NineLifesDamageSources;
 import com.bleudev.nine_lifes.custom.NineLifesItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -12,15 +13,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static com.bleudev.nine_lifes.util.InjectsKt.explode;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public class AbstractFurnaceBlockEntityMixin {
@@ -52,8 +53,7 @@ public class AbstractFurnaceBlockEntityMixin {
         if (!output.isEmpty() && output.is(mixin.tag)) {
             inv.set(2, ItemStack.EMPTY);
             serverLevel.removeBlock(blockPos, false);
-            Vec3 vec = blockPos.getCenter();
-            serverLevel.explode(null, vec.x, vec.y, vec.z, 4f, true, Level.ExplosionInteraction.BLOCK);
+            explode(serverLevel, blockPos.getCenter(), 4f, NineLifesDamageSources::charged, Level.ExplosionInteraction.BLOCK, null);
         }
     }
 }

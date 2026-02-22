@@ -17,7 +17,10 @@ object NineLifesDamageSources {
     private val KEY_CHARGED: ResourceKey<DamageType> = key("charged_amethyst")
     private val KEY_UNKNOWN: ResourceKey<DamageType> = key("unknown")
 
+    @JvmStatic
     fun amethysm(level: Level): DamageSource = source(level, KEY_AMETHYSM)
+    @JvmStatic
     fun charged(level: Level): DamageSource = source(level, KEY_CHARGED)
+    @JvmStatic
     fun unknown(level: Level): DamageSource = source(level, KEY_UNKNOWN)
 }

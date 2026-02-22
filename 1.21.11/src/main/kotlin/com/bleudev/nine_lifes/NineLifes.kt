@@ -26,7 +26,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.item.alchemy.Potions
 import net.minecraft.world.item.crafting.Ingredient
-import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
@@ -70,10 +69,8 @@ class NineLifes : ModInitializer {
                         when (entity.damageTicks) {
                             -1 -> return@forEach
                             0 -> {
-                                level.explode(entity, NineLifesDamageSources.charged(level),
-                                    ExplosionDamageCalculator(), entity.position(),
-                                    7f, true, Level.ExplosionInteraction.MOB)
-                                entity.hurtServer(level, NineLifesDamageSources.charged(level), Float.MAX_VALUE)
+                                level.explode(entity.position(), 7f, NineLifesDamageSources::charged, Level.ExplosionInteraction.MOB, entity)
+                                entity.kill(NineLifesDamageSources::charged)
                             }
                         }
                         entity.damageTicks -= 1

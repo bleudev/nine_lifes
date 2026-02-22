@@ -3,3 +3,4 @@
 
 ## Optimisations
 - Clean some mixins
+- Other code simplification

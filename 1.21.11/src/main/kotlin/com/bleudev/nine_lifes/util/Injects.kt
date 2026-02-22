@@ -13,15 +13,21 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.NonNullList
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
+import net.minecraft.world.phys.Vec3
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.isAccessible
 
@@ -82,6 +88,13 @@ fun Player.consumeOneItemInHand(hand: InteractionHand) {
         stack.count -= 1
         setItemInHand(hand, stack)
     }
+}
+fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> DamageSource, explosionInteraction: Level.ExplosionInteraction, source: Entity? = null) = explode(
+    source, damageSourceSupplier(this), ExplosionDamageCalculator(),
+    pos.x, pos.y, pos.z, strength, true, explosionInteraction
+)
+fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = (level() as? ServerLevel)?.let {
+    hurtServer(it, damageSourceSupplier(it), Float.MAX_VALUE)
 }
 
 // Commands
