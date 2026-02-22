@@ -30,6 +30,7 @@ import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
+import net.minecraft.world.phys.Vec3
 
 class NineLifes : ModInitializer {
     override fun onInitialize() {
@@ -149,11 +150,7 @@ class NineLifes : ModInitializer {
                 } ?: true) return@forBlocksInBox 0
 
                 level.removeBlock(pos, false)
-                level.explode(
-                    null, NineLifesDamageSources.charged(level), null,
-                    pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(),
-                    3f, true, Level.ExplosionInteraction.BLOCK
-                )
+                level.explode(Vec3(pos), 3f, NineLifesDamageSources::charged, Level.ExplosionInteraction.BLOCK)
             }
             0
         }
