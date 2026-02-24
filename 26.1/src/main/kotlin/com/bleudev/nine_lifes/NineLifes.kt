@@ -84,7 +84,7 @@ class NineLifes : ModInitializer {
                 .forEach { tryWindChargeFeatures(world, it) }
         }
         EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
-            if (entity.type.equals(EntityType.ARMOR_STAND)) {
+            if (entity.type == EntityType.ARMOR_STAND) {
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
@@ -97,7 +97,7 @@ class NineLifes : ModInitializer {
             }
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
-            if (entity is ServerPlayer && entity.gameMode()!!.isSurvival) {
+            if (entity is ServerPlayer && entity.gameMode().isSurvival) {
                 entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }

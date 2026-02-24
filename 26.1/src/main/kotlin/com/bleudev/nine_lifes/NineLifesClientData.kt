@@ -18,6 +18,15 @@ object NineLifesClientData {
     @JvmField
     var lifes = 9
 
+    // Shaders
+    val shaderRedMajStrength: Float get() = when (lifes) {
+        0 -> 1f
+        1 -> 1f
+        2 -> .666f
+        3 -> .333f
+        else -> 0f
+    }
+
     var armor_stand_hit_event_ticks = 0
     var armor_stand_hit_event_running = false
 
