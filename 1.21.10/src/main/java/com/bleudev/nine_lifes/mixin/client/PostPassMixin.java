@@ -5,7 +5,7 @@ import com.mojang.blaze3d.buffers.GpuBuffer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.PostPass;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,6 +28,6 @@ public class PostPassMixin {
 
     @Redirect(method = "method_67884", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/PostPass;customUniforms:Ljava/util/Map;", opcode = Opcodes.GETFIELD))
     private Map<String, GpuBuffer> modifyUniforms(PostPass instance) {
-        return DynamicUniformsRegistryImpl.getNewUniforms$nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
+        return DynamicUniformsRegistryImpl.getNewUniforms$nine_lifes(this.customUniforms, ResourceLocation.parse(this.name.split("/")[0]));
     }
 }

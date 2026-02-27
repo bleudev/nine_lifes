@@ -1,6 +1,6 @@
-package com.bleudev.nine_lifes.api.render
+package com.bleudev.nine_lifes.client.api.render
 
-import com.bleudev.nine_lifes.api.render.DynamicUniformsRegistry.DynamicUniformTransformer
+import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry.DynamicUniformTransformer
 import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.Std140Builder
 import com.mojang.blaze3d.buffers.Std140SizeCalculator

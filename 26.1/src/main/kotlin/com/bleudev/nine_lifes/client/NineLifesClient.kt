@@ -22,7 +22,7 @@ import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
-import com.bleudev.nine_lifes.api.render.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.configInit
 import com.bleudev.nine_lifes.client.config.heartPosition

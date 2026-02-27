@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.client.render
 
-import com.bleudev.nine_lifes.api.render.DynamicUniformsRegistryImpl
+import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistryImpl
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder
 import com.mojang.blaze3d.resource.CrossFrameResourcePool

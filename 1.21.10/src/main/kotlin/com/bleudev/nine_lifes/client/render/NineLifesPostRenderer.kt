@@ -7,7 +7,7 @@ import com.mojang.blaze3d.resource.CrossFrameResourcePool
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.LevelTargetBundle
 import net.minecraft.client.renderer.PostChain
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceLocation
 
 class NineLifesPostRenderer(val resourcePool: CrossFrameResourcePool, val minecraftSupplier: () -> Minecraft) {
     init {
@@ -20,7 +20,7 @@ class NineLifesPostRenderer(val resourcePool: CrossFrameResourcePool, val minecr
     }
 
     private fun renderCustomPostEffect(name: String) = renderPostEffect(createIdentifier(name))
-    private fun renderPostEffect(postEffectId: Identifier) {
+    private fun renderPostEffect(postEffectId: ResourceLocation) {
         val minecraft = minecraftSupplier()
         val postChain = minecraft.shaderManager.getPostChain(postEffectId, LevelTargetBundle.MAIN_TARGETS)
         if (postChain != null) {
