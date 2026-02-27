@@ -22,6 +22,7 @@ import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
+import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.configInit
 import com.bleudev.nine_lifes.client.config.heartPosition
@@ -62,6 +63,10 @@ class NineLifesClient : ClientModInitializer {
         configInit()
 
         NineLifesEntityRenderers.initialize()
+
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
+            putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
+        }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }

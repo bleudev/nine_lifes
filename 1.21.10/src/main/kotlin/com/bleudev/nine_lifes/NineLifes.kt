@@ -83,7 +83,7 @@ class NineLifes : ModInitializer {
                 .forEach { tryWindChargeFeatures(world, it) }
         }
         EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
-            if (entity.type.equals(EntityType.ARMOR_STAND)) {
+            if (entity.type == EntityType.ARMOR_STAND) {
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
@@ -159,7 +159,7 @@ class NineLifes : ModInitializer {
 
         level.players().forEach { player ->
             if (!actionBox.contains(player.position())) return@forEach
-            val inventory = player.getInventory()
+            val inventory = player.inventory
             var inventoryUpdated = false
             for (slot in 0..<inventory.toList().size) {
                 val stack = inventory.getItem(slot)
