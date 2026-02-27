@@ -215,9 +215,7 @@ class NineLifesClient : ClientModInitializer {
 
         if (bed_not_safe_event_running) {
             if (bed_not_safe_event_ticks == 0) bed_not_safe_event_running = false
-            else {
-                bed_not_safe_event_ticks--
-            }
+            else bed_not_safe_event_ticks--
         }
 
         redness = armor_stand_hit_redness.lerp(end = .2f)

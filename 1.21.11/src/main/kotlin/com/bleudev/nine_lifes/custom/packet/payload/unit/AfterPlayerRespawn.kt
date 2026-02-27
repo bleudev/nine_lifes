@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.custom.packet.payload
+package com.bleudev.nine_lifes.custom.packet.payload.unit
 
 import com.bleudev.nine_lifes.custom.NineLifesPackets
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
@@ -6,7 +6,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class AfterPlayerRespawn() : CustomPacketPayload {
+class AfterPlayerRespawn : CustomPacketPayload {
+    private constructor()
+
     companion object : PacketPayloadCompanion<AfterPlayerRespawn> {
         val INSTANCE = AfterPlayerRespawn()
 

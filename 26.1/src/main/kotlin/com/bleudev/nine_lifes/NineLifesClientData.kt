@@ -30,13 +30,9 @@ object NineLifesClientData {
         }
 
     private enum class Interpolation {
-        QUADRATIC {
-            override fun get(delta: Float): Float = -4 * (delta - .5f).pow(2) + 1
-        },
         SIN {
             override fun get(delta: Float): Float = (-2 * sin(delta - .5f).pow(2) + .46f).coerceIn(0f, 1f)
         };
-
 
         abstract fun get(delta: Float): Float
         fun get(delta: Float, left: Float, right: Float) = Mth.lerp(get(delta), left, right)

@@ -43,8 +43,9 @@ public class DeathScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        if (should_death_screen_be_white)
+        if (should_death_screen_be_white) {
             ClientInjectsKt.white(guiGraphics);
+        }
     }
 
     @Inject(method = "render", at = @At("TAIL"))

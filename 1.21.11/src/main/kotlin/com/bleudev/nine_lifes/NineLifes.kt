@@ -4,6 +4,8 @@ import com.bleudev.nine_lifes.api.event.EntityLifecycleEvents
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents
@@ -33,6 +35,11 @@ import net.minecraft.world.level.entity.EntityTypeTest
 import net.minecraft.world.phys.Vec3
 
 class NineLifes : ModInitializer {
+    companion object {
+        @JvmStatic
+        val notSafeSleepTicks: HashMap<String, Int> = HashMap()
+    }
+
     override fun onInitialize() {
         NineLifesPackets.initialize()
         NineLifesMobEffects.initialize()
@@ -56,6 +63,11 @@ class NineLifes : ModInitializer {
             newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            for (entry in notSafeSleepTicks) {
+                if (entry.value > 0) entry.setValue(entry.value - 1)
+                else notSafeSleepTicks.remove(entry.key)
+            }
+
             for (player in server.playerList.players) playerEnsureCustomFoods(player)
 
             for (level in server.allLevels) {
@@ -105,7 +117,11 @@ class NineLifes : ModInitializer {
             if (player is ServerPlayer && !player.hasEffect(NineLifesMobEffects.AMETHYSM))
                 when (player.lifes) {
                     in 0..3 -> return@register Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
-                    in 4..5 -> return@register Player.BedSleepingProblem.NOT_SAFE
+                    in 4..5 -> {
+                        notSafeSleepTicks[player.gameProfile.name] = NOT_SAFE_ANAGLYPH_EVENT_DURATION
+                        player.sendPacket(BedSleepingProblemEvent(PacketBedSleepingProblem.NOT_SAFE))
+                        return@register Player.BedSleepingProblem.NOT_SAFE
+                    }
                 }
             null
         }

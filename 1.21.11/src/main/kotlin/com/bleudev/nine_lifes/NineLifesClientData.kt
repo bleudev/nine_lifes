@@ -5,12 +5,11 @@ import com.bleudev.nine_lifes.util.lerp
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.phys.Vec3
-import org.joml.Vector2d
 import java.util.*
-import kotlin.math.cos
 import kotlin.math.floor
+import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
@@ -30,6 +29,27 @@ object NineLifesClientData {
             else -> 0f
         }
 
+    private enum class Interpolation {
+        SIN {
+            override fun get(delta: Float): Float = (-2 * sin(delta - .5f).pow(2) + .46f).coerceIn(0f, 1f)
+        };
+
+        abstract fun get(delta: Float): Float
+        fun get(delta: Float, left: Float, right: Float) = Mth.lerp(get(delta), left, right)
+
+        operator fun invoke(delta: Float): Float = get(delta)
+        operator fun invoke(delta: Float, left: Float, right: Float): Float = get(delta, left, right)
+    }
+
+    private val anaglyphEffect: Float get() = listOf(
+        amethysm_purpleness, whiteness, Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f
+    ).max()
+    val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
+    val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f
+
+    var bed_not_safe_event_ticks = 0
+    var bed_not_safe_event_running = false
+
     var armor_stand_hit_event_ticks = 0
     var armor_stand_hit_event_running = false
 
@@ -47,7 +67,6 @@ object NineLifesClientData {
 
     var armor_stand_hit_redness = 0f
 
-    var question_marks = ArrayList<DynamicQuestionMarkInfo>()
     var amethysm_effect_info = AmethysmEffectInfo()
     var charge_effect_info = ChargeEffectInfo()
     var center_heart_info = CenterHeartInfo()
@@ -92,8 +111,6 @@ object NineLifesClientData {
         fun tick() {
             if (running) {
                 if (ticks < duration) {
-                    if (ticks % 15 == 0) question_marks.add(DynamicQuestionMarkInfo(0.5f, 0.5f, .25f, 40))
-
                     val whitenessStart = 5
                     val whitenessEndFromDurationEnd = 10
 
@@ -111,47 +128,6 @@ object NineLifesClientData {
                     amethysm_purpleness = 0f
                 }
             }
-        }
-    }
-
-    class DynamicQuestionMarkInfo(x0p: Float, y0p: Float, private val direction: Vector2d, val duration: Int) {
-        private val xy0p: Vector2d = Vector2d(x0p.toDouble(), y0p.toDouble())
-        var time: Float = 0f
-            private set
-
-        constructor(x0p: Float, y0p: Float, speed: Float, duration: Int) : this(x0p, y0p, Vector2d(0.0), duration) {
-            var angle = Random().nextFloat(0f, (2 * Math.PI).toFloat())
-            if ((lastAngle > Math.PI && angle > Math.PI) || (lastAngle < Math.PI && angle < Math.PI)) angle =
-                (2 * Math.PI - angle).toFloat()
-            lastAngle = angle
-
-            this.direction.x = cos(angle.toDouble()) * 2 * speed
-            this.direction.y = sin(angle.toDouble()) * speed
-        }
-
-        private val fadeIn = 30
-        private val fadeOut = 10
-        private val maxAlpha = .5f
-
-        private val alpha: Float
-            get() {
-                if (time <= fadeIn) return (time / fadeIn).lerp(end = maxAlpha)
-                if (time <= duration - fadeOut) return maxAlpha
-                return (1f - (time - duration + fadeOut) / fadeOut).lerp(end = maxAlpha)
-            }
-
-        val offset: Float get() = (time / duration).lerp(end = 5f)
-
-        fun tick(deltaTickProgress: Float): Vec3 {
-            val res = Vec3(this.direction.x, this.direction.y, .0)
-                .scale((this.time / 20).toDouble())
-                .add(this.xy0p.x, this.xy0p.y, this.alpha.toDouble())
-            this.time += deltaTickProgress
-            return res
-        }
-
-        companion object {
-            private var lastAngle = 0f
         }
     }
 
