@@ -1,4 +1,4 @@
-![Anaglyph shader](markdown_assets/anaglyph.png)
+![Anaglyph shader](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/anaglyph.png)
 
 # 3.1: Shader update
 
