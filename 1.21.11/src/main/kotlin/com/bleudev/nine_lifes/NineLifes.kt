@@ -84,7 +84,7 @@ class NineLifes : ModInitializer {
                 .forEach { tryWindChargeFeatures(world, it) }
         }
         EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
-            if (entity.type.equals(EntityType.ARMOR_STAND)) {
+            if (entity.type == EntityType.ARMOR_STAND) {
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
@@ -97,7 +97,7 @@ class NineLifes : ModInitializer {
             }
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
-            if (entity is ServerPlayer && entity.gameMode()!!.isSurvival) {
+            if (entity is ServerPlayer && entity.gameMode().isSurvival) {
                 entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
@@ -142,7 +142,7 @@ class NineLifes : ModInitializer {
                 if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
                     try {
                         for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
-                            if (eff.effect.equals(NineLifesMobEffects.AMETHYSM)) return@noneMatch true
+                            if (eff.effect == NineLifesMobEffects.AMETHYSM) return@noneMatch true
                         return@noneMatch false
                     } catch (_: NullPointerException) {
                         return@noneMatch false
@@ -160,7 +160,7 @@ class NineLifes : ModInitializer {
 
         level.players().forEach { player ->
             if (!actionBox.contains(player.position())) return@forEach
-            val inventory = player.getInventory()
+            val inventory = player.inventory
             var inventoryUpdated = false
             for (slot in 0..<inventory.toList().size) {
                 val stack = inventory.getItem(slot)
@@ -168,7 +168,7 @@ class NineLifes : ModInitializer {
 
                 val potion: PotionContents?
                 if ((stack.get(DataComponents.POTION_CONTENTS).also { potion = it }) != null)
-                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect.equals(NineLifesMobEffects.AMETHYSM)) {
+                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect == NineLifesMobEffects.AMETHYSM) {
                     newStack = ItemStack.EMPTY
                     break
                 }

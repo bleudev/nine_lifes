@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.client.config.heartbeatEnabled
 import com.bleudev.nine_lifes.util.lerp
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.phys.Vec3
 import org.joml.Vector2d
@@ -19,13 +20,15 @@ object NineLifesClientData {
     var lifes = 9
 
     // Shaders
-    val shaderRedMajStrength: Float get() = when (lifes) {
-        0 -> 1f
-        1 -> 1f
-        2 -> .666f
-        3 -> .333f
-        else -> 0f
-    }
+    val shaderRedMajStrength: Float get() =
+        if (Minecraft.getInstance().player?.gameMode()?.isSurvival == false) 0f
+        else when (lifes) {
+            0 -> 1f
+            1 -> 1f
+            2 -> .666f
+            3 -> .333f
+            else -> 0f
+        }
 
     var armor_stand_hit_event_ticks = 0
     var armor_stand_hit_event_running = false

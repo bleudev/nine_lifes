@@ -142,7 +142,7 @@ class NineLifes : ModInitializer {
                 if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
                     try {
                         for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
-                            if (eff.effect.equals(NineLifesMobEffects.AMETHYSM)) return@noneMatch true
+                            if (eff.effect == NineLifesMobEffects.AMETHYSM) return@noneMatch true
                         return@noneMatch false
                     } catch (_: NullPointerException) {
                         return@noneMatch false
@@ -160,7 +160,7 @@ class NineLifes : ModInitializer {
 
         level.players().forEach { player ->
             if (!actionBox.contains(player.position())) return@forEach
-            val inventory = player.getInventory()
+            val inventory = player.inventory
             var inventoryUpdated = false
             for (slot in 0..<inventory.toList().size) {
                 val stack = inventory.getItem(slot)
@@ -168,7 +168,7 @@ class NineLifes : ModInitializer {
 
                 val potion: PotionContents?
                 if ((stack.get(DataComponents.POTION_CONTENTS).also { potion = it }) != null)
-                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect.equals(NineLifesMobEffects.AMETHYSM)) {
+                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect == NineLifesMobEffects.AMETHYSM) {
                     newStack = ItemStack.EMPTY
                     break
                 }
