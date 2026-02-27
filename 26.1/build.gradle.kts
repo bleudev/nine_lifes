@@ -106,7 +106,7 @@ modrinth {
     additionalFiles.add(tasks.kotlinSourcesJar)
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
-    gameVersions.addAll("26.1-snapshot-9")
+    gameVersions.addAll("26.1-snapshot-10")
     loaders.add("fabric")
     dependencies {
         required.project("fabric-api")
