@@ -35,6 +35,7 @@ import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.util.createIdentifier
@@ -51,6 +52,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
 
@@ -81,10 +83,10 @@ class NineLifesClient : ClientModInitializer {
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
         HudElementRegistry.addLast(Layers.OVERLAY) { g, _ -> renderOverlay(g) }
 
-        ClientPlayNetworking.registerGlobalReceiver(AfterPlayerRespawn.id) { _, ctx ->
+        registerReceiver(AfterPlayerRespawn) { _, ctx ->
             ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
         }
-        ClientPlayNetworking.registerGlobalReceiver(JoinMessage.id) { payload, ctx ->
+        registerReceiver(JoinMessage) { payload, ctx ->
             if (joinMessageEnabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
                 val careful = payload.lifes <= 5
                 ctx.player().sendSystemMessage(Component.translatable(
@@ -93,43 +95,46 @@ class NineLifesClient : ClientModInitializer {
                 ).withStyle(if (careful) ChatFormatting.RED else ChatFormatting.DARK_AQUA))
             }
         }
-        ClientPlayNetworking.registerGlobalReceiver(BetaModeMessage.id) { _, ctx -> ctx.player().sendSystemMessage(
+        registerReceiver(BetaModeMessage) { _, ctx -> ctx.player().sendSystemMessage(
             Component.translatable("chat.message.join.beta").append("\n").append(link(ISSUES_LINK))
             .withStyle(ChatFormatting.GOLD)) }
-        ClientPlayNetworking.registerGlobalReceiver(UpdateLifesCount.id) { payload, _ -> lifes = payload.lifes }
-        ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.id) { _, _ ->
+        registerReceiver(UpdateLifesCount) { lifes = it.lifes }
+        registerReceiver(ArmorStandHitEvent) {
             if (!armor_stand_hit_event_running) {
                 armor_stand_hit_event_running = true
                 armor_stand_hit_event_ticks = 40
             }
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartWhitenessScreen.id) { payload, _ ->
-            max_whiteness_screen_ticks = payload.duration
-            max_whiteness_screen = payload.strength
+        registerReceiver(StartWhitenessScreen) {
+            max_whiteness_screen_ticks = it.duration
+            max_whiteness_screen = it.strength
             whiteness_screen_ticks = 0
             whiteness_screen_running = true
             should_death_screen_be_white = true
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreen.id) { payload, _ ->
-            amethysm_effect_info.start(payload.duration)
+        registerReceiver(StartAmethysmScreen) {
+            amethysm_effect_info.start(it.duration)
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartChargeScreen.id) { payload, _ ->
-            charge_effect_info.start(payload.duration, payload.strength)
+        registerReceiver(StartChargeScreen) {
+            charge_effect_info.start(it.duration, it.strength)
         }
-        ClientPlayNetworking.registerGlobalReceiver(BedSleepingProblemEvent.id) { payload, _ ->
-            when (payload.problem) {
-                PacketBedSleepingProblem.NOT_SAFE -> {
-                    bed_not_safe_event_ticks = NOT_SAFE_ANAGLYPH_EVENT_DURATION
-                    bed_not_safe_event_running = true
-                }
+        registerReceiver(BedSleepingProblemEvent) { when (it.problem) {
+            PacketBedSleepingProblem.NOT_SAFE -> {
+                bed_not_safe_event_ticks = NOT_SAFE_ANAGLYPH_EVENT_DURATION
+                bed_not_safe_event_running = true
             }
-        }
+        } }
 
         ClientTickEvents.END_CLIENT_TICK.register(::tick)
         ClientRespawnEvents.RESPAWN.register { _ ->
             should_death_screen_be_white = false
         }
     }
+
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =
+        ClientPlayNetworking.registerGlobalReceiver(payloadCompanion.id) {p, c -> handler(p, c)}
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
+        registerReceiver(payloadCompanion) {p, _ -> handler(p)}
 
     private fun renderLifesCount(graphics: GuiGraphics) {
         val client = Minecraft.getInstance()
