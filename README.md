@@ -3,7 +3,7 @@
 ![9 lifes indicator](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/9lifes_indicator.png)
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
-[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.10--26.1--snapshot--9-green)](https://modrinth.com/mod/nine_lifes)
+[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.10--26.1--snapshot--10-green)](https://modrinth.com/mod/nine_lifes)
 [![Environment](https://img.shields.io/badge/Environment-Client%2BServer-blue)](https://modrinth.com/mod/nine_lifes)
 [![GitHub contributors](https://img.shields.io/github/contributors/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)

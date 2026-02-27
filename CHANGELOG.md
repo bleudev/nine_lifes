@@ -6,6 +6,7 @@ This version finally features post-effects: anaglyph and red majority! Enjoy sur
 
 ## Version updates
 - End of support for Minecraft 1.21.10. Nine lifes now requires 1.21.11+
+- Update to 26.1 snapshot 10
 
 ## New features
 - Red majority shader effect when player has low count of lifes
