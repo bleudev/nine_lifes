@@ -6,6 +6,5 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-include(":1.21.10")
 include(":1.21.11")
 include(":26.1")

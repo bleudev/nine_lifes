@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.ISSUES_LINK
+import com.bleudev.nine_lifes.NOT_SAFE_ANAGLYPH_EVENT_DURATION
 import com.bleudev.nine_lifes.NineLifesClientData
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
@@ -8,6 +9,8 @@ import com.bleudev.nine_lifes.NineLifesClientData.amethysm_whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_running
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_redness
+import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_running
+import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.center_heart_info
 import com.bleudev.nine_lifes.NineLifesClientData.charge_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.getNextHeartbeatTime
@@ -30,7 +33,11 @@ import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
@@ -45,6 +52,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
 
@@ -67,15 +75,18 @@ class NineLifesClient : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
         }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
+            putVec2(NineLifesClientData.shaderAnaglyphX, NineLifesClientData.shaderAnaglyphY)
+        }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
         HudElementRegistry.addLast(Layers.OVERLAY) { g, _ -> renderOverlay(g) }
 
-        ClientPlayNetworking.registerGlobalReceiver(AfterPlayerRespawn.id) { _, ctx ->
+        registerReceiver(AfterPlayerRespawn) { _, ctx ->
             ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
         }
-        ClientPlayNetworking.registerGlobalReceiver(JoinMessage.id) { payload, ctx ->
+        registerReceiver(JoinMessage) { payload, ctx ->
             if (joinMessageEnabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
                 val careful = payload.lifes <= 5
                 ctx.player().displayClientMessage(Component.translatable(
@@ -84,35 +95,46 @@ class NineLifesClient : ClientModInitializer {
                 ).withStyle(if (careful) ChatFormatting.RED else ChatFormatting.DARK_AQUA), false)
             }
         }
-        ClientPlayNetworking.registerGlobalReceiver(BetaModeMessage.id) { _, ctx -> ctx.player().displayClientMessage(
+        registerReceiver(BetaModeMessage) { _, ctx -> ctx.player().displayClientMessage(
             Component.translatable("chat.message.join.beta").append("\n").append(link(ISSUES_LINK))
             .withStyle(ChatFormatting.GOLD), false) }
-        ClientPlayNetworking.registerGlobalReceiver(UpdateLifesCount.id) { payload, _ -> lifes = payload.lifes }
-        ClientPlayNetworking.registerGlobalReceiver(ArmorStandHitEvent.id) { _, _ ->
+        registerReceiver(UpdateLifesCount) { lifes = it.lifes }
+        registerReceiver(ArmorStandHitEvent) {
             if (!armor_stand_hit_event_running) {
                 armor_stand_hit_event_running = true
                 armor_stand_hit_event_ticks = 40
             }
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartWhitenessScreen.id) { payload, _ ->
-            max_whiteness_screen_ticks = payload.duration
-            max_whiteness_screen = payload.strength
+        registerReceiver(StartWhitenessScreen) {
+            max_whiteness_screen_ticks = it.duration
+            max_whiteness_screen = it.strength
             whiteness_screen_ticks = 0
             whiteness_screen_running = true
             should_death_screen_be_white = true
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartAmethysmScreen.id) { payload, _ ->
-            amethysm_effect_info.start(payload.duration)
+        registerReceiver(StartAmethysmScreen) {
+            amethysm_effect_info.start(it.duration)
         }
-        ClientPlayNetworking.registerGlobalReceiver(StartChargeScreen.id) { payload, _ ->
-            charge_effect_info.start(payload.duration, payload.strength)
+        registerReceiver(StartChargeScreen) {
+            charge_effect_info.start(it.duration, it.strength)
         }
+        registerReceiver(BedSleepingProblemEvent) { when (it.problem) {
+            PacketBedSleepingProblem.NOT_SAFE -> {
+                bed_not_safe_event_ticks = NOT_SAFE_ANAGLYPH_EVENT_DURATION
+                bed_not_safe_event_running = true
+            }
+        } }
 
         ClientTickEvents.END_CLIENT_TICK.register(::tick)
         ClientRespawnEvents.RESPAWN.register { _ ->
             should_death_screen_be_white = false
         }
     }
+
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =
+        ClientPlayNetworking.registerGlobalReceiver(payloadCompanion.id) {p, c -> handler(p, c)}
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
+        registerReceiver(payloadCompanion) {p, _ -> handler(p)}
 
     private fun renderLifesCount(graphics: GuiGraphics) {
         val client = Minecraft.getInstance()
@@ -150,9 +172,9 @@ class NineLifesClient : ClientModInitializer {
     }
 
     private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
-        graphics.overlayWithColor(ARGB.colorFromFloat(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f))
-        graphics.overlayWithColor(0xffffff.asColorWithAlpha(amethysm_whiteness))
-        graphics.overlayWithColor(0xffffff.asColorWithAlpha(charge_effect_info.getWhiteness()))
+        graphics.overlayWithColor(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f)
+        graphics.white(amethysm_whiteness)
+        graphics.white(charge_effect_info.getWhiteness())
     }
 
     private var lastMillis = 0L
@@ -189,6 +211,11 @@ class NineLifesClient : ClientModInitializer {
                 armor_stand_hit_redness = if (fromTicks <= .5 * SharedConstants.TICKS_PER_SECOND) (fromTicks / (.5f * SharedConstants.TICKS_PER_SECOND)).lerp()
                 else ((fromTicks - .5f * SharedConstants.TICKS_PER_SECOND) / (1.5f * SharedConstants.TICKS_PER_SECOND)).lerp(1f, 0f)
             }
+        }
+
+        if (bed_not_safe_event_running) {
+            if (bed_not_safe_event_ticks == 0) bed_not_safe_event_running = false
+            else bed_not_safe_event_ticks--
         }
 
         redness = armor_stand_hit_redness.lerp(end = .2f)

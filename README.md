@@ -1,6 +1,6 @@
 # Nine lifes
 
-![9 lifes indicator](./readme_assets/9lifes_indicator.png)
+![9 lifes indicator](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/9lifes_indicator.png)
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
 [![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.10--26.1--snapshot--9-green)](https://modrinth.com/mod/nine_lifes)
@@ -18,9 +18,9 @@ Don't use resource packs which changes hearts because this mod changes them to h
 ### Supported Minecraft versions and minimal requirements
 | Minecraft version | Max Nine lifes version | Fabric Language Kotlin   | Fabric API  | YACL                        | Fabric Loader |
 |-------------------|------------------------|:-------------------------|:------------|:----------------------------|---------------|
-| 26.1 (snapshot 9) | ✅ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.143.5 | \>= 3.8.2                   | \>= 0.18.4    |
-| 1.21.11           | ✅ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.141.3 | \>= 3.8.2                   | \>= 0.18.4    |
-| 1.21.10           | ✅ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.138.3 | \>= 3.8.2                   | \>= 0.18.4    |
+| 26.1 (snapshot 9) | ✅ 3.1                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.143.5 | \>= 3.8.2                   | \>= 0.18.4    |
+| 1.21.11           | ✅ 3.1                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.141.3 | \>= 3.8.2                   | \>= 0.18.4    |
+| 1.21.10           | ❌ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.138.3 | \>= 3.8.2                   | \>= 0.18.4    |
 | 1.21.9            | ❌ 2.1 (1.21.9)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.134.0 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
 | 1.21.8            | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
 | 1.21.7            | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |

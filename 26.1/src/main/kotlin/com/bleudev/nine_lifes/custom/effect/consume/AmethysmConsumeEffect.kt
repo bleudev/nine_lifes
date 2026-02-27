@@ -7,15 +7,12 @@ import com.bleudev.nine_lifes.custom.packet.payload.StartWhitenessScreen
 import com.bleudev.nine_lifes.interfaces.mixin.CustomLivingEntity
 import com.bleudev.nine_lifes.util.sendPacket
 import com.mojang.serialization.MapCodec
-import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants.TICKS_PER_SECOND
 import net.minecraft.network.RegistryFriendlyByteBuf
-import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.consume_effects.ConsumeEffect
 import net.minecraft.world.level.Level
@@ -36,11 +33,6 @@ class AmethysmConsumeEffect : ConsumeEffect {
             (livingEntity as CustomLivingEntity).`nl$setDamageTicks`(TICKS_PER_SECOND)
             return true
         }
-
-        if (livingEntity is Player) livingEntity.sendOverlayMessage(Component.literal(
-            "- .... .  .--. --- .-- . .-.  --- ..-.  .- -- . - .... -.-- ... -  .. ...  - --- ---  ... - .-. --- -. --."
-        ).withStyle(ChatFormatting.LIGHT_PURPLE))
-
         return livingEntity.addEffect(MobEffectInstance(NineLifesMobEffects.AMETHYSM, 100, 0))
     }
 }

@@ -19,6 +19,8 @@ const val CHARGE_SCREEN_EFFECT_RADIUS_MAX = 20
 const val CHARGE_SCREEN_MAX_STRENGTH = 0.5
 const val CHARGE_SCREEN_DURATION = 6
 
+const val NOT_SAFE_ANAGLYPH_EVENT_DURATION = 60
+
 fun isInBetaMode(): Boolean = VERSION.endsWith("_beta")
 
 val LOGGER = LoggerFactory.getLogger(NAME)

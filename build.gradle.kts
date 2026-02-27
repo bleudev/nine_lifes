@@ -24,6 +24,5 @@ fun configure(v: String, maxExv: String, snapshot: Int? = null) {
         }
     }
 }
-configure("1.21.10", "1.21.11")
 configure("1.21.11", "26.1")
 configure("26.1", "26.2", 9)
