@@ -3,6 +3,7 @@ package com.bleudev.nine_lifes.mixin.client;
 import com.bleudev.nine_lifes.client.util.ClientInjectsKt;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Final;
@@ -18,11 +19,15 @@ import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
 import static com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white;
 
 @Mixin(DeathScreen.class)
-public class DeathScreenMixin {
+public class DeathScreenMixin extends Screen {
     @Mutable
     @Shadow
     @Final
     private boolean hardcore;
+
+    protected DeathScreenMixin(Component title) {
+        super(title);
+    }
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;<init>(Lnet/minecraft/network/chat/Component;)V"))
     private static Component changeTitle(Component original) {
@@ -39,6 +44,11 @@ public class DeathScreenMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
         if (should_death_screen_be_white)
-            ClientInjectsKt.overlayWithColor(guiGraphics, 0xffffffff);
+            ClientInjectsKt.white(guiGraphics);
+    }
+
+    @Inject(method = "render", at = @At("TAIL"))
+    private void renderPostEffects(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+        ClientInjectsKt.applyAnaglyph(this.minecraft);
     }
 }

@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.ISSUES_LINK
+import com.bleudev.nine_lifes.NOT_SAFE_ANAGLYPH_EVENT_DURATION
 import com.bleudev.nine_lifes.NineLifesClientData
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
@@ -8,6 +9,8 @@ import com.bleudev.nine_lifes.NineLifesClientData.amethysm_whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_running
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_redness
+import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_running
+import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.center_heart_info
 import com.bleudev.nine_lifes.NineLifesClientData.charge_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.getNextHeartbeatTime
@@ -30,7 +33,10 @@ import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
@@ -66,6 +72,9 @@ class NineLifesClient : ClientModInitializer {
 
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
+            putVec2(NineLifesClientData.shaderAnaglyphX, NineLifesClientData.shaderAnaglyphY)
         }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
@@ -106,6 +115,14 @@ class NineLifesClient : ClientModInitializer {
         }
         ClientPlayNetworking.registerGlobalReceiver(StartChargeScreen.id) { payload, _ ->
             charge_effect_info.start(payload.duration, payload.strength)
+        }
+        ClientPlayNetworking.registerGlobalReceiver(BedSleepingProblemEvent.id) { payload, _ ->
+            when (payload.problem) {
+                PacketBedSleepingProblem.NOT_SAFE -> {
+                    bed_not_safe_event_ticks = NOT_SAFE_ANAGLYPH_EVENT_DURATION
+                    bed_not_safe_event_running = true
+                }
+            }
         }
 
         ClientTickEvents.END_CLIENT_TICK.register(::tick)
@@ -150,9 +167,9 @@ class NineLifesClient : ClientModInitializer {
     }
 
     private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
-        graphics.overlayWithColor(ARGB.colorFromFloat(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f))
-        graphics.overlayWithColor(0xffffff.asColorWithAlpha(amethysm_whiteness))
-        graphics.overlayWithColor(0xffffff.asColorWithAlpha(charge_effect_info.getWhiteness()))
+        graphics.overlayWithColor(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f)
+        graphics.white(amethysm_whiteness)
+        graphics.white(charge_effect_info.getWhiteness())
     }
 
     private var lastMillis = 0L
@@ -188,6 +205,13 @@ class NineLifesClient : ClientModInitializer {
 
                 armor_stand_hit_redness = if (fromTicks <= .5 * SharedConstants.TICKS_PER_SECOND) (fromTicks / (.5f * SharedConstants.TICKS_PER_SECOND)).lerp()
                 else ((fromTicks - .5f * SharedConstants.TICKS_PER_SECOND) / (1.5f * SharedConstants.TICKS_PER_SECOND)).lerp(1f, 0f)
+            }
+        }
+
+        if (bed_not_safe_event_running) {
+            if (bed_not_safe_event_ticks == 0) bed_not_safe_event_running = false
+            else {
+                bed_not_safe_event_ticks--
             }
         }
 
