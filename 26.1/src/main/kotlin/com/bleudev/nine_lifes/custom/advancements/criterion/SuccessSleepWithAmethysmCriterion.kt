@@ -9,26 +9,26 @@ import net.minecraft.advancements.criterion.SimpleCriterionTrigger
 import net.minecraft.server.level.ServerPlayer
 import java.util.*
 
-class AlmostDeadCriterion : SimpleCriterionTrigger<AlmostDeadCriterion.TriggerInstance> {
+class SuccessSleepWithAmethysmCriterion : SimpleCriterionTrigger<SuccessSleepWithAmethysmCriterion.TriggerInstance> {
     internal constructor() : super()
 
     override fun codec(): Codec<TriggerInstance> = TriggerInstance.CODEC
 
-    fun trigger(player: ServerPlayer) = trigger(player) { player.isAlive && player.gameMode().isSurvival && it.requirementsMet(player.lifes, player.health) }
+    fun trigger(player: ServerPlayer) = trigger(player) { player.isAlive && player.gameMode().isSurvival && it.requirementsMet(player.lifes <= 5) }
 
-    fun require(lifes: Int, health: Float): Criterion<TriggerInstance> = createCriterion(TriggerInstance(Optional.empty(), lifes, health))
+    fun require(wasRequired: Boolean): Criterion<TriggerInstance> = createCriterion(TriggerInstance(Optional.empty(), wasRequired))
 
-    data class TriggerInstance(val playerPredicate: Optional<ContextAwarePredicate>, val lifes: Int, val maxHealth: Float): SimpleInstance {
+    data class TriggerInstance(val playerPredicate: Optional<ContextAwarePredicate>, val wasRequired: Boolean): SimpleInstance {
         override fun player(): Optional<ContextAwarePredicate> = playerPredicate
 
-        fun requirementsMet(lifes: Int, health: Float): Boolean = (lifes == this@TriggerInstance.lifes) && (health <= maxHealth)
+        fun requirementsMet(wasRequired: Boolean): Boolean = (this.wasRequired && wasRequired) || (!this.wasRequired)
 
         companion object {
             val CODEC: Codec<TriggerInstance> = RecordCodecBuilder.create { it.group(
                 ContextAwarePredicate.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-                Codec.INT.fieldOf("lifes").forGetter(TriggerInstance::lifes),
-                Codec.FLOAT.fieldOf("maxHealth").forGetter(TriggerInstance::maxHealth),
+                Codec.BOOL.fieldOf("wasRequired").forGetter(TriggerInstance::wasRequired),
             ).apply(it, ::TriggerInstance) }
         }
     }
 }
+

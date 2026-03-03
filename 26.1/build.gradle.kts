@@ -97,10 +97,6 @@ tasks.jar {
     }
 }
 
-tasks.named("runClient") {
-    dependsOn("runDatagen")
-}
-
 fabricApi {
     configureDataGeneration {
         client = true

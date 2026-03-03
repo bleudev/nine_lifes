@@ -117,16 +117,24 @@ class NineLifes : ModInitializer {
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
-            if (player is ServerPlayer && !player.hasEffect(NineLifesMobEffects.AMETHYSM))
+            if (player !is ServerPlayer) return@register null
+            var problem: Player.BedSleepingProblem? = null
+            if (!player.hasEffect(NineLifesMobEffects.AMETHYSM))
                 when (player.lifes) {
-                    in 0..3 -> return@register Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+                    in 0..3 -> problem = PROBLEM_NOT_NOW
                     in 4..5 -> {
                         notSafeSleepTicks[player.gameProfile.name] = NOT_SAFE_ANAGLYPH_EVENT_DURATION
                         player.sendPacket(BedSleepingProblemEvent(PacketBedSleepingProblem.NOT_SAFE))
-                        return@register Player.BedSleepingProblem.NOT_SAFE
+                        problem = Player.BedSleepingProblem.NOT_SAFE
                     }
                 }
-            null
+            if (problem != null && problem.message != null)
+                NineLifesCriterions.BED_SLEEPING_PROBLEM.trigger(player, problem)
+            problem
+        }
+        EntitySleepEvents.START_SLEEPING.register { entity, _ ->
+            if (entity is ServerPlayer)
+                NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
         }
     }
 
@@ -202,3 +210,5 @@ class NineLifes : ModInitializer {
         }
     }
 }
+
+val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))

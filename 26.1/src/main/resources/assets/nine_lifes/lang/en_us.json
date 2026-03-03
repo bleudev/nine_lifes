@@ -16,8 +16,12 @@
 
   "advancement.nine_lifes.root": "Nine lifes!",
   "advancement.nine_lifes.description.root": "Start your journey.",
+  "advancement.nine_lifes.try_sleep_without_shard": "Huh?",
+  "advancement.nine_lifes.description.try_sleep_without_shard": "For some reason, you couldn't sleep. Is there any item that will fix this?",
+  "advancement.nine_lifes.slept_with_shard": "Sweet Dreams.. Again",
+  "advancement.nine_lifes.description.slept_with_shard": "Sleep after eating amethyst shard.",
   "advancement.nine_lifes.almost_dead": "Almost dead",
-  "advancement.nine_lifes.description.almost_dead": "Survive both with one heart and life",
+  "advancement.nine_lifes.description.almost_dead": "Survive with one half heart and life",
 
   "tag.item.nine_lifes.cause_blast_furnace_explode": "Cause blast furnace explode",
   "tag.item.nine_lifes.cause_campfire_explode": "Cause campfires explode",
