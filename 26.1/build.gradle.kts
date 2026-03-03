@@ -97,6 +97,16 @@ tasks.jar {
     }
 }
 
+tasks.named("runClient") {
+    dependsOn("runDatagen")
+}
+
+fabricApi {
+    configureDataGeneration {
+        client = true
+    }
+}
+
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
     projectId.set("nine_lifes")

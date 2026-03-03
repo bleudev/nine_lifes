@@ -48,6 +48,7 @@ class NineLifes : ModInitializer {
         NineLifesPotions.initialize()
         NineLifesEntities.initialize()
         NineLifesCommands.initialize()
+        NineLifesCriterions.initialize()
         FabricPotionBrewingBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
@@ -63,6 +64,8 @@ class NineLifes : ModInitializer {
             newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            server.playerList.players.forEach(NineLifesCriterions::trigger)
+
             for (entry in notSafeSleepTicks) {
                 if (entry.value > 0) entry.setValue(entry.value - 1)
                 else notSafeSleepTicks.remove(entry.key)

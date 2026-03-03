@@ -14,6 +14,11 @@
 
   "enchantment.nine_lifes.charge": "Заряд",
 
+  "advancement.nine_lifes.root": "Девять жизней!",
+  "advancement.nine_lifes.description.root": "Начните своё путешествие.",
+  "advancement.nine_lifes.almost_dead": "На волоске",
+  "advancement.nine_lifes.description.almost_dead": "Выживите с одним сердечком и жизней",
+
   "tag.item.nine_lifes.cause_blast_furnace_explode": "Взрывает плавильные печи",
   "tag.item.nine_lifes.cause_campfire_explode": "Взрывает костры",
   "tag.item.nine_lifes.cause_furnace_explode": "Взрывает печки",

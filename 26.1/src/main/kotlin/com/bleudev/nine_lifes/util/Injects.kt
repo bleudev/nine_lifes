@@ -66,7 +66,7 @@ fun ServerPlayer.setLifes(newLifesCount: Int) {
     (this as CustomServerPlayer).`nl$setLifes`(newLifes)
     sendPacket(UpdateLifesCount(newLifes))
 }
-fun ServerPlayer.setLifes(lifesCountChanger: (Int) -> Int) = setLifes(lifesCountChanger(lifes))
+fun ServerPlayer.setLifes(lifesCountChanger: (Int) -> Int) = setLifes(lifesCountChanger(this@setLifes.lifes))
 fun ServerPlayer.addLifes(addedLifesCount: Int) = setLifes { it + addedLifesCount }
 fun ServerPlayer.resetLifes() = setLifes(MAX_LIFES)
 fun ServerPlayer.revive() {
