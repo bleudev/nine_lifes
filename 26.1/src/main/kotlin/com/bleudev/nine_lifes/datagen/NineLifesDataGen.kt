@@ -16,6 +16,7 @@ class NineLifesDataGen : DataGeneratorEntrypoint {
         pack.addProvider(::NineLifesDynamicRegistryProvider)
         pack.addProvider(::NineLifesDamageTypeTagsProvider)
         pack.addProvider(::NineLifesAdvancementsProvider)
+        pack.addProvider(::NineLifesRecipesProvider)
     }
 
     override fun buildRegistry(registryBuilder: RegistrySetBuilder) {
