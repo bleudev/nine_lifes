@@ -1,19 +1,20 @@
 package com.bleudev.nine_lifes.datagen.provider
 
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.custom.NineLifesItemTags
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.util.advancement
+import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.config
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
 import java.util.concurrent.CompletableFuture
 
-class DefaultTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
+class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
     override fun generateTranslations(
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
@@ -88,7 +89,7 @@ class DefaultTranslationProvider(output: FabricPackOutput, registriesFuture: Com
     }
 }
 
-class RussianTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
+class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
@@ -161,8 +162,8 @@ class RussianTranslationProvider(output: FabricPackOutput, registriesFuture: Com
 }
 
 private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: String, nameTranslation: String, descriptionTranslation: String) {
-    this.add("advancement.$MOD_ID.$name", nameTranslation)
-    this.add("advancement.$MOD_ID.description.$name", descriptionTranslation)
+    this.add(advancement(name), nameTranslation)
+    this.add(advancementDescription(name), descriptionTranslation)
 }
 
 private fun FabricLanguageProvider.TranslationBuilder.addEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {

@@ -5,6 +5,8 @@ import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesEnchantments
+import com.bleudev.nine_lifes.util.advancement
+import com.bleudev.nine_lifes.util.advancementDescription
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider
 import net.minecraft.advancements.Advancement
@@ -76,6 +78,6 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
 
     private var isRoot: Boolean = true
     private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder = Advancement.Builder.advancement().display(
-        icon, Component.translatable("advancement.$MOD_ID.$name"), Component.translatable("advancement.nine_lifes.description.$name"), if (isRoot) background else null, type, name != "root", name != "root", hidden)
+        icon, Component.translatable(advancement(name)), Component.translatable(advancementDescription(name)), if (isRoot) background else null, type, name != "root", name != "root", hidden)
         .applier().save(this, "$MOD_ID:$name").also { isRoot = false }
 }

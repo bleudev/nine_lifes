@@ -85,8 +85,8 @@ class NineLifes : ModInitializer {
                         when (entity.damageTicks) {
                             -1 -> return@forEach
                             0 -> {
-                                level.explode(entity.position(), 7f, NineLifesDamageSources::charged, Level.ExplosionInteraction.MOB, entity)
-                                entity.kill(NineLifesDamageSources::charged)
+                                level.explode(entity.position(), 7f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.MOB, entity)
+                                entity.kill(NineLifesDamageTypes::chargedAmethyst)
                             }
                         }
                         entity.damageTicks -= 1
@@ -178,7 +178,7 @@ class NineLifes : ModInitializer {
                 } ?: true) return@forBlocksInBox 0
 
                 level.removeBlock(pos, false)
-                level.explode(Vec3(pos), 3f, NineLifesDamageSources::charged, Level.ExplosionInteraction.BLOCK)
+                level.explode(Vec3(pos), 3f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK)
             }
             0
         }
