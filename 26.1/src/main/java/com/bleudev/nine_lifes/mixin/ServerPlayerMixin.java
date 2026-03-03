@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.mixin;
 
 import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer;
+import com.bleudev.nine_lifes.util.InjectsKt;
 import com.bleudev.nine_lifes.util.MixinInjectsKt;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.ValueInput;
@@ -42,7 +43,7 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
     }
     @Inject(method = "restoreFrom", at = @At("TAIL"))
     private void onRespawn(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
-        var player = (ServerPlayer) (Object) this;
+        ServerPlayer player = (ServerPlayer) (Object) this;
         MixinInjectsKt.setLifes(player, MixinInjectsKt.getLifes(oldPlayer));
         for (int i = 0; i < 9; i++) {
             this.lifesPlayTime[i] = ((CustomServerPlayer) oldPlayer).nl$getLifesPlayTime(i+1);
@@ -50,7 +51,12 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
     }
     @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/Identifier;)V", ordinal = 1, shift = At.Shift.AFTER))
     private void tickLifesPlayTime(CallbackInfo ci) {
-        int lifesCount = MixinInjectsKt.getLifes((ServerPlayer) (Object) this);
+        ServerPlayer player = (ServerPlayer) (Object) this;
+        int totalPlayTime = InjectsKt.getPlayTime(player);
+        for (int i = 0; i < 9; i++) {
+            if (this.lifesPlayTime[i] > totalPlayTime) this.lifesPlayTime[i] = totalPlayTime;
+        }
+        int lifesCount = MixinInjectsKt.getLifes(player);
         if (lifesCount > 0) this.lifesPlayTime[lifesCount-1] += 1;
     }
 }

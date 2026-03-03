@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider
 import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
-import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.AdvancementType
 import net.minecraft.advancements.criterion.PlayerTrigger
 import net.minecraft.core.HolderLookup
@@ -40,8 +39,15 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
             addCriterion("almost_dead", NineLifesCriterions.ALMOST_DEAD.require(1, 1f))
-            rewards(AdvancementRewards.Builder.experience(10))
             parent(root)
+        }
+        val hundredDays = consumer.create("hundred_days", false, Items.SKELETON_SKULL, AdvancementType.GOAL) {
+            addCriterion("hundred_days_played", NineLifesCriterions.PLAY_TIME.require(2400000))
+            parent(root)
+        }
+        val trueHundredDays = consumer.create("true_hundred_days", true, Items.WITHER_SKELETON_SKULL, AdvancementType.CHALLENGE) {
+            addCriterion("hundred_days_played_with_one_life", NineLifesCriterions.LIFES_PLAY_TIME.require(1, 2400000))
+            parent(hundredDays)
         }
     }
 

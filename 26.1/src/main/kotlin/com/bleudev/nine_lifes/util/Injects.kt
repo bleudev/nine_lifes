@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
+import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.effect.MobEffectInstance
@@ -54,6 +55,8 @@ fun Player.consumeOneItemInHand(hand: InteractionHand) {
         setItemInHand(hand, stack)
     }
 }
+val ServerPlayer.playTime: Int get() = this.stats.getValue(Stats.CUSTOM, Stats.PLAY_TIME)
+val ServerPlayer.currentLifesPlayTime: Int get() = this.lifesPlayTime(this.lifes)
 fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> DamageSource, explosionInteraction: Level.ExplosionInteraction, source: Entity? = null) = explode(
     source, damageSourceSupplier(this), ExplosionDamageCalculator(),
     pos.x, pos.y, pos.z, strength, true, explosionInteraction
