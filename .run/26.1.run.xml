@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="26.1" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="26.1" type="GradleRunConfiguration" factoryName="Gradle" singleton="false">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/26.1" />
@@ -13,7 +13,7 @@
           <option value="runClient" />
         </list>
       </option>
-      <option name="vmOptions" />
+      <option name="vmOptions" value="-Dfabric-tag-conventions-v2.missingTagTranslationWarning=VERBOSE" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>

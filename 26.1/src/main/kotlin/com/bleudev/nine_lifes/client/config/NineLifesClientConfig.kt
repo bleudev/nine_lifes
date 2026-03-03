@@ -1,11 +1,13 @@
 package com.bleudev.nine_lifes.client.config
 
 import com.bleudev.nine_lifes.LOGGER
+import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.contents.TranslatableContents
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -31,10 +33,18 @@ data class NineLifesClientConfig(
     var lowLifesRedSky: Boolean = true
 )
 
+interface TranslatableConfigEnumProvider {
+    val names: List<String>
+}
+
 enum class HeartPosition : NameableEnum {
     BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT, TOP_LEFT, TOP_CENTER, TOP_RIGHT;
 
-    override fun getDisplayName(): Component = Component.translatable("yacl3.config.nine_lifes.enum.HeartPosition.$name")
+    override fun getDisplayName(): Component = Component.translatable(enumConfig("HeartPosition", name))
+
+    companion object : TranslatableConfigEnumProvider {
+        override val names: List<String> = HeartPosition.entries.map { (it.displayName.contents as TranslatableContents).key }
+    }
 }
 
 private val configPath: Path

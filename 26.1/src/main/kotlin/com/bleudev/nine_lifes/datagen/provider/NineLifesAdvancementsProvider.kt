@@ -1,15 +1,22 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.CHARGE_SCREEN_EFFECT_RADIUS_MAX
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
+import com.bleudev.nine_lifes.custom.NineLifesEnchantments
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider
 import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
+import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementType
-import net.minecraft.advancements.criterion.PlayerTrigger
+import net.minecraft.advancements.criterion.*
+import net.minecraft.advancements.criterion.MinMaxBounds.Ints
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.component.predicates.DataComponentPredicates
+import net.minecraft.core.component.predicates.EnchantmentsPredicate
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Player
@@ -26,6 +33,9 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         registryLookup: HolderLookup.Provider,
         consumer: Consumer<AdvancementHolder>
     ) {
+        val itemLookup = registryLookup.lookupOrThrow(Registries.ITEM)
+        val enchantments = registryLookup.lookupOrThrow(Registries.ENCHANTMENT)
+
         val root = consumer.create("root", false, Items.AMETHYST_SHARD, AdvancementType.TASK) {
             addCriterion("joined", PlayerTrigger.TriggerInstance.tick())
         }
@@ -35,6 +45,17 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         }
         val sleptWithShard = consumer.create("slept_with_shard", true, Items.BLUE_BED, AdvancementType.TASK) {
             addCriterion("slept_with_shard", NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.require(true))
+            parent(trySleepWithoutShard)
+        }
+        val gotChargedShard = consumer.create("got_charged_shard", true, Items.AMETHYST_SHARD, AdvancementType.GOAL) {
+            requirements(AdvancementRequirements.Strategy.OR)
+            addCriterion("got_charged_shard_with_lightning", NineLifesCriterions.CHARGE_ITEM.require(Items.AMETHYST_SHARD, CHARGE_SCREEN_EFFECT_RADIUS_MAX.toDouble()))
+            addCriterion("got_charged_shard", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
+                .of(itemLookup, Items.AMETHYST_SHARD)
+                .withComponents(DataComponentMatchers.Builder.components()
+                    .partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(
+                        EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), Ints.atLeast(1)))))
+                    .build())))
             parent(trySleepWithoutShard)
         }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
@@ -55,6 +76,6 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
 
     private var isRoot: Boolean = true
     private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder = Advancement.Builder.advancement().display(
-        icon, Component.translatable("advancement.nine_lifes.$name"), Component.translatable("advancement.nine_lifes.description.$name"), if (isRoot) background else null, type, name != "root", name != "root", hidden)
+        icon, Component.translatable("advancement.$MOD_ID.$name"), Component.translatable("advancement.nine_lifes.description.$name"), if (isRoot) background else null, type, name != "root", name != "root", hidden)
         .applier().save(this, "$MOD_ID:$name").also { isRoot = false }
 }

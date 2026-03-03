@@ -153,6 +153,7 @@ class NineLifes : ModInitializer {
                         level.players().forEach { player ->
                             val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
                                 .coerceAtLeast(.0)
+                            NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
                             val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
                             player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                         }
