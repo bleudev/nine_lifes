@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.bleudev.nine_lifes.NineLifesConstKt.MAX_LIFES;
+
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin implements CustomServerPlayer {
     @Unique
@@ -23,12 +25,15 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
         return this.lifes;
     }
     @Override
-    public void nl$setLifes(int value) {
-        this.lifes = value;
+    public void nl$setLifes(int newLifesCount) throws IllegalArgumentException {
+        if (newLifesCount < 0 || newLifesCount > MAX_LIFES) throw new IllegalArgumentException("Lifes count out of range[0; 9]");
+        this.lifes = newLifesCount;
     }
     @Override
-    public int nl$getLifesPlayTime(int lifesCount) {
-        return this.lifesPlayTime[lifesCount -1];
+    public int nl$getLifesPlayTime(int lifesCount) throws NullPointerException {
+        if (lifesCount < 0 || lifesCount > MAX_LIFES) throw new NullPointerException("Lifes count out of range [0; 9]");
+        if (lifesCount == 0) return 0;
+        return this.lifesPlayTime[lifesCount - 1];
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))

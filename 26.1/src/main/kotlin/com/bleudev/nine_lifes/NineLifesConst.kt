@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 
 const val MOD_ID = "nine_lifes"
 val NAME = PlatformHelper.getModName(MOD_ID)
-val AUTHOR = PlatformHelper.getModAuthorsNames(MOD_ID).stream().findFirst().orElse("Unknown")
+val AUTHOR = PlatformHelper.getModAuthorsNames(MOD_ID).getOrNull(0) ?: "Unknown"
 val VERSION = PlatformHelper.getModVersion(MOD_ID, "+")
 const val GITHUB_LINK = "https://github.com/bleudev/nine_lifes"
 const val ISSUES_LINK = "https://github.com/bleudev/nine_lifes/issues"

@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.util
 
+import com.bleudev.nine_lifes.LOGGER
 import com.bleudev.nine_lifes.MAX_LIFES
 import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
 import com.bleudev.nine_lifes.interfaces.mixin.CustomLivingEntity
@@ -19,13 +20,25 @@ val ServerPlayer.lifes: Int get() {
     if (lifesClamp(lifes) != lifes) setLifes(lifesClamp(lifes))
     return lifesClamp(lifes)
 }
-fun ServerPlayer.setLifes(newLifesCount: Int) {
+fun ServerPlayer.setLifes(newLifesCount: Int): Int {
     val newLifes = lifesClamp(newLifesCount)
-    (this as CustomServerPlayer).`nl$setLifes`(newLifes)
-    sendPacket(UpdateLifesCount(newLifes))
+    try {
+        (this as CustomServerPlayer).`nl$setLifes`(newLifes)
+        sendPacket(UpdateLifesCount(newLifes))
+        return newLifes
+    } catch (e: IllegalArgumentException) {
+        LOGGER.error("Lifes set was failed: {}\n{}", newLifes, e.stackTrace)
+        return -1
+    }
 }
-fun ServerPlayer.lifesPlayTime(lifesCount: Int) = (this as CustomServerPlayer)
-    .`nl$getLifesPlayTime`(lifesCount).coerceAtLeast(0)
+@Throws(IllegalArgumentException::class)
+fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
+    try {
+        return(this as CustomServerPlayer).`nl$getLifesPlayTime`(lifesCount).coerceAtLeast(0)
+    } catch (e: NullPointerException) {
+        throw IllegalArgumentException(e.message, e)
+    }
+}
 // Brewing Stand
 @Suppress("UNCHECKED_CAST")
 private inline fun <reified T : Any, R> T.getPrivateProperty(name: String): R? {
