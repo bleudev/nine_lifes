@@ -14,7 +14,7 @@ object NineLifesEnchantments {
     /**
      * [ResourceKey] of `nine_lifes:charge` enchantment
      */
-    val KEY_CHARGE: ResourceKey<Enchantment> = of("charge")
+    val CHARGE: ResourceKey<Enchantment> = of("charge")
 
     private fun of(name: String): ResourceKey<Enchantment> {
         return ResourceKey.create(Registries.ENCHANTMENT, createIdentifier(name))
@@ -41,7 +41,7 @@ object NineLifesEnchantments {
          *
          * @return holder of enchantment
          */
-        fun charge(): Holder<Enchantment> = getter(KEY_CHARGE)
+        fun charge(): Holder<Enchantment> = getter(CHARGE)
 
         companion object {
             /**

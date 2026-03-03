@@ -46,7 +46,7 @@ class NineLifesDynamicRegistryProvider(output: FabricPackOutput,
                 context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE),
                 context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE),
                 1, 1, Enchantment.dynamicCost(3, 0), Enchantment.dynamicCost(7, 0), 4, EquipmentSlotGroup.HAND
-            ).register(context, NineLifesEnchantments.KEY_CHARGE, { withStyle(ChatFormatting.WHITE) })
+            ).register(context, NineLifesEnchantments.CHARGE, { withStyle(ChatFormatting.WHITE) })
         }
 
         fun bootstrapDamageTypes(context: BootstrapContext<DamageType>) {
