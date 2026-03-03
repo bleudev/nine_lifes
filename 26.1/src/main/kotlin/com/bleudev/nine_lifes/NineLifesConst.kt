@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes
 
 import com.bleudev.nine_lifes.util.helper.PlatformHelper
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 const val MOD_ID = "nine_lifes"
@@ -23,4 +24,4 @@ const val NOT_SAFE_ANAGLYPH_EVENT_DURATION = 60
 
 fun isInBetaMode(): Boolean = VERSION.endsWith("_beta")
 
-val LOGGER = LoggerFactory.getLogger(NAME)
+val LOGGER: Logger = LoggerFactory.getLogger(NAME)
