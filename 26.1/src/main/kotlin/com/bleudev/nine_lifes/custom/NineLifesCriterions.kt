@@ -13,6 +13,7 @@ object NineLifesCriterions {
     val LIFES_PLAY_TIME = create("lifes_play_time", LifesPlayTimeCriterion())
     val PLAY_TIME = create("play_time", PlayTimeCriterion())
     val CHARGE_ITEM = create("charge_item", ChargeItemCriterion())
+    val LIFES_CHANGE = create("lifes_change", LifesChangeCriterion())
 
     private fun <T : CriterionTrigger<*>> create(name: String, criterion: T) = CriteriaTriggers.register(createIdentifier(name).toString(), criterion)
 

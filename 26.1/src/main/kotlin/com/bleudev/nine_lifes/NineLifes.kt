@@ -113,7 +113,11 @@ class NineLifes : ModInitializer {
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
-                entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
+                if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) {
+                    NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
+                    entity.addLifes(1)
+                }
+                else entity.addLifes(-1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->

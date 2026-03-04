@@ -2,6 +2,7 @@ package com.bleudev.nine_lifes.util
 
 import com.bleudev.nine_lifes.LOGGER
 import com.bleudev.nine_lifes.MAX_LIFES
+import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.packet.payload.UpdateLifesCount
 import com.bleudev.nine_lifes.interfaces.mixin.CustomLivingEntity
 import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer
@@ -21,10 +22,12 @@ val ServerPlayer.lifes: Int get() {
     return lifesClamp(lifes)
 }
 fun ServerPlayer.setLifes(newLifesCount: Int): Int {
+    val oldLifes = (this as CustomServerPlayer).`nl$getLifes`()
     val newLifes = lifesClamp(newLifesCount)
     try {
         (this as CustomServerPlayer).`nl$setLifes`(newLifes)
         sendPacket(UpdateLifesCount(newLifes))
+        NineLifesCriterions.LIFES_CHANGE.trigger(this, newLifes - oldLifes, false)
         return newLifes
     } catch (e: IllegalArgumentException) {
         LOGGER.error("Lifes set was failed: {}\n{}", newLifes, e.stackTrace)

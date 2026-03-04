@@ -60,6 +60,10 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
                     .build())))
             parent(trySleepWithoutShard)
         }
+        val gotLifeWithShard = consumer.create("got_life_with_shard", true, Items.AMETHYST_SHARD, AdvancementType.TASK) {
+            addCriterion("got_life_with_shard", NineLifesCriterions.LIFES_CHANGE.require(1, true))
+            parent(gotChargedShard)
+        }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
             addCriterion("almost_dead", NineLifesCriterions.ALMOST_DEAD.require(1, 1f))
             parent(root)

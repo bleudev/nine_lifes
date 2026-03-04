@@ -32,7 +32,7 @@ fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
 fun Float.lerp(start: Float = 0f, end: Float = 1f): Float = start + coerceIn(0f, 1f) * (end - start)
 
 // Lifes
-fun ServerPlayer.setLifes(lifesCountChanger: (Int) -> Int) = setLifes(lifesCountChanger(this@setLifes.lifes))
+fun ServerPlayer.setLifes(lifesCountChanger: (Int) -> Int) = setLifes(lifesCountChanger(this.lifes))
 fun ServerPlayer.addLifes(addedLifesCount: Int) = setLifes { it + addedLifesCount }
 fun ServerPlayer.resetLifes() = setLifes(MAX_LIFES)
 fun ServerPlayer.revive() {
