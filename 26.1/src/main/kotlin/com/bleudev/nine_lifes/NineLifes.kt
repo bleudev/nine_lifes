@@ -13,10 +13,15 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder
+import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.stats.StatFormatter
+import net.minecraft.stats.Stats
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
@@ -48,6 +53,8 @@ class NineLifes : ModInitializer {
         NineLifesPotions.initialize()
         NineLifesEntities.initialize()
         NineLifesCommands.initialize()
+        NineLifesCriterions.initialize()
+        NineLifesStats.initialize()
         FabricPotionBrewingBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
@@ -63,6 +70,8 @@ class NineLifes : ModInitializer {
             newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
+            server.playerList.players.forEach(NineLifesCriterions::trigger)
+
             for (entry in notSafeSleepTicks) {
                 if (entry.value > 0) entry.setValue(entry.value - 1)
                 else notSafeSleepTicks.remove(entry.key)
@@ -82,8 +91,8 @@ class NineLifes : ModInitializer {
                         when (entity.damageTicks) {
                             -1 -> return@forEach
                             0 -> {
-                                level.explode(entity.position(), 7f, NineLifesDamageSources::charged, Level.ExplosionInteraction.MOB, entity)
-                                entity.kill(NineLifesDamageSources::charged)
+                                level.explode(entity.position(), 7f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.MOB, entity)
+                                entity.kill(NineLifesDamageTypes::chargedAmethyst)
                             }
                         }
                         entity.damageTicks -= 1
@@ -110,20 +119,34 @@ class NineLifes : ModInitializer {
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
-                entity.addLifes(if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) 1 else -1)
+                if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) {
+                    NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
+                    entity.addLifes(1)
+                    entity.awardStat(NineLifesStats.USED_CHARGED)
+                    NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
+                }
+                else entity.addLifes(-1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
-            if (player is ServerPlayer && !player.hasEffect(NineLifesMobEffects.AMETHYSM))
+            if (player !is ServerPlayer) return@register null
+            var problem: Player.BedSleepingProblem? = null
+            if (!player.hasEffect(NineLifesMobEffects.AMETHYSM))
                 when (player.lifes) {
-                    in 0..3 -> return@register Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+                    in 0..3 -> problem = PROBLEM_NOT_NOW
                     in 4..5 -> {
                         notSafeSleepTicks[player.gameProfile.name] = NOT_SAFE_ANAGLYPH_EVENT_DURATION
                         player.sendPacket(BedSleepingProblemEvent(PacketBedSleepingProblem.NOT_SAFE))
-                        return@register Player.BedSleepingProblem.NOT_SAFE
+                        problem = Player.BedSleepingProblem.NOT_SAFE
                     }
                 }
-            null
+            if (problem != null && problem.message != null)
+                NineLifesCriterions.BED_SLEEPING_PROBLEM.trigger(player, problem)
+            problem
+        }
+        EntitySleepEvents.START_SLEEPING.register { entity, _ ->
+            if (entity is ServerPlayer)
+                NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
         }
     }
 
@@ -142,6 +165,7 @@ class NineLifes : ModInitializer {
                         level.players().forEach { player ->
                             val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
                                 .coerceAtLeast(.0)
+                            NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
                             val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
                             player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                         }
@@ -166,7 +190,7 @@ class NineLifes : ModInitializer {
                 } ?: true) return@forBlocksInBox 0
 
                 level.removeBlock(pos, false)
-                level.explode(Vec3(pos), 3f, NineLifesDamageSources::charged, Level.ExplosionInteraction.BLOCK)
+                level.explode(Vec3(pos), 3f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK)
             }
             0
         }
@@ -198,4 +222,19 @@ class NineLifes : ModInitializer {
             // TODO: Broke sound
         }
     }
+}
+
+val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+
+object NineLifesStats {
+    val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)
+
+    private fun makeCustomStat(id: String, formatter: StatFormatter): Identifier {
+        val location = createIdentifier(id)
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, id, location)
+        Stats.CUSTOM.get(location, formatter)
+        return location
+    }
+
+    internal fun initialize() {}
 }

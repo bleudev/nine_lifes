@@ -27,7 +27,7 @@ class AmethysmConsumeEffect : ConsumeEffect {
     override fun getType(): ConsumeEffect.Type<out ConsumeEffect> = NineLifesConsumeEffects.AMETHYSM
 
     override fun apply(level: Level, itemStack: ItemStack, livingEntity: LivingEntity): Boolean {
-        if (itemStack.enchantments.keySet().any { it.`is`(NineLifesEnchantments.KEY_CHARGE) }) {
+        if (itemStack.enchantments.keySet().any { it.`is`(NineLifesEnchantments.CHARGE) }) {
             if (livingEntity is ServerPlayer)
                 livingEntity.sendPacket(StartWhitenessScreen(TICKS_PER_SECOND, 1f))
             (livingEntity as CustomLivingEntity).`nl$setDamageTicks`(TICKS_PER_SECOND)

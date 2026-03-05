@@ -21,6 +21,10 @@ object NineLifesItemTags {
     @JvmField
     val CAUSE_CAMPFIRE_EXPLODE: TagKey<Item> = of("cause_campfire_explode")
     val LIGHTNING_CHARGEABLE: TagKey<Item> = of("lightning_chargeable")
+    object Enchantable {
+        val CHARGE = of("enchantable/charge")
+        val CHARGE_IN_TABLE = of("enchantable/charge_in_table")
+    }
 
     private fun of(name: String): TagKey<Item> = ofRegistry(Registries.ITEM, name)
 }

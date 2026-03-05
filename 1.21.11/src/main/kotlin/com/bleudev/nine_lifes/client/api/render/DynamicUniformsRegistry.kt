@@ -34,15 +34,19 @@ object DynamicUniformsRegistryImpl {
     }
 
     internal fun initBuffers() {
+        BUFFERS.clear()
         for (entry in BUFFER_QUERY) {
             BUFFERS[entry.key] = entry.value()
         }
-        BUFFER_QUERY.clear()
     }
 
     internal fun updateBuffers() {
         val encoder = RenderSystem.getDevice().createCommandEncoder()
         for (entry in BUFFERS) {
+            if (entry.value.currentBuffer().isClosed) {
+                initBuffers()
+                return
+            }
             encoder.mapBuffer(entry.value.currentBuffer(), false, true).use { view ->
                 view.data().position(0)
                 TRANSFORMERS[entry.key]!!(Std140Builder.intoBuffer(view.data()))

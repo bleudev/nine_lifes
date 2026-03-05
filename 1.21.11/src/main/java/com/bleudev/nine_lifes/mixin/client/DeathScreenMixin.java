@@ -25,8 +25,8 @@ public class DeathScreenMixin extends Screen {
     @Final
     private boolean hardcore;
 
-    protected DeathScreenMixin(Component component) {
-        super(component);
+    protected DeathScreenMixin(Component title) {
+        super(title);
     }
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;<init>(Lnet/minecraft/network/chat/Component;)V"))
