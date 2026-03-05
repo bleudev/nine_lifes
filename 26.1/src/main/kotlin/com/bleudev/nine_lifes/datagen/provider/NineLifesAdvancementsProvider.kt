@@ -68,7 +68,7 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         }
         val ate64ChargedShards = consumer.create("ate_64_charged_shards", false, Items.SKELETON_SKULL, AdvancementType.CHALLENGE) {
             for (i in 1..64) {
-                addCriterion("ate_charged_shard_$i", NineLifesCriterions.USED_CHARGED_TOTAL.require(i))
+                addCriterion("ate_${i}_charged_shards", NineLifesCriterions.USED_CHARGED_TOTAL.require(i))
             }
 
             parent(gotLifeWithShard)
@@ -85,6 +85,19 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
             addCriterion("hundred_days_played_with_one_life", NineLifesCriterions.LIFES_PLAY_TIME.require(1, 2400000))
             parent(hundredDays)
         }
+
+        consumer.create("all_done", false, Items.DIAMOND, AdvancementType.CHALLENGE) {
+            requireAdvancement(trySleepWithoutShard)
+            requireAdvancement(sleptWithShard)
+            requireAdvancement(gotChargedShard)
+            requireAdvancement(gotLifeWithShard)
+            requireAdvancement(ate64ChargedShards)
+            requireAdvancement(almostDead)
+            requireAdvancement(hundredDays)
+            requireAdvancement(trueHundredDays)
+
+            parent(root)
+        }
     }
 
     private val background: Identifier = Identifier.withDefaultNamespace("block/amethyst_block")
@@ -93,4 +106,7 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
     private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder = Advancement.Builder.advancement().display(
         icon, Component.translatable(advancement(name)), Component.translatable(advancementDescription(name)), if (isRoot) background else null, type, name != "root", name != "root", hidden)
         .applier().save(this, "$MOD_ID:$name").also { isRoot = false }
+
+    private fun Advancement.Builder.requireAdvancement(holder: AdvancementHolder) =
+        addCriterion("require_${holder.id.namespace}_${holder.id.path}", NineLifesCriterions.ADVANCEMENT.require(holder))
 }

@@ -15,6 +15,7 @@ object NineLifesCriterions {
     val CHARGE_ITEM = create("charge_item", ChargeItemCriterion())
     val LIFES_CHANGE = create("lifes_change", LifesChangeCriterion())
     val USED_CHARGED_TOTAL = create("used_charged_total", UsedChargedTotalCriterion())
+    val ADVANCEMENT = create("advancement", AdvancementCriterion())
 
     private fun <T : CriterionTrigger<*>> create(name: String, criterion: T) = CriteriaTriggers.register(createIdentifier(name).toString(), criterion)
 
@@ -24,5 +25,6 @@ object NineLifesCriterions {
         ALMOST_DEAD.trigger(player)
         LIFES_PLAY_TIME.trigger(player)
         PLAY_TIME.trigger(player)
+        ADVANCEMENT.trigger(player)
     }
 }
