@@ -13,10 +13,15 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder
+import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.stats.StatFormatter
+import net.minecraft.stats.Stats
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
@@ -49,6 +54,7 @@ class NineLifes : ModInitializer {
         NineLifesEntities.initialize()
         NineLifesCommands.initialize()
         NineLifesCriterions.initialize()
+        NineLifesStats.initialize()
         FabricPotionBrewingBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
@@ -116,6 +122,8 @@ class NineLifes : ModInitializer {
                 if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) {
                     NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
                     entity.addLifes(1)
+                    entity.awardStat(NineLifesStats.USED_CHARGED)
+                    NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
                 else entity.addLifes(-1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
@@ -217,3 +225,16 @@ class NineLifes : ModInitializer {
 }
 
 val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+
+object NineLifesStats {
+    val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)
+
+    private fun makeCustomStat(id: String, formatter: StatFormatter): Identifier {
+        val location = createIdentifier(id)
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, id, location)
+        Stats.CUSTOM.get(location, formatter)
+        return location
+    }
+
+    internal fun initialize() {}
+}

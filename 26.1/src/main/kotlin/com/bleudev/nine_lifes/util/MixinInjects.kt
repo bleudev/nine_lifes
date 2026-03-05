@@ -37,7 +37,7 @@ fun ServerPlayer.setLifes(newLifesCount: Int): Int {
 @Throws(IllegalArgumentException::class)
 fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
     try {
-        return(this as CustomServerPlayer).`nl$getLifesPlayTime`(lifesCount).coerceAtLeast(0)
+        return (this as CustomServerPlayer).`nl$getLifesPlayTime`(lifesCount).coerceAtLeast(0)
     } catch (e: NullPointerException) {
         throw IllegalArgumentException(e.message, e)
     }

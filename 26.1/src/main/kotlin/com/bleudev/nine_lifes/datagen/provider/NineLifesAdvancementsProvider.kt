@@ -38,6 +38,13 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         val itemLookup = registryLookup.lookupOrThrow(Registries.ITEM)
         val enchantments = registryLookup.lookupOrThrow(Registries.ENCHANTMENT)
 
+        val chargedAmethystShardPredicate = ItemPredicate.Builder.item()
+            .of(itemLookup, Items.AMETHYST_SHARD)
+            .withComponents(DataComponentMatchers.Builder.components()
+                .partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(
+                    EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), Ints.atLeast(1)))))
+                .build())
+
         val root = consumer.create("root", false, Items.AMETHYST_SHARD, AdvancementType.TASK) {
             addCriterion("joined", PlayerTrigger.TriggerInstance.tick())
         }
@@ -52,17 +59,19 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         val gotChargedShard = consumer.create("got_charged_shard", true, Items.AMETHYST_SHARD, AdvancementType.GOAL) {
             requirements(AdvancementRequirements.Strategy.OR)
             addCriterion("got_charged_shard_with_lightning", NineLifesCriterions.CHARGE_ITEM.require(Items.AMETHYST_SHARD, CHARGE_SCREEN_EFFECT_RADIUS_MAX.toDouble()))
-            addCriterion("got_charged_shard", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
-                .of(itemLookup, Items.AMETHYST_SHARD)
-                .withComponents(DataComponentMatchers.Builder.components()
-                    .partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(
-                        EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), Ints.atLeast(1)))))
-                    .build())))
+            addCriterion("got_charged_shard", InventoryChangeTrigger.TriggerInstance.hasItems(chargedAmethystShardPredicate))
             parent(trySleepWithoutShard)
         }
         val gotLifeWithShard = consumer.create("got_life_with_shard", true, Items.AMETHYST_SHARD, AdvancementType.TASK) {
             addCriterion("got_life_with_shard", NineLifesCriterions.LIFES_CHANGE.require(1, true))
             parent(gotChargedShard)
+        }
+        val ate64ChargedShards = consumer.create("ate_64_charged_shards", false, Items.SKELETON_SKULL, AdvancementType.CHALLENGE) {
+            for (i in 1..64) {
+                addCriterion("ate_charged_shard_$i", NineLifesCriterions.USED_CHARGED_TOTAL.require(i))
+            }
+
+            parent(gotLifeWithShard)
         }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
             addCriterion("almost_dead", NineLifesCriterions.ALMOST_DEAD.require(1, 1f))

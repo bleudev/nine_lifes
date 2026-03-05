@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
@@ -12,6 +13,7 @@ import com.bleudev.nine_lifes.util.config
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
+import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
 
 class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
@@ -40,6 +42,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addAdvancement("slept_with_shard", "Sweet Dreams.. Again", "Sleep after eating amethyst shard.")
         builder.addAdvancement("got_charged_shard", "Power of the light", "Get an charged amethyst shard.")
         builder.addAdvancement("got_life_with_shard", "+1", "Get an life with charged amethyst shard.")
+        builder.addAdvancement("ate_64_charged_shards", "MAN", "Eat 64 charged amethyst shard.")
         builder.addAdvancement("almost_dead", "Almost dead", "Survive with one half heart and life.")
         builder.addAdvancement("hundred_days", "100 days", "Survive 100 days.")
         builder.addAdvancement("true_hundred_days", "True 100 days", "Survive 100 days with one life.")
@@ -72,6 +75,8 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add("commands.nl.revive.player.success", $$"%1$s was revived")
         // Entities
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
+        // Stats
+        builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
@@ -83,7 +88,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(config("category.general.root.option.heart_position.description"), "Location of lifes count on the screen")
         builder.add(config("category.general.root.option.low_lifes_red_sky"), "Red sky when there are few lifes")
         builder.add(config("category.general.root.option.low_lifes_red_sky.description"), "When true sky will become red when lifes count is low")
-        builder.addEnum(HeartPosition,
+        builder.addConfigEnum(HeartPosition,
             "Bottom left", "Bottom center", "Bottom right",
             "Top left", "Top center", "Top right"
         )
@@ -113,6 +118,7 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addAdvancement("slept_with_shard", "Спи моя радость усни.. Опять", "Поспите съев аметистовый осколок.")
         builder.addAdvancement("got_charged_shard", "Сила света", "Получите заряженный аметистовый осколок.")
         builder.addAdvancement("got_life_with_shard", "+1", "Получите жизнь с помощью заряженного аметистового осколка.")
+        builder.addAdvancement("ate_64_charged_shards", "МУЖИК", "Съешьте 64 заряженных аметистовых осколков.")
         builder.addAdvancement("almost_dead", "На волоске", "Выживите с одним полсердечком и жизней")
         builder.addAdvancement("hundred_days", "100 дней", "Проживите 100 дней.")
         builder.addAdvancement("true_hundred_days", "Истинные 100 дней", "Проживите 100 дней с одной жизнью.")
@@ -145,6 +151,8 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add("commands.nl.revive.player.success", $$"%1$s был возрождён")
         // Entities
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
+        // Stats
+        builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")
@@ -156,7 +164,7 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(config("category.general.root.option.heart_position.description"), "Расположение количества жизней на экране")
         builder.add(config("category.general.root.option.low_lifes_red_sky"), "Красное небо когда мало жизней")
         builder.add(config("category.general.root.option.low_lifes_red_sky.description"), "Когда включено небо будет краснеть при низком количестве жизней")
-        builder.addEnum(HeartPosition,
+        builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
         )
@@ -167,9 +175,11 @@ private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: Strin
     this.add(advancement(name), nameTranslation)
     this.add(advancementDescription(name), descriptionTranslation)
 }
-
-private fun FabricLanguageProvider.TranslationBuilder.addEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {
+private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {
     enum.names.zip(translations).forEach { (key, translation) ->
         this.add(key, translation)
     }
+}
+private fun FabricLanguageProvider.TranslationBuilder.addStat(statId: Identifier, translation: String) {
+    this.add(statId.toLanguageKey("stat"), translation)
 }
