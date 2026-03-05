@@ -4,6 +4,7 @@
 
 ## New features
 - Added 9 new advancements
+- [DEV] Use Fabric Data Generator
 
 ## Bug fixes
 - Crash when reloading assets related to shaders
