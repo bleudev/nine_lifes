@@ -125,7 +125,7 @@ class NineLifesClient : ClientModInitializer {
             }
         } }
 
-        ClientTickEvents.END_CLIENT_TICK.register(::tick)
+        ClientTickEvents.END_WORLD_TICK.register{endClientLevelTick()}
         ClientRespawnEvents.RESPAWN.register { _ ->
             should_death_screen_be_white = false
         }
@@ -190,7 +190,8 @@ class NineLifesClient : ClientModInitializer {
         center_heart_info.tick(deltaTime / 50)
     }
 
-    private fun tick(client: Minecraft) {
+    private fun endClientLevelTick() {
+        val client = Minecraft.getInstance()
         NineLifesClientData.tick()
         if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
 
