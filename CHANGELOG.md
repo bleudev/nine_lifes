@@ -8,3 +8,4 @@
 
 ## Bug fixes
 - Crash when reloading assets related to shaders (bleudev [#50](https://github.com/bleudev/nine_lifes/pull/50))
+- Fix screen effects don't pause when game is paused (bleudev [#54](https://github.com/bleudev/nine_lifes/pull/54))
