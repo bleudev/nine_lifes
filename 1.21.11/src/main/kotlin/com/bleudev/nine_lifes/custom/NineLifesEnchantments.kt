@@ -2,6 +2,8 @@ package com.bleudev.nine_lifes.custom
 
 import com.bleudev.nine_lifes.util.createIdentifier
 import net.minecraft.core.Holder
+import net.minecraft.core.HolderGetter
+import net.minecraft.core.HolderLookup
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
@@ -12,7 +14,7 @@ object NineLifesEnchantments {
     /**
      * [ResourceKey] of `nine_lifes:charge` enchantment
      */
-    val KEY_CHARGE: ResourceKey<Enchantment> = of("charge")
+    val CHARGE: ResourceKey<Enchantment> = of("charge")
 
     private fun of(name: String): ResourceKey<Enchantment> {
         return ResourceKey.create(Registries.ENCHANTMENT, createIdentifier(name))
@@ -33,33 +35,46 @@ object NineLifesEnchantments {
      * NineLifesEnchantments.Holders.charge(world.registryAccess())
      * ```
      */
-    class Holders private constructor(private val registryAccess: RegistryAccess) {
-        private fun getEntry(key: ResourceKey<Enchantment>): Holder<Enchantment> = registryAccess.getOrThrow(key)
-
+    class Holders private constructor(private val getter: (ResourceKey<Enchantment>) -> Holder<Enchantment>) {
         /**
          * [Holder] of `nine_lifes:charge` enchantment
          *
          * @return holder of enchantment
          */
-        fun charge(): Holder<Enchantment> = getEntry(KEY_CHARGE)
+        fun charge(): Holder<Enchantment> = getter(CHARGE)
 
         companion object {
             /**
-             * Create new [Holders] object from provided [RegistryAccess]
+             * Create new [Holders] object from provided [HolderGetter.Provider] ([RegistryAccess], [HolderLookup.Provider] etc.)
              *
-             * @param registryAccess Registry access to use in created object
+             * @param provider Provider to use in created object
              * @return new [Holders] object
              */
             @Contract(value = "_ -> new", pure = true)
-            fun create(registryAccess: RegistryAccess): Holders = Holders(registryAccess)
+            fun <T : HolderGetter.Provider> create(provider: T): Holders = Holders(provider::getOrThrow)
+
+            /**
+             * Create new [Holders] object from provided enchantment [HolderGetter] (for example, [HolderLookup.RegistryLookup])
+             *
+             * @param getter Holder getter to use in created object
+             * @return new [Holders] object
+             * */
+            fun <T : HolderGetter<Enchantment>> create(getter: T): Holders = Holders(getter::getOrThrow)
 
             /**
              * [Holder] of `nine_lifes:charge` enchantment
              *
-             * @param registryAccess Registry access where to get entry
+             * @param provider Provider where to get entry
              * @return holder of enchantment
              */
-            fun charge(registryAccess: RegistryAccess): Holder<Enchantment> = create(registryAccess).charge()
+            fun <T : HolderGetter.Provider> charge(provider: T): Holder<Enchantment> = create(provider).charge()
+            /**
+             * [Holder] of `nine_lifes:charge` enchantment
+             *
+             * @param getter Registry enchantment lookup where to get entry
+             * @return holder of enchantment
+             * */
+            fun <T : HolderGetter<Enchantment>> charge(getter: T): Holder<Enchantment> = create(getter).charge()
         }
     }
 }

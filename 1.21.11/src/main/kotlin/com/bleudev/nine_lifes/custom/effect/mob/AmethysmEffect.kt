@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.effect.mob
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageSources
+import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.bleudev.nine_lifes.custom.packet.payload.StartAmethysmScreen
 import com.bleudev.nine_lifes.util.sendPacket
@@ -25,7 +25,7 @@ class AmethysmEffect : MobEffect(MobEffectCategory.NEUTRAL, 0xff00ff) {
             this.entity = entity
             if (!entity.isSleeping) {
                 if (ticks % 20 == 0)
-                    entity.hurtServer(level, NineLifesDamageSources.amethysm(level), 1f)
+                    entity.hurtServer(level, NineLifesDamageTypes.amethysm(level), 1f)
                 entity.setDeltaMovement(.0, 0.05, .0)
                 entity.needsSync = true
 
