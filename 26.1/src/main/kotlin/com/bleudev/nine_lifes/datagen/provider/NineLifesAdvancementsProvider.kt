@@ -2,6 +2,7 @@ package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.CHARGE_SCREEN_EFFECT_RADIUS_MAX
 import com.bleudev.nine_lifes.MOD_ID
+import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesEnchantments
@@ -21,6 +22,7 @@ import net.minecraft.core.component.predicates.EnchantmentsPredicate
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
+import net.minecraft.stats.Stats
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
@@ -68,7 +70,7 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
         }
         val ate64ChargedShards = consumer.create("ate_64_charged_shards", false, Items.SKELETON_SKULL, AdvancementType.CHALLENGE) {
             for (i in 1..64) {
-                addCriterion("ate_${i}_charged_shards", NineLifesCriterions.USED_CHARGED_TOTAL.require(i))
+                addCriterion("ate_${i}_charged_shards", NineLifesCriterions.CUSTOM_STAT.require(NineLifesStats.USED_CHARGED, Ints.atLeast(i)))
             }
 
             parent(gotLifeWithShard)
@@ -78,7 +80,7 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
             parent(root)
         }
         val hundredDays = consumer.create("hundred_days", false, Items.SKELETON_SKULL, AdvancementType.GOAL) {
-            addCriterion("hundred_days_played", NineLifesCriterions.PLAY_TIME.require(2400000))
+            addCriterion("hundred_days_played", NineLifesCriterions.CUSTOM_STAT.require(Stats.PLAY_TIME, Ints.atLeast(2400000)))
             parent(root)
         }
         val trueHundredDays = consumer.create("true_hundred_days", true, Items.WITHER_SKELETON_SKULL, AdvancementType.CHALLENGE) {

@@ -123,7 +123,6 @@ class NineLifes : ModInitializer {
                     NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
                     entity.addLifes(1)
                     entity.awardStat(NineLifesStats.USED_CHARGED)
-                    NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
                 else entity.addLifes(-1)
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
@@ -227,7 +226,7 @@ class NineLifes : ModInitializer {
 val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
 
 object NineLifesStats {
-    val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)
+    val USED_CHARGED: Identifier = createIdentifier("used_charged")
 
     private fun makeCustomStat(id: String, formatter: StatFormatter): Identifier {
         val location = createIdentifier(id)

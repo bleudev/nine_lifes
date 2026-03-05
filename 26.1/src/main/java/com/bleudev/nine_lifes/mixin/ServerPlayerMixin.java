@@ -1,9 +1,14 @@
 package com.bleudev.nine_lifes.mixin;
 
+import com.bleudev.nine_lifes.custom.NineLifesCriterions;
 import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer;
 import com.bleudev.nine_lifes.util.InjectsKt;
 import com.bleudev.nine_lifes.util.MixinInjectsKt;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +20,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static com.bleudev.nine_lifes.NineLifesConstKt.MAX_LIFES;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin implements CustomServerPlayer {
+public abstract class ServerPlayerMixin extends Player implements CustomServerPlayer {
+    public ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
+    }
+
     @Unique
     protected int lifes;
     @Unique
@@ -63,5 +72,10 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
         }
         int lifesCount = MixinInjectsKt.getLifes(player);
         if (lifesCount > 0) this.lifesPlayTime[lifesCount-1] += 1;
+    }
+
+    @Inject(method = "awardStat", at = @At("TAIL"))
+    public void awardStat(Stat<?> stat, int count, CallbackInfo ci) {
+        NineLifesCriterions.INSTANCE.getCUSTOM_STAT().trigger((ServerPlayer) (Object) this);
     }
 }
