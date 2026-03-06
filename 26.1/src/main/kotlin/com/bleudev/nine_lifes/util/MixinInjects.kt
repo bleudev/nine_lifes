@@ -37,11 +37,6 @@ var ServerPlayer.lifes: Int
             LOGGER.error("Set {} lifes operation was failed:\n{}", newLifes, e.stackTrace)
         }
     }
-@Deprecated("Use `ServerPlayer.lifes` setter instead. Will be deleted in 3.3", level = DeprecationLevel.ERROR)
-fun ServerPlayer.setLifes(newLifesCount: Int): Int {
-    this.lifes = newLifesCount
-    return this.lifes
-}
 @Throws(IllegalArgumentException::class)
 fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
     try {
