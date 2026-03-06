@@ -16,24 +16,24 @@ import kotlin.reflect.jvm.isAccessible
 
 // ServerPlayer
 private fun lifesClamp(lifes: Int): Int = lifes.coerceIn(0, MAX_LIFES)
-val ServerPlayer.lifes: Int get() {
-    val lifes = (this as CustomServerPlayer).`nl$getLifes`()
-    if (lifesClamp(lifes) != lifes) setLifes(lifesClamp(lifes))
-    return lifesClamp(lifes)
-}
-fun ServerPlayer.setLifes(newLifesCount: Int): Int {
-    val oldLifes = (this as CustomServerPlayer).`nl$getLifes`()
-    val newLifes = lifesClamp(newLifesCount)
-    try {
-        (this as CustomServerPlayer).`nl$setLifes`(newLifes)
-        sendPacket(UpdateLifesCount(newLifes))
-        NineLifesCriterions.LIFES_CHANGE.trigger(this, newLifes - oldLifes, false)
-        return newLifes
-    } catch (e: IllegalArgumentException) {
-        LOGGER.error("Lifes set was failed: {}\n{}", newLifes, e.stackTrace)
-        return -1
+var ServerPlayer.lifes: Int
+    get() {
+        val lifes = (this as CustomServerPlayer).`nl$getLifes`()
+        val clamped = lifesClamp(lifes)
+        if (clamped != lifes) this.lifes = clamped
+        return clamped
     }
-}
+    set(newLifesCount) {
+        val oldLifes = (this as CustomServerPlayer).`nl$getLifes`()
+        val newLifes = lifesClamp(newLifesCount)
+        try {
+            (this as CustomServerPlayer).`nl$setLifes`(newLifes)
+            sendPacket(UpdateLifesCount(newLifes))
+            NineLifesCriterions.LIFES_CHANGE.trigger(this, newLifes - oldLifes, false)
+        } catch (e: IllegalArgumentException) {
+            LOGGER.error("Set {} lifes operation was failed:\n{}", newLifes, e.stackTrace)
+        }
+    }
 @Throws(IllegalArgumentException::class)
 fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
     try {
