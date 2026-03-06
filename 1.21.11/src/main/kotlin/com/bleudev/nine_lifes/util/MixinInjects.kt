@@ -44,13 +44,14 @@ fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
 }
 // Brewing Stand
 @Suppress("UNCHECKED_CAST")
-private inline fun <reified T : Any, R> T.getPrivateProperty(name: String): R? {
+private inline fun <reified T : Any, R : Any> T.getPrivateProperty(name: String): R? {
     val property = T::class.declaredMemberProperties.firstOrNull { it.name == name }
     property?.isAccessible = true
     return property?.get(this) as? R
 }
-val BrewingStandBlockEntity.items: NonNullList<ItemStack>?
-    get() = this.getPrivateProperty<BrewingStandBlockEntity, NonNullList<ItemStack>>("items")
+val BrewingStandBlockEntity.items: NonNullList<ItemStack>
+    get() = this.getPrivateProperty<BrewingStandBlockEntity, NonNullList<ItemStack>>("items") ?:
+            NonNullList.withSize(5, ItemStack.EMPTY)
 // Living Entity
 var LivingEntity.damageTicks: Int
     get() = (this as CustomLivingEntity).`nl$getDamageTicks`()
