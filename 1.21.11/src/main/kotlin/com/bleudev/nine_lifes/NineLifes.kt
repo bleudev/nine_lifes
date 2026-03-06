@@ -121,11 +121,11 @@ class NineLifes : ModInitializer {
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
                 if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) {
                     NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
-                    entity.addLifes(1)
+                    entity.lifes += 1
                     entity.awardStat(NineLifesStats.USED_CHARGED)
                     NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
-                else entity.addLifes(-1)
+                else entity.lifes -= 1
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
