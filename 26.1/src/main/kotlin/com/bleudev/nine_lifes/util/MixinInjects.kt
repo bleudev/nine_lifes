@@ -16,23 +16,31 @@ import kotlin.reflect.jvm.isAccessible
 
 // ServerPlayer
 private fun lifesClamp(lifes: Int): Int = lifes.coerceIn(0, MAX_LIFES)
-val ServerPlayer.lifes: Int get() {
-    val lifes = (this as CustomServerPlayer).`nl$getLifes`()
-    if (lifesClamp(lifes) != lifes) setLifes(lifesClamp(lifes))
-    return lifesClamp(lifes)
-}
-fun ServerPlayer.setLifes(newLifesCount: Int): Int {
-    val oldLifes = (this as CustomServerPlayer).`nl$getLifes`()
-    val newLifes = lifesClamp(newLifesCount)
-    try {
-        (this as CustomServerPlayer).`nl$setLifes`(newLifes)
-        sendPacket(UpdateLifesCount(newLifes))
-        NineLifesCriterions.LIFES_CHANGE.trigger(this, newLifes - oldLifes, false)
-        return newLifes
-    } catch (e: IllegalArgumentException) {
-        LOGGER.error("Lifes set was failed: {}\n{}", newLifes, e.stackTrace)
-        return -1
+/**
+ * Player lifes (in range [0; 9])
+ * */
+var ServerPlayer.lifes: Int
+    get() {
+        val lifes = (this as CustomServerPlayer).`nl$getLifes`()
+        val clamped = lifesClamp(lifes)
+        if (clamped != lifes) this.lifes = clamped
+        return clamped
     }
+    set(newLifesCount) {
+        val oldLifes = (this as CustomServerPlayer).`nl$getLifes`()
+        val newLifes = lifesClamp(newLifesCount)
+        try {
+            (this as CustomServerPlayer).`nl$setLifes`(newLifes)
+            sendPacket(UpdateLifesCount(newLifes))
+            NineLifesCriterions.LIFES_CHANGE.trigger(this, newLifes - oldLifes, false)
+        } catch (e: IllegalArgumentException) {
+            LOGGER.error("Set {} lifes operation was failed:\n{}", newLifes, e.stackTrace)
+        }
+    }
+@Deprecated("Use `ServerPlayer.lifes` setter instead. Will be deleted in 3.3", level = DeprecationLevel.ERROR)
+fun ServerPlayer.setLifes(newLifesCount: Int): Int {
+    this.lifes = newLifesCount
+    return this.lifes
 }
 @Throws(IllegalArgumentException::class)
 fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
@@ -44,13 +52,14 @@ fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
 }
 // Brewing Stand
 @Suppress("UNCHECKED_CAST")
-private inline fun <reified T : Any, R> T.getPrivateProperty(name: String): R? {
+private inline fun <reified T : Any, R : Any> T.getPrivateProperty(name: String): R? {
     val property = T::class.declaredMemberProperties.firstOrNull { it.name == name }
     property?.isAccessible = true
     return property?.get(this) as? R
 }
-val BrewingStandBlockEntity.items: NonNullList<ItemStack>?
-    get() = this.getPrivateProperty<BrewingStandBlockEntity, NonNullList<ItemStack>>("items")
+val BrewingStandBlockEntity.items: NonNullList<ItemStack>
+    get() = this.getPrivateProperty<BrewingStandBlockEntity, NonNullList<ItemStack>>("items") ?:
+            NonNullList.withSize(5, ItemStack.EMPTY)
 // Living Entity
 var LivingEntity.damageTicks: Int
     get() = (this as CustomLivingEntity).`nl$getDamageTicks`()

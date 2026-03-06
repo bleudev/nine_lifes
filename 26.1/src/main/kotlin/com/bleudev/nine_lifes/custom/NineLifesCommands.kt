@@ -71,7 +71,7 @@ object NineLifesCommands {
         val player = ctx.getSource().player.requireNotNullOr {
             ctx.getSource().sendFailure(Component.translatable("commands.nl.set.not_a_player"))
         }; if (player == null) return -1
-        player.setLifes(lifes)
+        player.lifes = lifes
         ctx.getSource().sendSuccess({ Component.translatable("commands.nl.set.success", lifes) }, false)
         return 1
     }
@@ -79,7 +79,7 @@ object NineLifesCommands {
     fun nlSetLifesPlayers(ctx: CommandContext<CommandSourceStack>): Int {
         val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
         EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
-            player.setLifes(lifes)
+            player.lifes = lifes
             ctx.getSource().sendSuccess({ Component.translatable("commands.nl.set.player.success", lifes, player.gameProfile.name) }, false)
         }
         return 1
