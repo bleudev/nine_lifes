@@ -179,7 +179,7 @@ class NineLifes : ModInitializer {
         forBlocksInBox(actionBox) { pos ->
             val blockEntity = level.getBlockEntity(pos)
             if (blockEntity is BrewingStandBlockEntity) {
-                if (blockEntity.items?.subList(0, 3)?.stream()?.noneMatch { potion ->
+                if (blockEntity.items.subList(0, 3).stream().noneMatch { potion ->
                     try {
                         for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
                             if (eff.effect == NineLifesMobEffects.AMETHYSM) return@noneMatch true
@@ -187,7 +187,7 @@ class NineLifes : ModInitializer {
                     } catch (_: NullPointerException) {
                         return@noneMatch false
                     }
-                } ?: true) return@forBlocksInBox 0
+                }) return@forBlocksInBox 0
 
                 level.removeBlock(pos, false)
                 level.explode(Vec3(pos), 3f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK)

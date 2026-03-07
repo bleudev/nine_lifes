@@ -19,15 +19,13 @@ val fogColor: Transformer<Vector4f>
             when (lifes) {
                 5 -> color.lerp(target, .1f)
                 4 -> color.lerp(target, .3f)
-                3 -> color.lerp(target, .5f)
-                2 -> color.lerp(target, .7f)
-                1 -> color.lerp(target, .9f)
+                in 0..3 -> target
                 else -> color
             }
-        } else color
+        } else {if (lifes <= 3) Vector4f(1f, 1f, 1f, 1f) else color}
     }
 
-val skyColor: Transformer<Int>
+    val skyColor: Transformer<Int>
     get() = { color ->
         val v3 = ARGB.vector3fFromRGB24(color)
         val v4 = fogColor(Vector4f(v3.x, v3.y, v3.z, 1f))

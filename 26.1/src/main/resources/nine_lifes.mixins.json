@@ -2,19 +2,18 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.bleudev.nine_lifes.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "mixins": [
     "AbstractFurnaceBlockEntityMixin",
     "BedBlockMixin",
     "CampfireBlockEntityMixin",
     "LivingEntityMixin",
     "ServerLevelMixin",
-    "ServerPlayerMixin",
-    "client.EnvironmentAttributeProbeMixin"
+    "ServerPlayerMixin"
   ],
   "client": [
-    "client.ClientLevelDataMixin",
     "client.DeathScreenMixin",
+    "client.EnvironmentAttributeProbeMixin",
     "client.FogRendererMixin",
     "client.GameRendererMixin",
     "client.PostPassMixin"
