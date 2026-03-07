@@ -25,7 +25,7 @@ val fogColor: Transformer<Vector4f>
         } else {if (lifes <= 3) Vector4f(1f, 1f, 1f, 1f) else color}
     }
 
-    val skyColor: Transformer<Int>
+val skyColor: Transformer<Int>
     get() = { color ->
         val v3 = ARGB.vector3fFromRGB24(color)
         val v4 = fogColor(Vector4f(v3.x, v3.y, v3.z, 1f))
