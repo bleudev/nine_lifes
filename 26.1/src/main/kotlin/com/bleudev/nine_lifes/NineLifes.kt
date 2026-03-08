@@ -55,6 +55,7 @@ class NineLifes : ModInitializer {
         NineLifesCommands.initialize()
         NineLifesCriterions.initialize()
         NineLifesStats.initialize()
+        NineLifesItems.initialize()
         FabricPotionBrewingBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
