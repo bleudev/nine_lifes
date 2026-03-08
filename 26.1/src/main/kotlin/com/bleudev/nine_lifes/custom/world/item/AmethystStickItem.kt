@@ -10,19 +10,26 @@ import net.minecraft.world.item.context.UseOnContext
 
 class AmethystStickItem(properties: Properties) : Item(properties) {
     override fun useOn(context: UseOnContext): InteractionResult {
-        (context.level as? ServerLevel)?.let { level ->
-            EntityType.LIGHTNING_BOLT.create(level, {},
-                context.clickedPos, EntitySpawnReason.SPAWN_ITEM_USE, true, false)?.let {
-                level.addFreshEntity(it)
+        var bl = true
+        // TODO: Shader effects after use
+        // TODO: Heart consume
+        context.player?.let { player ->
+            if (player.foodData.foodLevel < 10f) bl = false
+            else {
+                player.awardStat(Stats.ITEM_USED.get(this))
+                context.itemInHand.hurtAndBreak(1, player, context.hand.asEquipmentSlot())
+                player.causeFoodExhaustion(33f)
             }
         }
-        // TODO: Shader effects after use
-        // TODO: Heart and hunger consume
-        context.player?.let { player ->
-            player.awardStat(Stats.ITEM_USED.get(this))
-            context.itemInHand.hurtAndBreak(1, player, context.hand.asEquipmentSlot())
-            player.causeFoodExhaustion(5f)
-        }
-        return InteractionResult.SUCCESS
+
+        if (bl) {
+            (context.level as? ServerLevel)?.let { level ->
+                EntityType.LIGHTNING_BOLT.create(level, {},
+                    context.clickedPos, EntitySpawnReason.SPAWN_ITEM_USE, true, false)?.let {
+                    level.addFreshEntity(it)
+                }
+            }
+            return InteractionResult.SUCCESS
+        } else return InteractionResult.PASS
     }
 }
