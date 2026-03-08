@@ -3,10 +3,7 @@ package com.bleudev.nine_lifes.datagen.provider
 import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesEntities
-import com.bleudev.nine_lifes.custom.NineLifesItemTags
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.config
@@ -23,10 +20,12 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
     ) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
+        // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Potion of Amethysm")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Splash Potion of Amethysm")
         builder.add("item.minecraft.lingering_potion.effect.amethysm", "Lingering Potion of Amethysm")
         builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Arrow of Amethysm")
+        builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
         builder.add("death.attack.amethysm.player", $$"%1$s didn't expect amethysts to kill")
@@ -100,10 +99,12 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
+        // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Зелье аметизма")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Взрывное зелье аметизма")
         builder.add("item.minecraft.lingering_potion.effect.amethysm", "Туманное зелье аметизма")
         builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Стрела аметизма")
+        builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s не ожидал, что аметисты убивают")
         builder.add("death.attack.amethysm.player", $$"%1$s не ожидал, что аметисты убивают")
