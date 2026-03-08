@@ -39,14 +39,18 @@ object NineLifesClientData {
         operator fun invoke(delta: Float, left: Float, right: Float): Float = get(delta, left, right)
     }
 
+    private val stickAnaglyphEffect: Float get() =
+        ((stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
+
     private val anaglyphEffect: Float get() = listOf(
         amethysm_purpleness,
         whiteness,
         Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f,
-        ((stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
+        stickAnaglyphEffect
     ).max()
     val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
     val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f
+    val shaderCBlurStrength: Float get() = stickAnaglyphEffect * 4f
 
     var bed_not_safe_event_ticks = 0
     var bed_not_safe_event_running = false

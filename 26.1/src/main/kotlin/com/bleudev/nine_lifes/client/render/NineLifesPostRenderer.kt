@@ -16,6 +16,7 @@ class NineLifesPostRenderer(val resourcePool: CrossFrameResourcePool, val minecr
         DynamicUniformsRegistryImpl.updateBuffers()
         renderCustomPostEffect("redmaj")
         renderCustomPostEffect("anaglyph")
+        renderCustomPostEffect("cblur")
     }
 
     private fun renderCustomPostEffect(name: String) = renderPostEffect(createIdentifier(name))

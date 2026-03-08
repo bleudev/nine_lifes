@@ -79,6 +79,10 @@ class NineLifesClient : ClientModInitializer {
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
             putVec2(NineLifesClientData.shaderAnaglyphX, NineLifesClientData.shaderAnaglyphY)
         }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("BlurPropConfig", createIdentifier("cblur")), {putFloat()}) {
+            putFloat(NineLifesClientData.shaderCBlurStrength)
+            println(NineLifesClientData.shaderCBlurStrength)
+        }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
