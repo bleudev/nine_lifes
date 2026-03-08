@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesEnchantments
+import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
@@ -72,6 +73,10 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
             }
 
             parent(gotLifeWithShard)
+        }
+        val gotAmethystStick = consumer.create("got_amethyst_stick", true, NineLifesItems.AMETHYST_STICK, AdvancementType.CHALLENGE) {
+            addCriterion("got_amethyst_stick", InventoryChangeTrigger.TriggerInstance.hasItems(NineLifesItems.AMETHYST_STICK))
+            parent(ate64ChargedShards)
         }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
             addCriterion("almost_dead", NineLifesCriterions.ALMOST_DEAD.require(1, 1f))
