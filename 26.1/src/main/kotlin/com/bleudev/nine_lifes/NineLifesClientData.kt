@@ -43,7 +43,7 @@ object NineLifesClientData {
         amethysm_purpleness,
         whiteness,
         Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f,
-        ((stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f)
+        ((stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
     ).max()
     val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
     val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f
@@ -67,6 +67,12 @@ object NineLifesClientData {
     var amethysm_purpleness = 0f
 
     var armor_stand_hit_redness = 0f
+
+    // Camera effects
+    val shakeStrength: Float
+        get() = shakeSpeed / 2
+    val shakeSpeed: Float
+        get() = ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE).toFloat() / STICK_USED_EFFECT_SHAKE).coerceIn(0f, 1f)
 
     var amethysm_effect_info = AmethysmEffectInfo()
     var charge_effect_info = ChargeEffectInfo()
