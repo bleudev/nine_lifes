@@ -147,6 +147,8 @@ class NineLifes : ModInitializer {
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
             if (player !is ServerPlayer) return@register null
             var problem: Player.BedSleepingProblem? = null
+            if (player.hasEffect(NineLifesMobEffects.INSOMNIA))
+                problem = PROBLEM_INSOMNIA
             if (!player.hasEffect(NineLifesMobEffects.AMETHYSM))
                 when (player.lifes) {
                     in 0..3 -> problem = PROBLEM_NOT_NOW
@@ -241,6 +243,7 @@ class NineLifes : ModInitializer {
 }
 
 val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+val PROBLEM_INSOMNIA: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.insomnia_effect"))
 
 object NineLifesStats {
     val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)

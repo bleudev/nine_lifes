@@ -20,6 +20,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
     ) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
+        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
         // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Potion of Amethysm")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Splash Potion of Amethysm")
@@ -78,6 +79,8 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+        // Other
+        builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
@@ -100,6 +103,7 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
+        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Бессоница")
         // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Зелье аметизма")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Взрывное зелье аметизма")
@@ -158,6 +162,8 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
+        // Other
+        builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")

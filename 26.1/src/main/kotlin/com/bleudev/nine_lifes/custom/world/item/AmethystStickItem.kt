@@ -2,6 +2,7 @@ package com.bleudev.nine_lifes.custom.world.item
 
 import com.bleudev.nine_lifes.STICK_USED_EFFECT_MAX_HEALTH_TAKE
 import com.bleudev.nine_lifes.STICK_USED_EFFECT_TICKS
+import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.bleudev.nine_lifes.util.hurtCharged
 import com.bleudev.nine_lifes.util.stickUsedTicks
 import net.minecraft.server.level.ServerLevel
@@ -28,6 +29,7 @@ class AmethystStickItem(properties: Properties) : Item(properties) {
                 player.hurtCharged(max(2f, player.health - player.maxHealth + STICK_USED_EFFECT_MAX_HEALTH_TAKE))
                 player.addEffect(MobEffectInstance(MobEffects.MINING_FATIGUE, STICK_USED_EFFECT_TICKS, 5, false, false))
                 player.addEffect(MobEffectInstance(MobEffects.WEAKNESS, STICK_USED_EFFECT_TICKS, 3, false, false))
+                player.addEffect(MobEffectInstance(NineLifesMobEffects.INSOMNIA, STICK_USED_EFFECT_TICKS, 0, false, false))
                 (player as? ServerPlayer)?.stickUsedTicks = STICK_USED_EFFECT_TICKS
             }
         }
