@@ -41,7 +41,7 @@ object NineLifesClientData {
     }
 
     private val stickAnaglyphEffect: Float get() =
-        ((stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
+        ((stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
 
     private val anaglyphEffect: Float get() = listOf(
         amethysm_purpleness,
@@ -77,7 +77,11 @@ object NineLifesClientData {
     val shakeStrength: Float
         get() = shakeSpeed / 2
     val shakeSpeed: Float
-        get() = ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE).toFloat() / STICK_USED_EFFECT_SHAKE).coerceIn(0f, 1f)
+        get() = ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE_TICKS).toFloat() / STICK_USED_EFFECT_SHAKE_TICKS).coerceIn(0f, 1f)
+    // Additional overlay effects
+    var stick_purpleness: Float = 0f
+        get() = max(field, shakeSpeed)
+    var stick_purpleness_ticks: Int = 0
 
     var amethysm_effect_info = AmethysmEffectInfo()
     var charge_effect_info = ChargeEffectInfo()
@@ -107,6 +111,8 @@ object NineLifesClientData {
     fun tick() {
         amethysm_effect_info.tick()
         charge_effect_info.tick()
+        if (stick_purpleness_ticks > 0) stick_purpleness_ticks--
+        stick_purpleness = stick_purpleness_ticks.toFloat() / STICK_PURPLENESS_GIVE_HEART_TICKS
     }
 
     class AmethysmEffectInfo {

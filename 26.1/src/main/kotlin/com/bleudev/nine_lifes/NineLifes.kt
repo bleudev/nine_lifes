@@ -6,6 +6,7 @@ import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents
@@ -41,11 +42,13 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
 import net.minecraft.world.phys.Vec3
+import kotlin.math.abs
 
 class NineLifes : ModInitializer {
     companion object {
         @JvmStatic
         val notSafeSleepTicks: HashMap<String, Int> = HashMap()
+        val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
     }
 
     override fun onInitialize() {
@@ -77,14 +80,15 @@ class NineLifes : ModInitializer {
             server.playerList.players.forEach {
                 NineLifesCriterions.trigger(it)
                 // Amethyst stick max health modify
-                val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
-                if (addMaxHealth < 0) {
-                    it.getAttribute(Attributes.MAX_HEALTH)?.let { attr ->
-                        val mdf = AttributeModifier(createIdentifier("stick_max_health_modify"), addMaxHealth.toDouble(), AttributeModifier.Operation.ADD_VALUE)
-                        attr.removeModifier(mdf)
-                        attr.addPermanentModifier(mdf)
-                    }
+                val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
+                val prev = stickTakenHeartCountPrev[it.gameProfile.name]
+                if (prev == null || abs(addMaxHealth-prev) >= 2) stickTakenHeartCountPrev[it.gameProfile.name] = addMaxHealth
+                it.getAttribute(Attributes.MAX_HEALTH)?.let { attr ->
+                    val mdf = AttributeModifier(createIdentifier("stick_max_health_modify"), addMaxHealth.toDouble(), AttributeModifier.Operation.ADD_VALUE)
+                    attr.removeModifier(mdf)
+                    if (mdf.amount < 0) attr.addPermanentModifier(mdf)
                 }
+                if (prev != null && prev != addMaxHealth) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
             }
 

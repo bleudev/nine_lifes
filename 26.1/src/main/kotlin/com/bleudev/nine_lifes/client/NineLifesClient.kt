@@ -22,9 +22,12 @@ import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.redness
 import com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white
 import com.bleudev.nine_lifes.NineLifesClientData.stickUsedTicks
+import com.bleudev.nine_lifes.NineLifesClientData.stick_purpleness
+import com.bleudev.nine_lifes.NineLifesClientData.stick_purpleness_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
+import com.bleudev.nine_lifes.STICK_PURPLENESS_GIVE_HEART_TICKS
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.client.config.HeartPosition
@@ -39,6 +42,7 @@ import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.link
@@ -81,7 +85,6 @@ class NineLifesClient : ClientModInitializer {
         }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("BlurPropConfig", createIdentifier("cblur")), {putFloat()}) {
             putFloat(NineLifesClientData.shaderCBlurStrength)
-            println(NineLifesClientData.shaderCBlurStrength)
         }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
@@ -130,6 +133,7 @@ class NineLifesClient : ClientModInitializer {
             }
         } }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
+        registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
 
         ClientTickEvents.END_LEVEL_TICK.register{endClientLevelTick()}
         ClientRespawnEvents.RESPAWN.register { _ ->
@@ -179,6 +183,7 @@ class NineLifesClient : ClientModInitializer {
 
     private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
         graphics.overlayWithColor(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f)
+        graphics.overlayWithColor(0.5f * stick_purpleness, 0.5f, 0f, 0.5f)
         graphics.white(amethysm_whiteness)
         graphics.white(charge_effect_info.getWhiteness())
     }

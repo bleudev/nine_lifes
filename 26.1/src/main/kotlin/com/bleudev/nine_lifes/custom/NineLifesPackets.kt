@@ -4,13 +4,15 @@ import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.createIdentifier
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 object NineLifesPackets {
-    val AFTER_PLAYER_RESPAWN = createIdentifier("packet/unit/after_player_respawn")
-    val BETA_MODE_MESSAGE = createIdentifier("packet/unit/beta_mode_message")
+    val UNIT_AFTER_PLAYER_RESPAWN = createIdentifier("packet/unit/after_player_respawn")
+    val UNIT_BETA_MODE_MESSAGE = createIdentifier("packet/unit/beta_mode_message")
+    val UNIT_STICK_GIVE_HEART_SCREEN_EFFECT = createIdentifier("packet/unit/stick_give_heart_screen_effect")
 
     val ARMOR_STAND_HIT_EVENT = createIdentifier("packet/armor_stand_hit_event")
     val BED_SLEEPING_PROBLEM_EVENT = createIdentifier("packet/bed_sleeping_problem_event")
@@ -27,6 +29,7 @@ object NineLifesPackets {
     fun initialize() {
         registerS2CPacket(AfterPlayerRespawn)
         registerS2CPacket(BetaModeMessage)
+        registerS2CPacket(StickGiveHeartScreenEffect)
 
         registerS2CPacket(ArmorStandHitEvent)
         registerS2CPacket(BedSleepingProblemEvent)
