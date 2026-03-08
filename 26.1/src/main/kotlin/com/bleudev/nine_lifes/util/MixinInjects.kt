@@ -45,6 +45,9 @@ fun ServerPlayer.lifesPlayTime(lifesCount: Int): Int {
         throw IllegalArgumentException(e.message, e)
     }
 }
+var ServerPlayer.stickUsedTicks: Int
+    get() = (this as CustomServerPlayer).`nl$getStickUsedTicks`().coerceAtLeast(0)
+    set(newStickUsedTicks) = (this as CustomServerPlayer).`nl$setStickUsedTicks`(newStickUsedTicks.coerceAtLeast(0))
 // Brewing Stand
 @Suppress("UNCHECKED_CAST")
 private inline fun <reified T : Any, R : Any> T.getPrivateProperty(name: String): R? {

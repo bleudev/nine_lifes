@@ -21,6 +21,7 @@ import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen
 import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.redness
 import com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white
+import com.bleudev.nine_lifes.NineLifesClientData.stickUsedTicks
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
@@ -124,6 +125,7 @@ class NineLifesClient : ClientModInitializer {
                 bed_not_safe_event_running = true
             }
         } }
+        registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
 
         ClientTickEvents.END_LEVEL_TICK.register{endClientLevelTick()}
         ClientRespawnEvents.RESPAWN.register { _ ->

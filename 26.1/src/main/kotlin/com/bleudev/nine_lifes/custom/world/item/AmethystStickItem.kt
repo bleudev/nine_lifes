@@ -1,6 +1,9 @@
 package com.bleudev.nine_lifes.custom.world.item
 
+import com.bleudev.nine_lifes.STICK_USED_EFFECT_TICKS
+import com.bleudev.nine_lifes.util.stickUsedTicks
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.EntitySpawnReason
@@ -19,6 +22,7 @@ class AmethystStickItem(properties: Properties) : Item(properties) {
                 player.awardStat(Stats.ITEM_USED.get(this))
                 context.itemInHand.hurtAndBreak(1, player, context.hand.asEquipmentSlot())
                 player.causeFoodExhaustion(33f)
+                (player as? ServerPlayer)?.stickUsedTicks = STICK_USED_EFFECT_TICKS
             }
         }
 

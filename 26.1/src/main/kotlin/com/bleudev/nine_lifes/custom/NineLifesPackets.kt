@@ -19,6 +19,7 @@ object NineLifesPackets {
     val START_CHARGE_SCREEN = createIdentifier("packet/start_charge_screen")
     val START_WHITENESS_SCREEN = createIdentifier("packet/start_whiteness_screen")
     val UPDATE_LIFES_COUNT = createIdentifier("packet/update_lifes_count")
+    val UPDATE_STICK_USED_TICKS = createIdentifier("packet/update_stick_used_ticks")
 
     private fun <T : CustomPacketPayload> registerS2CPacket(packet: PacketPayloadCompanion<T>) =
         PayloadTypeRegistry.clientboundPlay().register(packet.id, packet.codec)
@@ -34,5 +35,6 @@ object NineLifesPackets {
         registerS2CPacket(StartChargeScreen)
         registerS2CPacket(StartWhitenessScreen)
         registerS2CPacket(UpdateLifesCount)
+        registerS2CPacket(UpdateStickUsedTicks)
     }
 }

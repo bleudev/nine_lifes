@@ -71,7 +71,10 @@ class NineLifes : ModInitializer {
             newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            server.playerList.players.forEach(NineLifesCriterions::trigger)
+            server.playerList.players.forEach {
+                NineLifesCriterions.trigger(it)
+                it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
+            }
 
             for (entry in notSafeSleepTicks) {
                 if (entry.value > 0) entry.setValue(entry.value - 1)

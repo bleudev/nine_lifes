@@ -15,7 +15,7 @@ public interface CustomServerPlayer {
     /**
      * Set player lifes to {@code newLifesCount}
      *
-     * <p><i>Note: This method is unstable and use of this method is not recommended. Use {@code ServerPlayer.setLifes()} inject instead.</i></p>
+     * <p><i>Note: This method is unstable and use of this method is not recommended. Use {@code ServerPlayer.lifes} inject instead.</i></p>
      *
      * @param newLifesCount New lifes count
      *
@@ -33,4 +33,20 @@ public interface CustomServerPlayer {
      * @throws NullPointerException {@code lifesCount} out of range [0; 9]
      * */
     int nl$getLifesPlayTime(int lifesCount) throws NullPointerException;
+    /**
+     * Get amethyst stick use effect ticks
+     *
+     * <p><i>Note: This method is unstable and use of this method is not recommended. Use {@code ServerPlayer.stickUsedTicks} inject instead.</i></p>
+     *
+     * @return Amethyst stick use effect ticks
+     * */
+    int nl$getStickUsedTicks();
+    /**
+     * Set amethyst stick use effect ticks
+     *
+     * <p><i>Note: This method is unstable and use of this method is not recommended. Use {@code ServerPlayer.stickUsedTicks} inject instead.</i></p>
+     *
+     * @param newTicks New amethyst stick use effect ticks
+     * */
+    void nl$setStickUsedTicks(int newTicks);
 }

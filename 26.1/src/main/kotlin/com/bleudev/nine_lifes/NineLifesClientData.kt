@@ -8,26 +8,24 @@ import net.minecraft.client.Minecraft
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.player.Player
 import java.util.*
-import kotlin.math.floor
-import kotlin.math.pow
-import kotlin.math.roundToInt
-import kotlin.math.sin
+import kotlin.math.*
 
 @Environment(EnvType.CLIENT)
 object NineLifesClientData {
     @JvmField
     var lifes = 9
+    var stickUsedTicks = 0
 
     // Shaders
     val shaderRedMajStrength: Float get() =
-        if (Minecraft.getInstance().player?.gameMode()?.isSurvival == false) 0f
-        else when (lifes) {
-            0 -> 1f
-            1 -> 1f
-            2 -> .666f
-            3 -> .333f
-            else -> 0f
-        }
+        max(if (Minecraft.getInstance().player?.gameMode()?.isSurvival == false) 0f
+            else when (lifes) {
+                0 -> 1f
+                1 -> 1f
+                2 -> .666f
+                3 -> .333f
+                else -> 0f
+            }, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
 
     private enum class Interpolation {
         SIN {
