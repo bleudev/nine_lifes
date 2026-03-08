@@ -22,9 +22,12 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
+import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge
@@ -73,6 +76,15 @@ class NineLifes : ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register { server ->
             server.playerList.players.forEach {
                 NineLifesCriterions.trigger(it)
+                // Amethyst stick max health modify
+                val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_TAKE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
+                if (addMaxHealth < 0) {
+                    it.getAttribute(Attributes.MAX_HEALTH)?.let { attr ->
+                        val mdf = AttributeModifier(createIdentifier("stick_max_health_modify"), addMaxHealth.toDouble(), AttributeModifier.Operation.ADD_VALUE)
+                        attr.removeModifier(mdf)
+                        attr.addPermanentModifier(mdf)
+                    }
+                }
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
             }
 
@@ -96,7 +108,7 @@ class NineLifes : ModInitializer {
                             -1 -> return@forEach
                             0 -> {
                                 level.explode(entity.position(), 7f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.MOB, entity)
-                                entity.kill(NineLifesDamageTypes::chargedAmethyst)
+                                entity.killCharged()
                             }
                         }
                         entity.damageTicks -= 1
