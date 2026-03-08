@@ -8,6 +8,8 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.Stats
 import net.minecraft.world.InteractionResult
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
@@ -17,8 +19,6 @@ import kotlin.math.max
 class AmethystStickItem(properties: Properties) : Item(properties) {
     override fun useOn(context: UseOnContext): InteractionResult {
         var bl = true
-        // TODO: Shader effects after use
-        // TODO: Heart consume
         context.player?.let { player ->
             if (player.foodData.foodLevel < 10f || (player as? ServerPlayer)?.stickUsedTicks?.let { it > 0 } == true) bl = false
             else {
@@ -26,6 +26,8 @@ class AmethystStickItem(properties: Properties) : Item(properties) {
                 context.itemInHand.hurtAndBreak(1, player, context.hand.asEquipmentSlot())
                 player.causeFoodExhaustion(33f)
                 player.hurtCharged(max(2f, player.health - player.maxHealth + STICK_USED_EFFECT_MAX_HEALTH_TAKE))
+                player.addEffect(MobEffectInstance(MobEffects.MINING_FATIGUE, STICK_USED_EFFECT_TICKS, 5, false, false))
+                player.addEffect(MobEffectInstance(MobEffects.WEAKNESS, STICK_USED_EFFECT_TICKS, 3, false, false))
                 (player as? ServerPlayer)?.stickUsedTicks = STICK_USED_EFFECT_TICKS
             }
         }

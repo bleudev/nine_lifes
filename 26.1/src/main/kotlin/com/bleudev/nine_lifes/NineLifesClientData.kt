@@ -14,6 +14,7 @@ import kotlin.math.*
 object NineLifesClientData {
     @JvmField
     var lifes = 9
+    @JvmField
     var stickUsedTicks = 0
 
     // Shaders
