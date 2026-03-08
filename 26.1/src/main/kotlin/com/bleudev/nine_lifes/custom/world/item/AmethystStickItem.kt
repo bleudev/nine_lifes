@@ -20,7 +20,7 @@ class AmethystStickItem(properties: Properties) : Item(properties) {
         // TODO: Shader effects after use
         // TODO: Heart consume
         context.player?.let { player ->
-            if (player.foodData.foodLevel < 10f) bl = false
+            if (player.foodData.foodLevel < 10f || (player as? ServerPlayer)?.stickUsedTicks?.let { it > 0 } == true) bl = false
             else {
                 player.awardStat(Stats.ITEM_USED.get(this))
                 context.itemInHand.hurtAndBreak(1, player, context.hand.asEquipmentSlot())
