@@ -82,13 +82,14 @@ class NineLifes : ModInitializer {
                 // Amethyst stick max health modify
                 val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
                 val prev = stickTakenHeartCountPrev[it.gameProfile.name]
-                if (prev == null || abs(addMaxHealth-prev) >= 2) stickTakenHeartCountPrev[it.gameProfile.name] = addMaxHealth
+                val shouldUpdate = prev != null && abs(addMaxHealth-prev) >= 2 && (-addMaxHealth) % 2 == 1
+                if (prev == null || shouldUpdate) stickTakenHeartCountPrev[it.gameProfile.name] = addMaxHealth
                 it.getAttribute(Attributes.MAX_HEALTH)?.let { attr ->
                     val mdf = AttributeModifier(createIdentifier("stick_max_health_modify"), addMaxHealth.toDouble(), AttributeModifier.Operation.ADD_VALUE)
                     attr.removeModifier(mdf)
                     if (mdf.amount < 0) attr.addPermanentModifier(mdf)
                 }
-                if (prev != null && abs(addMaxHealth-prev) >= 2) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
+                if (shouldUpdate) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
             }
 
