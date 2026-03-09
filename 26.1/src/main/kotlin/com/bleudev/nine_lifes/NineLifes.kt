@@ -88,7 +88,7 @@ class NineLifes : ModInitializer {
                     attr.removeModifier(mdf)
                     if (mdf.amount < 0) attr.addPermanentModifier(mdf)
                 }
-                if (prev != null && prev != addMaxHealth) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
+                if (prev != null && abs(addMaxHealth-prev) >= 2) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
             }
 
