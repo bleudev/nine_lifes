@@ -110,7 +110,10 @@ modrinth {
     versionNumber.set(project.version as String)
     versionType.set("release")
     uploadFile.set(tasks.remapJar)
-    additionalFiles.add(tasks.remapSourcesJar)
+    additionalFiles {
+        sourcesJar(tasks.remapSourcesJar)
+        javadocJar(tasks.named("javadocJar"))
+    }
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
     gameVersions.addAll("1.21.11")
