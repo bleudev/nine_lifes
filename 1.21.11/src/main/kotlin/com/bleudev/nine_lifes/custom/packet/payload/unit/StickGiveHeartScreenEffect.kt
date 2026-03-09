@@ -6,14 +6,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class BetaModeMessage : CustomPacketPayload {
+class StickGiveHeartScreenEffect : CustomPacketPayload {
     private constructor()
 
-    companion object : PacketPayloadCompanion<BetaModeMessage> {
-        val INSTANCE = BetaModeMessage()
+    companion object : PacketPayloadCompanion<StickGiveHeartScreenEffect> {
+        val INSTANCE = StickGiveHeartScreenEffect()
 
-        override val idLocation = NineLifesPackets.UNIT_BETA_MODE_MESSAGE
-        override val codec: StreamCodec<RegistryFriendlyByteBuf, BetaModeMessage> = StreamCodec.unit(INSTANCE)
+        override val idLocation = NineLifesPackets.UNIT_STICK_GIVE_HEART_SCREEN_EFFECT
+        override val codec: StreamCodec<RegistryFriendlyByteBuf, StickGiveHeartScreenEffect> = StreamCodec.unit(INSTANCE)
     }
 
     override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> = id

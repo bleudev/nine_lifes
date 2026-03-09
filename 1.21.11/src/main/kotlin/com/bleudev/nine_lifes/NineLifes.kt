@@ -6,6 +6,7 @@ import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents
@@ -22,9 +23,12 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
+import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge
@@ -38,11 +42,13 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
 import net.minecraft.world.phys.Vec3
+import kotlin.math.abs
 
 class NineLifes : ModInitializer {
     companion object {
         @JvmStatic
         val notSafeSleepTicks: HashMap<String, Int> = HashMap()
+        val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
     }
 
     override fun onInitialize() {
@@ -55,6 +61,7 @@ class NineLifes : ModInitializer {
         NineLifesCommands.initialize()
         NineLifesCriterions.initialize()
         NineLifesStats.initialize()
+        NineLifesItems.initialize()
         FabricBrewingRecipeRegistryBuilder.BUILD.register { it.registerPotionRecipe(
             Potions.WATER,
             Ingredient.of(Items.AMETHYST_SHARD),
@@ -70,7 +77,20 @@ class NineLifes : ModInitializer {
             newPlayer.sendPacket(AfterPlayerRespawn.INSTANCE)
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
-            server.playerList.players.forEach(NineLifesCriterions::trigger)
+            server.playerList.players.forEach {
+                NineLifesCriterions.trigger(it)
+                // Amethyst stick max health modify
+                val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
+                val prev = stickTakenHeartCountPrev[it.gameProfile.name]
+                if (prev == null || abs(addMaxHealth-prev) >= 2) stickTakenHeartCountPrev[it.gameProfile.name] = addMaxHealth
+                it.getAttribute(Attributes.MAX_HEALTH)?.let { attr ->
+                    val mdf = AttributeModifier(createIdentifier("stick_max_health_modify"), addMaxHealth.toDouble(), AttributeModifier.Operation.ADD_VALUE)
+                    attr.removeModifier(mdf)
+                    if (mdf.amount < 0) attr.addPermanentModifier(mdf)
+                }
+                if (prev != null && prev != addMaxHealth) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
+                it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
+            }
 
             for (entry in notSafeSleepTicks) {
                 if (entry.value > 0) entry.setValue(entry.value - 1)
@@ -92,7 +112,7 @@ class NineLifes : ModInitializer {
                             -1 -> return@forEach
                             0 -> {
                                 level.explode(entity.position(), 7f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.MOB, entity)
-                                entity.kill(NineLifesDamageTypes::chargedAmethyst)
+                                entity.killCharged()
                             }
                         }
                         entity.damageTicks -= 1
@@ -131,6 +151,8 @@ class NineLifes : ModInitializer {
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
             if (player !is ServerPlayer) return@register null
             var problem: Player.BedSleepingProblem? = null
+            if (player.hasEffect(NineLifesMobEffects.INSOMNIA))
+                problem = PROBLEM_INSOMNIA
             if (!player.hasEffect(NineLifesMobEffects.AMETHYSM))
                 when (player.lifes) {
                     in 0..3 -> problem = PROBLEM_NOT_NOW
@@ -225,6 +247,7 @@ class NineLifes : ModInitializer {
 }
 
 val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+val PROBLEM_INSOMNIA: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.insomnia_effect"))
 
 object NineLifesStats {
     val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)

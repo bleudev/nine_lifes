@@ -8,26 +8,25 @@ import net.minecraft.client.Minecraft
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.player.Player
 import java.util.*
-import kotlin.math.floor
-import kotlin.math.pow
-import kotlin.math.roundToInt
-import kotlin.math.sin
+import kotlin.math.*
 
 @Environment(EnvType.CLIENT)
 object NineLifesClientData {
     @JvmField
     var lifes = 9
+    @JvmField
+    var stickUsedTicks = 0
 
     // Shaders
     val shaderRedMajStrength: Float get() =
-        if (Minecraft.getInstance().player?.gameMode()?.isSurvival == false) 0f
-        else when (lifes) {
-            0 -> 1f
-            1 -> 1f
-            2 -> .666f
-            3 -> .333f
-            else -> 0f
-        }
+        max(if (Minecraft.getInstance().player?.gameMode()?.isSurvival == false) 0f
+            else when (lifes) {
+                0 -> 1f
+                1 -> 1f
+                2 -> .666f
+                3 -> .333f
+                else -> 0f
+            }, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
 
     private enum class Interpolation {
         SIN {
@@ -41,11 +40,18 @@ object NineLifesClientData {
         operator fun invoke(delta: Float, left: Float, right: Float): Float = get(delta, left, right)
     }
 
+    private val stickAnaglyphEffect: Float get() =
+        ((stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f).takeIf { stickUsedTicks > 0 } ?: 0f
+
     private val anaglyphEffect: Float get() = listOf(
-        amethysm_purpleness, whiteness, Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f
+        amethysm_purpleness,
+        whiteness,
+        Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f,
+        stickAnaglyphEffect
     ).max()
     val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
     val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f
+    val shaderCBlurStrength: Float get() = stickAnaglyphEffect * 4f
 
     var bed_not_safe_event_ticks = 0
     var bed_not_safe_event_running = false
@@ -66,6 +72,16 @@ object NineLifesClientData {
     var amethysm_purpleness = 0f
 
     var armor_stand_hit_redness = 0f
+
+    // Camera effects
+    val shakeStrength: Float
+        get() = shakeSpeed / 2
+    val shakeSpeed: Float
+        get() = ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE_TICKS).toFloat() / STICK_USED_EFFECT_SHAKE_TICKS).coerceIn(0f, 1f)
+    // Additional overlay effects
+    var stick_purpleness: Float = 0f
+        get() = max(field, shakeSpeed)
+    var stick_purpleness_ticks: Int = 0
 
     var amethysm_effect_info = AmethysmEffectInfo()
     var charge_effect_info = ChargeEffectInfo()
@@ -95,6 +111,8 @@ object NineLifesClientData {
     fun tick() {
         amethysm_effect_info.tick()
         charge_effect_info.tick()
+        if (stick_purpleness_ticks > 0) stick_purpleness_ticks--
+        stick_purpleness = stick_purpleness_ticks.toFloat() / STICK_PURPLENESS_GIVE_HEART_TICKS
     }
 
     class AmethysmEffectInfo {
