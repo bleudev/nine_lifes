@@ -12,7 +12,9 @@
     "ServerPlayerMixin"
   ],
   "client": [
+    "client.CameraMixin",
     "client.DeathScreenMixin",
+    "client.EffectsInInventoryMixin",
     "client.EnvironmentAttributeProbeMixin",
     "client.FogRendererMixin",
     "client.GameRendererMixin",

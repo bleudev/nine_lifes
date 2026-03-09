@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.util
 
 import com.bleudev.nine_lifes.MAX_LIFES
+import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
@@ -63,9 +64,15 @@ fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> D
     source, damageSourceSupplier(this), ExplosionDamageCalculator(),
     pos.x, pos.y, pos.z, strength, true, explosionInteraction
 )
-fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = (level() as? ServerLevel)?.let {
-    hurtServer(it, damageSourceSupplier(it), Float.MAX_VALUE)
-}
+
+fun LivingEntity.hurtServer(damageSourceSupplier: (Level) -> DamageSource, amount: Float): Boolean =
+    (level() as? ServerLevel)?.let {
+        hurtServer(it, damageSourceSupplier(it), amount)
+    } == true
+fun LivingEntity.hurtCharged(amount: Float) = hurtServer(NineLifesDamageTypes::chargedAmethyst, amount)
+@Suppress("unused") // Public API
+fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = hurtServer(damageSourceSupplier, Float.MAX_VALUE)
+fun LivingEntity.killCharged() = hurtCharged(Float.MAX_VALUE)
 
 // Commands
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =

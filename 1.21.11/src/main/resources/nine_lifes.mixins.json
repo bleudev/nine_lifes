@@ -13,8 +13,10 @@
     "client.EnvironmentAttributeProbeMixin"
   ],
   "client": [
+    "client.CameraMixin",
     "client.ClientLevelDataMixin",
     "client.DeathScreenMixin",
+    "client.EffectsInInventoryMixin",
     "client.FogRendererMixin",
     "client.GameRendererMixin",
     "client.PostPassMixin"

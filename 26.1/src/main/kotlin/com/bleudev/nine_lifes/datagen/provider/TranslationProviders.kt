@@ -3,10 +3,7 @@ package com.bleudev.nine_lifes.datagen.provider
 import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesEntities
-import com.bleudev.nine_lifes.custom.NineLifesItemTags
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.config
@@ -23,10 +20,13 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
     ) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
+        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
+        // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Potion of Amethysm")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Splash Potion of Amethysm")
         builder.add("item.minecraft.lingering_potion.effect.amethysm", "Lingering Potion of Amethysm")
         builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Arrow of Amethysm")
+        builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
         builder.add("death.attack.amethysm.player", $$"%1$s didn't expect amethysts to kill")
@@ -43,6 +43,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addAdvancement("got_charged_shard", "Power of the light", "Get an charged amethyst shard")
         builder.addAdvancement("got_life_with_shard", "+1", "Get an life with charged amethyst shard")
         builder.addAdvancement("ate_64_charged_shards", "Is it that delicious?", "Eat 64 charged amethyst shard")
+        builder.addAdvancement("got_amethyst_stick", "NOW I'M A GOD!", "Get an amethyst stick")
         builder.addAdvancement("almost_dead", "Almost dead", "Survive with one half heart and life")
         builder.addAdvancement("hundred_days", "100 days", "Survive 100 days")
         builder.addAdvancement("true_hundred_days", "True 100 days", "Survive 100 days with one life")
@@ -78,6 +79,8 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+        // Other
+        builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
@@ -100,10 +103,13 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
+        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Бессоница")
+        // Items
         builder.add("item.minecraft.potion.effect.amethysm", "Зелье аметизма")
         builder.add("item.minecraft.splash_potion.effect.amethysm", "Взрывное зелье аметизма")
         builder.add("item.minecraft.lingering_potion.effect.amethysm", "Туманное зелье аметизма")
         builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Стрела аметизма")
+        builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s не ожидал, что аметисты убивают")
         builder.add("death.attack.amethysm.player", $$"%1$s не ожидал, что аметисты убивают")
@@ -120,6 +126,7 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addAdvancement("got_charged_shard", "Сила света", "Получите заряженный аметистовый осколок")
         builder.addAdvancement("got_life_with_shard", "+1", "Получите жизнь с помощью заряженного аметистового осколка")
         builder.addAdvancement("ate_64_charged_shards", "Это настолько вкусно?", "Съешьте 64 заряженных аметистовых осколков")
+        builder.addAdvancement("got_amethyst_stick", "ТЕПЕРЬ Я БОГ!", "Получите аметистовую палочку")
         builder.addAdvancement("almost_dead", "На волоске", "Выживите с одним полсердечком и жизней")
         builder.addAdvancement("hundred_days", "100 дней", "Проживите 100 дней")
         builder.addAdvancement("true_hundred_days", "Истинные 100 дней", "Проживите 100 дней с одной жизнью")
@@ -155,6 +162,8 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
+        // Other
+        builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")

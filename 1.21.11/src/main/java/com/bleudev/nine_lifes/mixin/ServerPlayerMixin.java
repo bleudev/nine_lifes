@@ -20,6 +20,8 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
     protected int lifes;
     @Unique
     protected int[] lifesPlayTime = new int[9];
+    @Unique
+    protected int stickUsedTicks;
     @Override
     public int nl$getLifes() {
         return this.lifes;
@@ -35,16 +37,26 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
         if (lifesCount == 0) return 0;
         return this.lifesPlayTime[lifesCount - 1];
     }
+    @Override
+    public int nl$getStickUsedTicks() {
+        return this.stickUsedTicks;
+    }
+    @Override
+    public void nl$setStickUsedTicks(int newTicks) {
+        this.stickUsedTicks = Math.max(newTicks, 0);
+    }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    protected void readCustomData(ValueInput valueInput, CallbackInfo ci) {
-        this.lifes = valueInput.getInt("lifes").orElse(9);
-        this.lifesPlayTime = valueInput.getIntArray("lifesPlayTime").orElse(new int[9]);
+    private void readData(ValueInput input, CallbackInfo ci) {
+        this.lifes = input.getInt("lifes").orElse(9);
+        this.lifesPlayTime = input.getIntArray("lifesPlayTime").orElse(new int[9]);
+        this.stickUsedTicks = input.getInt("stickUsedTicks").orElse(0);
     }
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    protected void writeCustomData(ValueOutput valueOutput, CallbackInfo ci) {
-        valueOutput.putInt("lifes", this.lifes);
-        valueOutput.putIntArray("lifesPlayTime", this.lifesPlayTime);
+    private void addData(ValueOutput output, CallbackInfo ci) {
+        output.putInt("lifes", this.lifes);
+        output.putIntArray("lifesPlayTime", this.lifesPlayTime);
+        output.putInt("stickUsedTicks", this.stickUsedTicks);
     }
     @Inject(method = "restoreFrom", at = @At("TAIL"))
     private void onRespawn(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
@@ -62,6 +74,7 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
             if (this.lifesPlayTime[i] > totalPlayTime) this.lifesPlayTime[i] = totalPlayTime;
         }
         int lifesCount = MixinInjectsKt.getLifes(player);
-        if (lifesCount > 0) this.lifesPlayTime[lifesCount-1] += 1;
+        if (lifesCount > 0) this.lifesPlayTime[lifesCount-1]++;
+        if (this.stickUsedTicks > 0) this.stickUsedTicks--;
     }
 }

@@ -12,7 +12,7 @@ class BetaModeMessage : CustomPacketPayload {
     companion object : PacketPayloadCompanion<BetaModeMessage> {
         val INSTANCE = BetaModeMessage()
 
-        override val idLocation = NineLifesPackets.BETA_MODE_MESSAGE
+        override val idLocation = NineLifesPackets.UNIT_BETA_MODE_MESSAGE
         override val codec: StreamCodec<RegistryFriendlyByteBuf, BetaModeMessage> = StreamCodec.unit(INSTANCE)
     }
 

@@ -1,11 +1,14 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.NineLifesClientData.lifes
+import com.bleudev.nine_lifes.NineLifesClientData.stickUsedTicks
+import com.bleudev.nine_lifes.STICK_USED_EFFECT_TICKS
 import com.bleudev.nine_lifes.client.config.lowLifesRedSkyEnabled
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ARGB
 import net.minecraft.world.phys.Vec3
 import org.joml.Vector4f
+import kotlin.math.max
 
 typealias Transformer<T> = (T) -> T
 
@@ -14,17 +17,18 @@ private val clientInSurvivalLikeGameMode: Boolean
 
 val fogColor: Transformer<Vector4f>
     get() = { color ->
+        var lerpAmount: Float = when (lifes) {
+            5 -> .1f
+            4 -> .3f
+            in 0..3 -> 1f
+            else -> 0f
+        }
+        if (stickUsedTicks > 0) lerpAmount = max(lerpAmount, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
+
         if (lowLifesRedSkyEnabled && clientInSurvivalLikeGameMode) {
             val target = Vector4f(1f, 0f, 0f, 1f)
-            when (lifes) {
-                5 -> color.lerp(target, .1f)
-                4 -> color.lerp(target, .3f)
-                3 -> color.lerp(target, .5f)
-                2 -> color.lerp(target, .7f)
-                1 -> color.lerp(target, .9f)
-                else -> color
-            }
-        } else color
+            color.lerp(target, lerpAmount)
+        } else color.lerp(Vector4f(1f, 1f, 1f, 1f), lerpAmount)
     }
 
 val skyColor: Transformer<Int>

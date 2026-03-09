@@ -12,7 +12,7 @@ class AfterPlayerRespawn : CustomPacketPayload {
     companion object : PacketPayloadCompanion<AfterPlayerRespawn> {
         val INSTANCE = AfterPlayerRespawn()
 
-        override val idLocation = NineLifesPackets.AFTER_PLAYER_RESPAWN
+        override val idLocation = NineLifesPackets.UNIT_AFTER_PLAYER_RESPAWN
         override val codec: StreamCodec<RegistryFriendlyByteBuf, AfterPlayerRespawn> = StreamCodec.unit(INSTANCE)
     }
 
