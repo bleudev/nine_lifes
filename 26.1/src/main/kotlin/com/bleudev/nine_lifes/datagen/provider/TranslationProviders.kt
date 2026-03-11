@@ -22,11 +22,13 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
         builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
+
+        fun translatePotion(translationsName: String, vararg names: String) {
+            builder.addPotions(names.toList(), "Potion of $translationsName", "Splash Potion of $translationsName", "Lingering Potion of $translationsName", "Arrow of $translationsName")
+        }
+        translatePotion("Amethysm", "amethysm")
+        translatePotion("Insomnia", "insomnia", "longer_insomnia")
         // Items
-        builder.add("item.minecraft.potion.effect.amethysm", "Potion of Amethysm")
-        builder.add("item.minecraft.splash_potion.effect.amethysm", "Splash Potion of Amethysm")
-        builder.add("item.minecraft.lingering_potion.effect.amethysm", "Lingering Potion of Amethysm")
-        builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Arrow of Amethysm")
         builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
@@ -110,11 +112,13 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
         builder.add(NineLifesMobEffects.INSOMNIA.value(), "Бессоница")
+
+        fun translatePotion(translationsName: String, vararg names: String) {
+            builder.addPotions(names.toList(), "Зелье $translationsName", "Взрывное зелье $translationsName", "Туманное зелье $translationsName", "Стрела $translationsName")
+        }
+        translatePotion("аметизма", "amethysm")
+        translatePotion("бессоницы", "insomnia", "longer_insomnia")
         // Items
-        builder.add("item.minecraft.potion.effect.amethysm", "Зелье аметизма")
-        builder.add("item.minecraft.splash_potion.effect.amethysm", "Взрывное зелье аметизма")
-        builder.add("item.minecraft.lingering_potion.effect.amethysm", "Туманное зелье аметизма")
-        builder.add("item.minecraft.tipped_arrow.effect.amethysm", "Стрела аметизма")
         builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s не ожидал, что аметисты убивают")
@@ -193,6 +197,23 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
     }
 }
 
+private fun FabricLanguageProvider.TranslationBuilder.addPotion(name: String, potionTranslation: String,
+                                                                splashPotionTranslation: String,
+                                                                lingeringPotionTranslation: String,
+                                                                tippedArrowTranslation: String) {
+    this.add("item.minecraft.potion.effect.$name", potionTranslation)
+    this.add("item.minecraft.splash_potion.effect.$name", splashPotionTranslation)
+    this.add("item.minecraft.lingering_potion.effect.$name", lingeringPotionTranslation)
+    this.add("item.minecraft.tipped_arrow.effect.$name", tippedArrowTranslation)
+}
+private fun FabricLanguageProvider.TranslationBuilder.addPotions(names: List<String>, potionTranslation: String,
+                                                                 splashPotionTranslation: String,
+                                                                 lingeringPotionTranslation: String,
+                                                                 tippedArrowTranslation: String) {
+    for (name in names) {
+        addPotion(name, potionTranslation, splashPotionTranslation, lingeringPotionTranslation, tippedArrowTranslation)
+    }
+}
 private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: String, nameTranslation: String, descriptionTranslation: String) {
     this.add(advancement(name), nameTranslation)
     this.add(advancementDescription(name), descriptionTranslation)
