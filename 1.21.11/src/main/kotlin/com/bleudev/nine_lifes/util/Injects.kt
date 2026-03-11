@@ -32,11 +32,6 @@ fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
 
 fun Float.lerp(start: Float = 0f, end: Float = 1f): Float = start + coerceIn(0f, 1f) * (end - start)
 
-// Lifes
-@Deprecated("Use `ServerPlayer.lifes` setter instead. Will be deleted in 3.3", level = DeprecationLevel.ERROR)
-fun ServerPlayer.setLifes(lifesCountChanger: (Int) -> Int) {this.lifes = lifesCountChanger(this.lifes)}
-@Deprecated("Use `ServerPlayer.lifes` incrementing instead. Will be deleted in 3.3", level = DeprecationLevel.ERROR)
-fun ServerPlayer.addLifes(addedLifesCount: Int) { this.lifes += addedLifesCount }
 fun ServerPlayer.resetLifes() {this.lifes = MAX_LIFES}
 fun ServerPlayer.revive() {
     resetLifes()
