@@ -1,8 +1,6 @@
 package com.bleudev.nine_lifes.client
 
-import com.bleudev.nine_lifes.ISSUES_LINK
-import com.bleudev.nine_lifes.NOT_SAFE_ANAGLYPH_EVENT_DURATION
-import com.bleudev.nine_lifes.NineLifesClientData
+import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
 import com.bleudev.nine_lifes.NineLifesClientData.amethysm_whiteness
@@ -27,13 +25,10 @@ import com.bleudev.nine_lifes.NineLifesClientData.stick_purpleness_ticks
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
-import com.bleudev.nine_lifes.STICK_PURPLENESS_GIVE_HEART_TICKS
+import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
-import com.bleudev.nine_lifes.client.config.HeartPosition
-import com.bleudev.nine_lifes.client.config.configInit
-import com.bleudev.nine_lifes.client.config.heartPosition
-import com.bleudev.nine_lifes.client.config.joinMessageEnabled
+import com.bleudev.nine_lifes.client.config.*
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -43,9 +38,7 @@ import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadComp
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
-import com.bleudev.nine_lifes.util.createIdentifier
-import com.bleudev.nine_lifes.util.lerp
-import com.bleudev.nine_lifes.util.link
+import com.bleudev.nine_lifes.util.*
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -60,6 +53,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
+import org.joml.Vector4f
 
 class NineLifesClient : ClientModInitializer {
     object Layers {
@@ -76,6 +70,30 @@ class NineLifesClient : ClientModInitializer {
         configInit()
 
         NineLifesEntityRenderers.initialize()
+
+        ClientTickEvents.END_LEVEL_TICK.register { endClientLevelTick() }
+        ClientRespawnEvents.RESPAWN.register { _ ->
+            should_death_screen_be_white = false
+        }
+
+        fun getFogTarget(): Vector4f = if (lowLifesRedSkyEnabled && clientInSurvivalLikeGameMode)
+            Vector4f(1f, 0f, 0f, 1f) else Vector4f(1f, 1f, 1f, 1f)
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(getFogTarget(), when (lifes) {
+                5 -> .1f
+                4 -> .3f
+                in 0..3 -> 1f
+                else -> 0f
+            }) }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(getFogTarget(), stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
+        }
+
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            val ov4 = ARGB.vector3fFromRGB24(current).to4f(1f)
+            val v4 = ClientEnvironmentSetupEvents.FOG_COLOR.invoker()(ov4, ov4)
+            v4.asARGB()
+        }
 
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
@@ -134,11 +152,6 @@ class NineLifesClient : ClientModInitializer {
         } }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
-
-        ClientTickEvents.END_LEVEL_TICK.register{endClientLevelTick()}
-        ClientRespawnEvents.RESPAWN.register { _ ->
-            should_death_screen_be_white = false
-        }
     }
 
     private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =

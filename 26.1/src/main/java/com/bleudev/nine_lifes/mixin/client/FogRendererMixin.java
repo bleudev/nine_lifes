@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.mixin.client;
 
+import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents;
 import com.bleudev.nine_lifes.client.FogProperitesKt;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -19,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class FogRendererMixin {
     @Inject(method = "computeFogColor", at = @At("RETURN"))
     private void modifyFogColor(Camera camera, float partialTicks, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f dest, CallbackInfo ci) {
-        dest.set(FogProperitesKt.getFogColor().invoke(dest));
+        dest.set(ClientEnvironmentSetupEvents.FOG_COLOR.invoker().invoke(dest, dest));
     }
 
     @WrapOperation(method = "setupFog", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/fog/environment/FogEnvironment;setupFog(Lnet/minecraft/client/renderer/fog/FogData;Lnet/minecraft/client/Camera;Lnet/minecraft/client/multiplayer/ClientLevel;FLnet/minecraft/client/DeltaTracker;)V"))
