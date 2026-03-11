@@ -24,13 +24,17 @@ var heartPosition: HeartPosition
 var lowLifesRedSkyEnabled: Boolean
     get() = configLoad().lowLifesRedSky
     set(new) = configSave(configLoad().apply { lowLifesRedSky = new } )
+var healthRendering: HealthRendering
+    get() = configLoad().healthRendering
+    set(new) = configSave(configLoad().apply { healthRendering = new })
 
 @Serializable
 data class NineLifesClientConfig(
     var joinMessage: Boolean = true,
     var heartbeat: Boolean = true,
     var heartPosition: HeartPosition = HeartPosition.BOTTOM_CENTER,
-    var lowLifesRedSky: Boolean = true
+    var lowLifesRedSky: Boolean = true,
+    var healthRendering: HealthRendering = HealthRendering.ALWAYS,
 )
 
 interface TranslatableConfigEnumProvider {
@@ -44,6 +48,18 @@ enum class HeartPosition : NameableEnum {
 
     companion object : TranslatableConfigEnumProvider {
         override val names: List<String> = HeartPosition.entries.map { (it.displayName.contents as TranslatableContents).key }
+    }
+}
+
+@Suppress("unused")
+enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boolean) : NameableEnum {
+    ALWAYS({true}), TRUE({it <= 1}), NEVER({false});
+
+    override fun getDisplayName(): Component = Component.translatable(enumConfig("HealthRendering", name))
+    operator fun invoke(lifesCount: Int) = forceHardcore(lifesCount)
+
+    companion object : TranslatableConfigEnumProvider {
+        override val names: List<String> = HealthRendering.entries.map { (it.displayName.contents as TranslatableContents).key }
     }
 }
 
