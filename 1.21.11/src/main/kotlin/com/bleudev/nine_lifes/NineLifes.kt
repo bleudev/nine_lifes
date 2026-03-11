@@ -62,11 +62,23 @@ class NineLifes : ModInitializer {
         NineLifesCriterions.initialize()
         NineLifesStats.initialize()
         NineLifesItems.initialize()
-        FabricBrewingRecipeRegistryBuilder.BUILD.register { it.registerPotionRecipe(
-            Potions.WATER,
-            Ingredient.of(Items.AMETHYST_SHARD),
-            NineLifesPotions.AMETHYSM
-        ) }
+        FabricBrewingRecipeRegistryBuilder.BUILD.register {
+            it.registerPotionRecipe(
+                Potions.MUNDANE,
+                Ingredient.of(Items.AMETHYST_SHARD),
+                NineLifesPotions.AMETHYSM
+            )
+            it.registerPotionRecipe(
+                Potions.MUNDANE,
+                Ingredient.of(Items.SCULK, Items.SCULK_VEIN, Items.SCULK_SENSOR, Items.SCULK_CATALYST, Items.SCULK_SHRIEKER, Items.CALIBRATED_SCULK_SENSOR),
+                NineLifesPotions.INSOMNIA
+            )
+            it.registerPotionRecipe(
+                NineLifesPotions.INSOMNIA,
+                Ingredient.of(Items.REDSTONE),
+                NineLifesPotions.LONGER_INSOMNIA
+            )
+        }
         ServerPlayerEvents.JOIN.register { player ->
             if ((!player.isSpectator) && player.lifes == 0) player.resetLifes()
             val lifes = player.lifes

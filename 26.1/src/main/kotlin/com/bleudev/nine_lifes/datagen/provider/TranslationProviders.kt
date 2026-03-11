@@ -214,7 +214,6 @@ private fun FabricLanguageProvider.TranslationBuilder.addPotions(names: List<Str
         addPotion(name, potionTranslation, splashPotionTranslation, lingeringPotionTranslation, tippedArrowTranslation)
     }
 }
-
 private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: String, nameTranslation: String, descriptionTranslation: String) {
     this.add(advancement(name), nameTranslation)
     this.add(advancementDescription(name), descriptionTranslation)
