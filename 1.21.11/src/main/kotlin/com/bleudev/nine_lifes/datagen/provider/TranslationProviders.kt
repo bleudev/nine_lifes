@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.NineLifesStats
+import com.bleudev.nine_lifes.client.config.HealthRendering
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
 import com.bleudev.nine_lifes.custom.*
@@ -84,17 +85,22 @@ class NineLifesDefaultTranslationProvider(output: FabricDataOutput, registriesFu
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
-        builder.add(config("category.general.root.option.join_message"), "Enable join message")
-        builder.add(config("category.general.root.option.join_message.description"), "Display message with lifes count on join server")
-        builder.add(config("category.general.root.option.heartbeat"), "Enable heartbeat effect")
-        builder.add(config("category.general.root.option.heartbeat.description"), "When true lifes count will beat")
-        builder.add(config("category.general.root.option.heart_position"), "Heart position")
-        builder.add(config("category.general.root.option.heart_position.description"), "Location of lifes count on the screen")
-        builder.add(config("category.general.root.option.low_lifes_red_sky"), "Red sky when there are few lifes")
-        builder.add(config("category.general.root.option.low_lifes_red_sky.description"), "When true sky will become red when lifes count is low")
+        builder.addConfigOption("category.general.root.option.join_message",
+            "Enable join message", "Display message with lifes count on join server")
+        builder.addConfigOption("category.general.root.option.heartbeat",
+            "Enable heartbeat effect", "When true lifes count will beat")
+        builder.addConfigOption("category.general.root.option.heart_position",
+            "Heart position", "Location of lifes count on the screen")
+        builder.addConfigOption("category.general.root.option.low_lifes_red_sky",
+            "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
+        builder.addConfigOption("category.general.root.option.health_rendering",
+            "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
         builder.addConfigEnum(HeartPosition,
             "Bottom left", "Bottom center", "Bottom right",
             "Top left", "Top center", "Top right"
+        )
+        builder.addConfigEnum(HealthRendering,
+            "Hardcore", "True hardcore", "Vanilla"
         )
     }
 }
@@ -167,17 +173,22 @@ class NineLifesRussianTranslationProvider(output: FabricDataOutput, registriesFu
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")
-        builder.add(config("category.general.root.option.join_message"), "Включить приветственное сообщение")
-        builder.add(config("category.general.root.option.join_message.description"), "Показывать сообщение с количеством жизней при заходе на сервер")
-        builder.add(config("category.general.root.option.heartbeat"), "Включить эффект сербцебиения")
-        builder.add(config("category.general.root.option.heartbeat.description"), "Когда включено сердце будет пульсировать")
-        builder.add(config("category.general.root.option.heart_position"), "Расположение сердца")
-        builder.add(config("category.general.root.option.heart_position.description"), "Расположение количества жизней на экране")
-        builder.add(config("category.general.root.option.low_lifes_red_sky"), "Красное небо когда мало жизней")
-        builder.add(config("category.general.root.option.low_lifes_red_sky.description"), "Когда включено небо будет краснеть при низком количестве жизней")
+        builder.addConfigOption("category.general.root.option.join_message",
+            "Включить приветственное сообщение", "Показывать сообщение с количеством жизней при заходе на сервер")
+        builder.addConfigOption("category.general.root.option.heartbeat",
+            "Включить эффект сербцебиения", "Когда включено сердце будет пульсировать")
+        builder.addConfigOption("category.general.root.option.heart_position",
+            "Расположение сердца", "Расположение количества жизней на экране")
+        builder.addConfigOption("category.general.root.option.low_lifes_red_sky",
+            "Красное небо когда мало жизней", "Когда включено небо будет краснеть при низком количестве жизней")
+        builder.addConfigOption("category.general.root.option.health_rendering",
+            "Health rendering", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
         builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
+        )
+        builder.addConfigEnum(HealthRendering,
+            "Хардкор", "Истинный хардкор", "Ванила"
         )
     }
 }
@@ -186,11 +197,15 @@ private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: Strin
     this.add(advancement(name), nameTranslation)
     this.add(advancementDescription(name), descriptionTranslation)
 }
+private fun FabricLanguageProvider.TranslationBuilder.addStat(statId: Identifier, translation: String) {
+    this.add(statId.toLanguageKey("stat"), translation)
+}
+private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(name: String, nameTranslation: String, descriptionTranslation: String? = null) {
+    this.add(config(name), nameTranslation)
+    descriptionTranslation?.let { this.add(config("$name.description"), descriptionTranslation) }
+}
 private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {
     enum.names.zip(translations).forEach { (key, translation) ->
         this.add(key, translation)
     }
-}
-private fun FabricLanguageProvider.TranslationBuilder.addStat(statId: Identifier, translation: String) {
-    this.add(statId.toLanguageKey("stat"), translation)
 }

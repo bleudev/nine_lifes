@@ -118,7 +118,7 @@ private class EnumImageRenderer<T : Enum<T>>(val name: String, val enumGetter: (
     )
 }
 
-private class AnimatedConditionImageRenderer(val name: String, val frameProvder: (Long) -> Int, val condition: () -> Boolean, val useFirstFrameWhenFalse: Boolean) : ImageRenderer {
+private class AnimatedConditionImageRenderer(val name: String, val frameProvider: (Long) -> Int, val condition: () -> Boolean, val useFirstFrameWhenFalse: Boolean) : ImageRenderer {
     private var time: Long = 0
     private var first: Long = System.currentTimeMillis()
 
@@ -127,7 +127,7 @@ private class AnimatedConditionImageRenderer(val name: String, val frameProvder:
         if (condition()) {
             time = System.currentTimeMillis() - first
             val height = 9 * renderWidth / 16
-            graphics.blit(RenderPipelines.GUI_TEXTURED, createIdentifier("$base/${frameProvder(time)}.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
+            graphics.blit(RenderPipelines.GUI_TEXTURED, createIdentifier("$base/${frameProvider(time)}.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
             return height
         } else {
             time = 0
