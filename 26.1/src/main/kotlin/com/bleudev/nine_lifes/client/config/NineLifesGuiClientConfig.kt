@@ -21,6 +21,7 @@ private var cachedJoinMessage: Boolean? = null
 private var cachedHeartbeat: Boolean? = null
 private var cachedHeartPosition: HeartPosition? = null
 private var cachedLowLifesRedSky: Boolean? = null
+private var cachedHealthRendering: HealthRendering? = null
 
 fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_ID) {
     categories.register("general") {
@@ -58,6 +59,15 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
             descriptionBuilder {
                 addDefaultText(1)
                 localisedConfigImage("low_lifes_red_sky") {cachedLowLifesRedSky ?: lowLifesRedSkyEnabled}
+            }
+        }
+        rootOptions.register("health_rendering") {
+            binding(HealthRendering.ALWAYS, ::healthRendering)
+            enumFormat()
+            cachePending(::cachedHealthRendering::set)
+            descriptionBuilder {
+                addDefaultText(1)
+                customImage(HealthRenderingImageRenderer {cachedHealthRendering ?: healthRendering})
             }
         }
     }
@@ -131,3 +141,21 @@ private class AnimatedConditionImageRenderer(val name: String, val frameProvder:
     override fun close() {
     }
 }
+
+private class HealthRenderingImageRenderer(val healthRenderingSupplier: () -> HealthRendering) : MethodBasedImageRenderer() {
+    private var first = System.currentTimeMillis()
+
+    override fun getImagePath(): Identifier {
+        val base = "textures/config/description/health_rendering"
+        return when (healthRenderingSupplier()) {
+            HealthRendering.ALWAYS -> createIdentifier("$base/hardcore_4.png").also {
+                first = System.currentTimeMillis()
+            }
+            HealthRendering.TRUE -> if (((System.currentTimeMillis() - first) / 1000) % 2 == 0L) createIdentifier("$base/normal_4.png") else createIdentifier("$base/hardcore_1.png")
+            HealthRendering.NEVER -> createIdentifier("$base/normal_4.png").also {
+                first = System.currentTimeMillis()
+            }
+        }
+    }
+}
+

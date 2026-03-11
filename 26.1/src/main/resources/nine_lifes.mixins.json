@@ -18,6 +18,7 @@
     "client.EnvironmentAttributeProbeMixin",
     "client.FogRendererMixin",
     "client.GameRendererMixin",
+    "client.GuiMixin",
     "client.PostPassMixin"
   ],
   "injectors": {

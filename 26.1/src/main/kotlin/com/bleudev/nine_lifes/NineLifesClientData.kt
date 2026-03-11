@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.client.config.healthRendering
 import com.bleudev.nine_lifes.client.config.heartbeatEnabled
 import com.bleudev.nine_lifes.util.lerp
 import net.fabricmc.api.EnvType
@@ -82,6 +83,9 @@ object NineLifesClientData {
     var stick_purpleness: Float = 0f
         get() = max(field, ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE_TICKS).toFloat() / STICK_USED_EFFECT_SHAKE_TICKS).coerceIn(0f, 1f))
     var stick_purpleness_ticks: Int = 0
+
+    @JvmStatic
+    val forceHardcore: Boolean get() = healthRendering(lifes)
 
     var amethysm_effect_info = AmethysmEffectInfo()
     var charge_effect_info = ChargeEffectInfo()
