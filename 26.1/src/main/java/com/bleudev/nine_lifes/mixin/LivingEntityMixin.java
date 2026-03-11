@@ -28,6 +28,12 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     @Shadow
     public abstract boolean hasEffect(Holder<@NotNull MobEffect> holder);
 
+    @Shadow
+    public abstract boolean isSleeping();
+
+    @Shadow
+    public abstract void stopSleeping();
+
     @Unique
     private BlockPos lastLightPos;
 
@@ -53,6 +59,10 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo ci) {
+        if (isSleeping() && hasEffect(NineLifesMobEffects.INSOMNIA)) {
+            stopSleeping();
+        }
+
         var entity = (LivingEntity) (Object) this;
 
         var level = entity.level();
@@ -60,14 +70,27 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
         boolean shouldLight = shouldEmitLight();
         BlockPos footPos = entity.blockPosition();
 
-        for (var pos: List.of(footPos, footPos.above()))
+        for (var pos: List.of(footPos, footPos.above())) {
             if (tryEmitLight((ServerLevel) level, pos, shouldLight ? 15 : 0)) break;
+        }
     }
 
-    @Unique
-    private void removeLightAt(ServerLevel level, BlockPos pos) {
-        if (level.getBlockState(pos).is(Blocks.LIGHT))
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+    @Inject(method = "remove", at = @At("HEAD"))
+    private void remove(Entity.RemovalReason removalReason, CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+
+        var level = entity.level();
+        if (!level.isClientSide() && lastLightPos != null) {
+            removeLightAt((ServerLevel) level, lastLightPos);
+            lastLightPos = null;
+        }
+    }
+
+    @Inject(method = "startSleeping", at = @At("HEAD"), cancellable = true)
+    private void startSleeping(BlockPos bedPosition, CallbackInfo ci) {
+        if (hasEffect(NineLifesMobEffects.INSOMNIA)) {
+            ci.cancel();
+        }
     }
 
     @Unique
@@ -92,14 +115,10 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
         return false;
     }
 
-    @Inject(method = "remove", at = @At("HEAD"))
-    private void remove(Entity.RemovalReason removalReason, CallbackInfo ci) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-
-        var level = entity.level();
-        if (!level.isClientSide() && lastLightPos != null) {
-            removeLightAt((ServerLevel) level, lastLightPos);
-            lastLightPos = null;
+    @Unique
+    private void removeLightAt(ServerLevel level, BlockPos pos) {
+        if (level.getBlockState(pos).is(Blocks.LIGHT)) {
+            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
         }
     }
 
