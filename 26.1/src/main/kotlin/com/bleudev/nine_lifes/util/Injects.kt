@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
 import net.minecraft.stats.Stats
+import net.minecraft.util.ARGB
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.effect.MobEffectInstance
@@ -23,6 +24,8 @@ import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
+import org.joml.Vector3f
+import org.joml.Vector4f
 
 // Lang
 fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
@@ -74,3 +77,7 @@ fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceSt
     requires { it.permissions().hasPermission(Permissions.COMMANDS_ADMIN) }
 
 fun SuggestionsBuilder.suggestMany(vararg integers: Int) = this.apply { for (i in integers) this.suggest(i) }
+
+// Convert
+fun Vector3f.to4f(w: Float): Vector4f = Vector4f(x, y, z, w)
+fun Vector4f.asARGB(): Int = ARGB.colorFromFloat(w, x, y, z)

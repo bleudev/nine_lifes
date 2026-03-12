@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.client.FogProperitesKt;
+import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,8 @@ public class EnvironmentAttributeProbeMixin {
     @Inject(method = "getValue", at = @At("RETURN"), cancellable = true)
     private <Value> void modifySkyColor(EnvironmentAttribute<@NotNull Value> environmentAttribute, float f, CallbackInfoReturnable<Value> cir) {
         if (environmentAttribute.equals(EnvironmentAttributes.SKY_COLOR)) {
-            cir.setReturnValue((Value) FogProperitesKt.getSkyColor().invoke((Integer) cir.getReturnValue()));
+            int original = (Integer) cir.getReturnValue();
+            cir.setReturnValue((Value) ClientEnvironmentSetupEvents.SKY_COLOR.invoker().invoke(original, original));
         }
         // Always day
         var pl = Minecraft.getInstance().player;

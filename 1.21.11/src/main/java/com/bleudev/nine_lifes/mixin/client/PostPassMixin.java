@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistryImpl;
+import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistryImpl;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

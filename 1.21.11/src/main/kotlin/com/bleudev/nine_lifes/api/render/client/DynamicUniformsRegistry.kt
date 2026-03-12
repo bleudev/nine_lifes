@@ -1,13 +1,16 @@
-package com.bleudev.nine_lifes.client.api.render
+package com.bleudev.nine_lifes.api.render.client
 
-import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry.DynamicUniformTransformer
+import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry.DynamicUniformTransformer
 import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.Std140Builder
 import com.mojang.blaze3d.buffers.Std140SizeCalculator
 import com.mojang.blaze3d.systems.RenderSystem
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.renderer.MappableRingBuffer
 import net.minecraft.resources.Identifier
 
+@Environment(EnvType.CLIENT)
 interface DynamicUniformsRegistry {
     data class Context(val uniformName: String, val shadersIds: List<Identifier>? = null) {
         constructor(uniformName: String, vararg shader: Identifier) : this(uniformName, shader.toList().ifEmpty { null })
@@ -17,6 +20,21 @@ interface DynamicUniformsRegistry {
     typealias DynamicUniformTransformer = Std140Builder.() -> Unit
 
     companion object {
+        /**
+         * Register dynamic uniform.
+         *
+         *
+         * Example:
+         * ```kotlin
+         * DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("Config", Identifier.fromNamespaceAndPath("test", "shader")), {putVec3()}) {
+         *   putVec3(1f, 0f, 0f)
+         * }
+         * ```
+         *
+         * @param context Uniform context (name and (optionaly) shaders ids)
+         * @param sizeTransformer Function which transforms size calculator
+         * @param transformer Uniform transformer
+         * */
         fun register(context: Context, sizeTransformer: UniformSizeTransformer, transformer: DynamicUniformTransformer) {
             DynamicUniformsRegistryImpl.register(context, Std140SizeCalculator().sizeTransformer().get(), transformer)
         }
