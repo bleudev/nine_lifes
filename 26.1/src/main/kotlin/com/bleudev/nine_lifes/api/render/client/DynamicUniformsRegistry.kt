@@ -20,6 +20,21 @@ interface DynamicUniformsRegistry {
     typealias DynamicUniformTransformer = Std140Builder.() -> Unit
 
     companion object {
+        /**
+         * Register dynamic uniform.
+         *
+         *
+         * Example:
+         * ```kotlin
+         * DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("Config", Identifier.fromNamespaceAndPath("test", "shader")), {putVec3()}) {
+         *   putVec3(1f, 0f, 0f)
+         * }
+         * ```
+         *
+         * @param context Uniform context (name and (optionaly) shaders ids)
+         * @param sizeTransformer Function which transforms size calculator
+         * @param transformer Uniform transformer
+         * */
         fun register(context: Context, sizeTransformer: UniformSizeTransformer, transformer: DynamicUniformTransformer) {
             DynamicUniformsRegistryImpl.register(context, Std140SizeCalculator().sizeTransformer().get(), transformer)
         }
