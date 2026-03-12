@@ -5,9 +5,12 @@ import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.Std140Builder
 import com.mojang.blaze3d.buffers.Std140SizeCalculator
 import com.mojang.blaze3d.systems.RenderSystem
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.client.renderer.MappableRingBuffer
 import net.minecraft.resources.Identifier
 
+@Environment(EnvType.CLIENT)
 interface DynamicUniformsRegistry {
     data class Context(val uniformName: String, val shadersIds: List<Identifier>? = null) {
         constructor(uniformName: String, vararg shader: Identifier) : this(uniformName, shader.toList().ifEmpty { null })
