@@ -27,7 +27,8 @@ import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
 import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
-import com.bleudev.nine_lifes.client.api.render.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.config.*
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
@@ -120,6 +121,7 @@ class NineLifesClient : ClientModInitializer {
             } else 1f
         }
 
+        PostEffectRegistry.registerNineLifes("redmaj", "anaglyph", "cblur")
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
         }
