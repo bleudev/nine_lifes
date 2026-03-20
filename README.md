@@ -3,8 +3,8 @@
 ![9 lifes indicator](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/9lifes_indicator.png)
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
-[![Latest version](https://img.shields.io/badge/Latest_version-3.4-orange)](https://modrinth.com/mod/nine_lifes/versions)
-[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.11--26.1--snapshot--10-green)](https://modrinth.com/mod/nine_lifes)
+[![Latest version](https://img.shields.io/badge/Latest_version-3.5-orange)](https://modrinth.com/mod/nine_lifes/versions)
+[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-1.21.11--26.1--rc--1-green)](https://modrinth.com/mod/nine_lifes)
 [![Environment](https://img.shields.io/badge/Environment-Client%2BServer-blue)](https://modrinth.com/mod/nine_lifes)
 [![GitHub contributors](https://img.shields.io/github/contributors/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)
@@ -15,13 +15,13 @@ Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Coo
 ![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
 
 ### Supported Minecraft versions and minimal requirements
-| Minecraft version  | Max Nine lifes version | Fabric Language Kotlin   | Fabric API  | YACL                        | Fabric Loader |
-|--------------------|------------------------|:-------------------------|:------------|:----------------------------|---------------|
-| 26.1 (snapshot 10) | ✅ 3.4                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.143.7 | \>= 3.8.2                   | \>= 0.18.4    |
-| 1.21.11            | ✅ 3.4                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.141.3 | \>= 3.8.2                   | \>= 0.18.4    |
-| 1.21.10            | ❌ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.138.3 | \>= 3.8.2                   | \>= 0.18.4    |
-| 1.21.9             | ❌ 2.1 (1.21.9)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.134.0 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
-| 1.21.8             | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
-| 1.21.7             | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
-| 1.21.6             | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2 | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
-| 1.21.5             | ❌ 1.5.3 (1.21.5)       | -                        | \>= 0.128.2 | \>= 18.0.145 (cloth config) | \>= 0.17.0    |
+| Minecraft version | Max Nine lifes version | Fabric Language Kotlin   | Fabric API   | YACL                        | Fabric Loader |
+|-------------------|------------------------|:-------------------------|:-------------|:----------------------------|---------------|
+| 26.1 (rc 1)       | ✅ 3.5                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.143.14 | \>= 3.9.0                   | \>= 0.18.4    |
+| 1.21.11           | ✅ 3.5                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.141.3  | \>= 3.8.2                   | \>= 0.18.4    |
+| 1.21.10           | ❌ 3.0                  | \>= 1.13.9+kotlin.2.3.10 | \>= 0.138.3  | \>= 3.8.2                   | \>= 0.18.4    |
+| 1.21.9            | ❌ 2.1 (1.21.9)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.134.0  | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
+| 1.21.8            | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2  | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
+| 1.21.7            | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2  | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
+| 1.21.6            | ❌ 2.1 (1.21.6)         | \>= 1.13.8+kotlin.2.3.0  | \>= 0.128.2  | \>= 1.9.2 (midnightlib)     | \>= 0.18.0    |
+| 1.21.5            | ❌ 1.5.3 (1.21.5)       | -                        | \>= 0.128.2  | \>= 18.0.145 (cloth config) | \>= 0.17.0    |
