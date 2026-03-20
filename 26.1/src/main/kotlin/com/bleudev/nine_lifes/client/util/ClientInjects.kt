@@ -4,7 +4,7 @@ import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder
 import com.mojang.blaze3d.resource.CrossFrameResourcePool
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.LevelTargetBundle
 import net.minecraft.client.renderer.PostChain
 import net.minecraft.resources.Identifier
@@ -12,10 +12,10 @@ import net.minecraft.util.ARGB
 
 private val RESOURCE_POOL = CrossFrameResourcePool(3)
 
-fun GuiGraphics.overlayWithColor(color: Int) = fill(0, 0, guiWidth(), guiHeight(), color)
-fun GuiGraphics.overlayWithColor(alpha: Float, red: Float, green: Float, blue: Float) = overlayWithColor(ARGB.colorFromFloat(alpha, red, green, blue))
-fun GuiGraphics.white(alpha: Float) = overlayWithColor(0xffffff.asColorWithAlpha(alpha))
-fun GuiGraphics.white() = white(1f)
+fun GuiGraphicsExtractor.overlayWithColor(color: Int) = fill(0, 0, guiWidth(), guiHeight(), color)
+fun GuiGraphicsExtractor.overlayWithColor(alpha: Float, red: Float, green: Float, blue: Float) = overlayWithColor(ARGB.colorFromFloat(alpha, red, green, blue))
+fun GuiGraphicsExtractor.white(alpha: Float) = overlayWithColor(0xffffff.asColorWithAlpha(alpha))
+fun GuiGraphicsExtractor.white() = white(1f)
 
 fun Minecraft.applyPostEffect(id: Identifier, pool: CrossFrameResourcePool) {
     val postChain = shaderManager.getPostChain(id, LevelTargetBundle.MAIN_TARGETS)

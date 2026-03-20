@@ -13,7 +13,7 @@ import static com.bleudev.nine_lifes.NineLifesClientData.getForceHardcore;
 @Environment(EnvType.CLIENT)
 @Mixin(Gui.class)
 public class GuiMixin {
-    @Redirect(method = "renderHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelData;isHardcore()Z"))
+    @Redirect(method = "extractHearts", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelData;isHardcore()Z"))
     private boolean modifyIsHardcore(LevelData instance) {
         return getForceHardcore() || instance.isHardcore();
     }

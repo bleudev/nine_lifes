@@ -11,7 +11,7 @@ import dev.isxander.yacl3.dsl.YetAnotherConfigLib
 import dev.isxander.yacl3.dsl.descriptionBuilder
 import dev.isxander.yacl3.gui.image.ImageRenderer
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.resources.Identifier
@@ -83,7 +83,7 @@ private fun OptionDescription.Builder.framedConfigImage(name: String, duration: 
     AnimatedConditionImageRenderer(name, { ((it % (duration * 1000 / fps)) / (1000 / fps)).toInt() }, condition, useFirstFrameWhenFalse))
 
 private abstract class MethodBasedImageRenderer : ImageRenderer {
-    override fun render(graphics: GuiGraphics, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
+    override fun render(graphics: GuiGraphicsExtractor, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
         val id = getImagePath()
         val t = Minecraft.getInstance().textureManager.getTexture(id)
         val h = renderWidth * t.texture.getHeight(0) / t.texture.getWidth(0)
@@ -122,7 +122,7 @@ private class AnimatedConditionImageRenderer(val name: String, val frameProvider
     private var time: Long = 0
     private var first: Long = System.currentTimeMillis()
 
-    override fun render(graphics: GuiGraphics, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
+    override fun render(graphics: GuiGraphicsExtractor, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
         val base = "textures/config/description/$name"
         if (condition()) {
             time = System.currentTimeMillis() - first

@@ -103,6 +103,8 @@ class NineLifes : ModInitializer {
                 }
                 if (shouldUpdate) it.sendPacket(StickGiveHeartScreenEffect.INSTANCE)
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
+                // Custom foods
+                playerEnsureCustomFoods(it)
             }
 
             for (entry in notSafeSleepTicks) {
@@ -110,16 +112,12 @@ class NineLifes : ModInitializer {
                 else notSafeSleepTicks.remove(entry.key)
             }
 
-            for (player in server.playerList.players) playerEnsureCustomFoods(player)
-
             for (level in server.allLevels) {
                 for (player in level.players()) {
                     val box = ofDXYZ(player.position(), 20)
                     level.getEntities(EntityType.ITEM) { entity ->
-                        entityIn<ItemEntity>(box)(entity) &&
-                        entity.item.`is`(Items.AMETHYST_SHARD) &&
-                        shouldUpdateAmethystShard(entity.item)
-                    }.forEach { entity -> entity.item = itemEnsureCustomFoods(entity.item) }
+                        entityIn<ItemEntity>(box)(entity)
+                    }.forEach(::itemEntityEnsureCustomFoods)
                     level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
                         when (entity.damageTicks) {
                             -1 -> return@forEach
