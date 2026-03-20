@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.mixin.client;
 
 import com.bleudev.nine_lifes.client.util.ClientInjectsKt;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
@@ -41,15 +41,10 @@ public class DeathScreenMixin extends Screen {
         if (lifes <= 1 && !should_death_screen_be_white) this.hardcore = true;
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("HEAD"))
+    private void renderWhitenessEffect(GuiGraphicsExtractor guiGraphics, int i, int j, float f, CallbackInfo ci) {
         if (should_death_screen_be_white) {
             ClientInjectsKt.white(guiGraphics);
         }
-    }
-
-    @Inject(method = "render", at = @At("TAIL"))
-    private void renderPostEffects(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        ClientInjectsKt.applyAnaglyph(this.minecraft);
     }
 }

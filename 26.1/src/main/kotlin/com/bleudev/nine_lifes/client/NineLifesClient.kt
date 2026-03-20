@@ -48,7 +48,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
 import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -186,7 +186,7 @@ class NineLifesClient : ClientModInitializer {
     private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
         registerReceiver(payloadCompanion) {p, _ -> handler(p)}
 
-    private fun renderLifesCount(graphics: GuiGraphics) {
+    private fun renderLifesCount(graphics: GuiGraphicsExtractor) {
         val client = Minecraft.getInstance()
         if (client.player?.gameMode()?.isSurvival?.let { (!it) } == true) return
 
@@ -216,12 +216,12 @@ class NineLifesClient : ClientModInitializer {
 
         graphics.blit(RenderPipelines.GUI_TEXTURED, Sprites.HARDCORE,
             0, -5, 0f, 0f, th, th, th, th, color)
-        graphics.drawString(client.font, text, client.font.width(text), 0, -0x1)
+        graphics.text(client.font, text, client.font.width(text), 0, -0x1)
 
         graphics.pose().popMatrix()
     }
 
-    private fun renderOverlayBeforeHotBar(graphics: GuiGraphics) {
+    private fun renderOverlayBeforeHotBar(graphics: GuiGraphicsExtractor) {
         graphics.overlayWithColor(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f)
         graphics.overlayWithColor(0.5f * stick_purpleness, 0.5f, 0f, 0.5f)
         graphics.white(amethysm_whiteness)
@@ -230,7 +230,7 @@ class NineLifesClient : ClientModInitializer {
 
     private var lastMillis = 0L
 
-    private fun renderOverlay(graphics: GuiGraphics) {
+    private fun renderOverlay(graphics: GuiGraphicsExtractor) {
         graphics.overlayWithColor(0xff0000.asColorWithAlpha(redness))
         graphics.overlayWithColor(0xffffff.asColorWithAlpha(whiteness))
 

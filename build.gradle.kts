@@ -10,19 +10,26 @@ repositories {
     mavenCentral()
 }
 
-val changelog = project.file("CHANGELOG.md").readText()
-val readme = project.file("README.md").readText()
-fun configure(v: String, maxExv: String, snapshot: Int? = null) {
+private val changelog = project.file("CHANGELOG.md").readText()
+private val readme = project.file("README.md").readText()
+
+private fun prConfigure(projectAndMinecraftVersions: Pair<String, String>, maxExclusiveVersion: String) {
     val versionSuffix = if (project.findProperty("beta_mode") == "true") "_beta" else ""
-    project(":$v") {
+    project(":${projectAndMinecraftVersions.first}") {
         extensions.extraProperties.apply {
-            set("minecraft_version", "$v${if (snapshot == null) "" else "-snapshot-$snapshot"}")
-            set("max_exc_version", maxExv)
-            set("mod_version", "${project.findProperty("general_version")}$versionSuffix+$v")
+            set("minecraft_version", projectAndMinecraftVersions.second)
+            set("max_exc_version", maxExclusiveVersion)
+            set("mod_version", "${project.findProperty("general_version")}$versionSuffix+${projectAndMinecraftVersions.first}")
             set("changelog", changelog)
             set("readme", readme)
         }
     }
 }
-configure("1.21.11", "26.1")
-configure("26.1", "26.2", 10)
+private fun prConfigure(v: String, maxExv: String) = prConfigure(v to v, maxExv)
+
+private fun String.snapshot(num: Int): Pair<String, String> = this to "$this-snapshot-$num"
+private fun String.pre(num: Int): Pair<String, String> = this to "$this-pre-$num"
+private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
+
+prConfigure("1.21.11", "26.1")
+prConfigure("26.1".rc(1), "26.2")
