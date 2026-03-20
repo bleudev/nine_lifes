@@ -1,5 +1,7 @@
 # 3.5
 
+## Breaking changes
+- Deleted `FogProperties.kt` as deprecation in 3.4
 ## Version updates
 - 26.1-rc-1
 ### 26.1 only
