@@ -2,6 +2,7 @@
 
 ## Breaking changes
 - Deleted `FogProperties.kt` as deprecation in 3.4
+- Deleted `NineLifesClientData`. Use `NineLifesClientStorage.kt` instead.
 ## Version updates
 - 26.1-rc-1
 ### 26.1 only
