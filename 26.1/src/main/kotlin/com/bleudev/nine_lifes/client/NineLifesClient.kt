@@ -1,30 +1,9 @@
 package com.bleudev.nine_lifes.client
 
-import com.bleudev.nine_lifes.*
-import com.bleudev.nine_lifes.NineLifesClientData.amethysm_effect_info
-import com.bleudev.nine_lifes.NineLifesClientData.amethysm_purpleness
-import com.bleudev.nine_lifes.NineLifesClientData.amethysm_whiteness
-import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_running
-import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_event_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.armor_stand_hit_redness
-import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_running
-import com.bleudev.nine_lifes.NineLifesClientData.bed_not_safe_event_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.center_heart_info
-import com.bleudev.nine_lifes.NineLifesClientData.charge_effect_info
-import com.bleudev.nine_lifes.NineLifesClientData.getNextHeartbeatTime
-import com.bleudev.nine_lifes.NineLifesClientData.heartbeat_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.lifes
-import com.bleudev.nine_lifes.NineLifesClientData.max_heartbeat_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen
-import com.bleudev.nine_lifes.NineLifesClientData.max_whiteness_screen_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.redness
-import com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white
-import com.bleudev.nine_lifes.NineLifesClientData.stickUsedTicks
-import com.bleudev.nine_lifes.NineLifesClientData.stick_purpleness
-import com.bleudev.nine_lifes.NineLifesClientData.stick_purpleness_ticks
-import com.bleudev.nine_lifes.NineLifesClientData.whiteness
-import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_running
-import com.bleudev.nine_lifes.NineLifesClientData.whiteness_screen_ticks
+import com.bleudev.nine_lifes.ISSUES_LINK
+import com.bleudev.nine_lifes.NOT_SAFE_ANAGLYPH_EVENT_DURATION
+import com.bleudev.nine_lifes.STICK_PURPLENESS_GIVE_HEART_TICKS
+import com.bleudev.nine_lifes.STICK_USED_EFFECT_TICKS
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
@@ -123,13 +102,13 @@ class NineLifesClient : ClientModInitializer {
 
         PostEffectRegistry.registerNineLifes("redmaj", "anaglyph", "cblur")
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
-            putVec3(1f, 0f, 0f).putFloat(NineLifesClientData.shaderRedMajStrength)
+            putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
         }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
-            putVec2(NineLifesClientData.shaderAnaglyphX, NineLifesClientData.shaderAnaglyphY)
+            putVec2(shaderAnaglyphX, shaderAnaglyphY)
         }
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("BlurPropConfig", createIdentifier("cblur")), {putFloat()}) {
-            putFloat(NineLifesClientData.shaderCBlurStrength)
+            putFloat(shaderCBlurStrength)
         }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
@@ -243,7 +222,7 @@ class NineLifesClient : ClientModInitializer {
 
     private fun endClientLevelTick() {
         val client = Minecraft.getInstance()
-        NineLifesClientData.tick()
+        storageTick()
         if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
 
         if (heartbeat_ticks == 0 && client.player != null && client.player!!.isAlive) center_heart_info.doHeartbeat(2f)

@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes.mixin.client;
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.attribute.EnvironmentAttribute;
 import net.minecraft.world.attribute.EnvironmentAttributeProbe;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceAlwaysDay;
 
 @SuppressWarnings("unchecked")
 @Environment(EnvType.CLIENT)
@@ -26,27 +25,23 @@ public class EnvironmentAttributeProbeMixin {
             cir.setReturnValue((Value) ClientEnvironmentSetupEvents.SKY_COLOR.invoker().invoke(original, original));
         }
         // Always day
-        var pl = Minecraft.getInstance().player;
-        if (lifes <= 3 && pl != null) {
-            var gm = pl.gameMode();
-            if (gm != null && gm.isSurvival()) {
-                if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_FACTOR))
-                    cir.setReturnValue((Value) Float.valueOf(1f));
-                if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_COLOR)) {
-                    cir.setReturnValue((Value) Integer.valueOf(-1));
-                }
-                if (environmentAttribute.equals(EnvironmentAttributes.SUN_ANGLE)) {
-                    cir.setReturnValue((Value) Float.valueOf(0f));
-                }
-                if (environmentAttribute.equals(EnvironmentAttributes.MOON_ANGLE)) {
-                    cir.setReturnValue((Value) Float.valueOf(180f));
-                }
-                if (environmentAttribute.equals(EnvironmentAttributes.STAR_BRIGHTNESS)) {
-                    cir.setReturnValue((Value) Float.valueOf(0f));
-                }
-                if (environmentAttribute.equals(EnvironmentAttributes.CLOUD_COLOR)) {
-                    cir.setReturnValue((Value) Integer.valueOf(-855638017));
-                }
+        if (getForceAlwaysDay()) {
+            if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_FACTOR))
+                cir.setReturnValue((Value) Float.valueOf(1f));
+            if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_COLOR)) {
+                cir.setReturnValue((Value) Integer.valueOf(-1));
+            }
+            if (environmentAttribute.equals(EnvironmentAttributes.SUN_ANGLE)) {
+                cir.setReturnValue((Value) Float.valueOf(0f));
+            }
+            if (environmentAttribute.equals(EnvironmentAttributes.MOON_ANGLE)) {
+                cir.setReturnValue((Value) Float.valueOf(180f));
+            }
+            if (environmentAttribute.equals(EnvironmentAttributes.STAR_BRIGHTNESS)) {
+                cir.setReturnValue((Value) Float.valueOf(0f));
+            }
+            if (environmentAttribute.equals(EnvironmentAttributes.CLOUD_COLOR)) {
+                cir.setReturnValue((Value) Integer.valueOf(-855638017));
             }
         }
     }
