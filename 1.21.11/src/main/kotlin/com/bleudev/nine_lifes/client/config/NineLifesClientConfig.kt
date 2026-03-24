@@ -12,19 +12,16 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 // Public Properties
-var joinMessageEnabled: Boolean
+internal var joinMessageEnabled: Boolean
     get() = configLoad().joinMessage
     set(new) = configSave(configLoad().apply { joinMessage = new } )
-var heartbeatEnabled: Boolean
+internal var heartbeatEnabled: Boolean
     get() = configLoad().heartbeat
     set(new) = configSave(configLoad().apply { heartbeat = new } )
-var heartPosition: HeartPosition
+internal var heartPosition: HeartPosition
     get() = configLoad().heartPosition
     set(new) = configSave(configLoad().apply { heartPosition = new } )
-var lowLifesRedSkyEnabled: Boolean
-    get() = configLoad().lowLifesRedSky
-    set(new) = configSave(configLoad().apply { lowLifesRedSky = new } )
-var healthRendering: HealthRendering
+internal var healthRendering: HealthRendering
     get() = configLoad().healthRendering
     set(new) = configSave(configLoad().apply { healthRendering = new })
 
@@ -33,7 +30,6 @@ data class NineLifesClientConfig(
     var joinMessage: Boolean = true,
     var heartbeat: Boolean = true,
     var heartPosition: HeartPosition = HeartPosition.BOTTOM_CENTER,
-    var lowLifesRedSky: Boolean = true,
     var healthRendering: HealthRendering = HealthRendering.ALWAYS,
 )
 
@@ -66,7 +62,7 @@ enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boole
 private val configPath: Path
     get() = FabricLoader.getInstance().configDir.resolve("nine_lifes.client.config.json")
 
-private val jsonInstance: Json = Json{prettyPrint = true}
+private val jsonInstance: Json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 
 private fun configLoad(): NineLifesClientConfig {
     try {

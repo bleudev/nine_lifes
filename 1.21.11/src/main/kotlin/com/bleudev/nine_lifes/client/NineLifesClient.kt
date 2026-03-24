@@ -8,7 +8,10 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.client.config.*
+import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.configInit
+import com.bleudev.nine_lifes.client.config.heartPosition
+import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -59,17 +62,16 @@ class NineLifesClient : ClientModInitializer {
             should_death_screen_be_white = false
         }
 
-        fun getFogTarget(): Vector4f = if (lowLifesRedSkyEnabled && clientInSurvivalLikeGameMode)
-            Vector4f(1f, 0f, 0f, 1f) else Vector4f(1f, 1f, 1f, 1f)
+        val fogTarget = Vector4f(1f, 1f, 1f, 1f)
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
-            current.lerp(getFogTarget(), when (lifes) {
+            current.lerp(fogTarget, when (lifes) {
                 5 -> .1f
                 4 -> .3f
                 in 0..3 -> 1f
                 else -> 0f
             }) }
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
-            current.lerp(getFogTarget(), stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
+            current.lerp(fogTarget, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
         }
 
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
