@@ -1,4 +1,4 @@
-# 3.5
+# 4.0
 
 ## Breaking changes
 - Deleted `FogProperties.kt` as deprecation in 3.4 (bleudev [#74](https://github.com/bleudev/nine_lifes/pull/74))
