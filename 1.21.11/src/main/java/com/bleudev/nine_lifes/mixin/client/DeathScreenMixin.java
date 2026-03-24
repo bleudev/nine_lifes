@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nine_lifes.NineLifesClientData.lifes;
-import static com.bleudev.nine_lifes.NineLifesClientData.should_death_screen_be_white;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceHardcoreDeathScreen;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.should_death_screen_be_white;
 
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin extends Screen {
@@ -31,21 +31,19 @@ public class DeathScreenMixin extends Screen {
 
     @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;<init>(Lnet/minecraft/network/chat/Component;)V"))
     private static Component changeTitle(Component original) {
-        if (lifes <= 1 && !should_death_screen_be_white) {
-            return Component.translatable("deathScreen.title.hardcore");
-        } else return original;
+        return getForceHardcoreDeathScreen() ? Component.translatable("deathScreen.title.hardcore") : original;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void changeHardcore(Component causeOfDeath, boolean hardcore, LocalPlayer player, CallbackInfo ci) {
-        if (lifes <= 1 && !should_death_screen_be_white) this.hardcore = true;
+        if (getForceHardcoreDeathScreen())
+            this.hardcore = true;
     }
 
     @Inject(method = "render", at = @At("HEAD"))
     private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
-        if (should_death_screen_be_white) {
+        if (should_death_screen_be_white)
             ClientInjectsKt.white(guiGraphics);
-        }
     }
 
     @Inject(method = "render", at = @At("TAIL"))
