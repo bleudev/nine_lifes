@@ -20,7 +20,6 @@ import kotlin.reflect.KMutableProperty
 private var cachedJoinMessage: Boolean? = null
 private var cachedHeartbeat: Boolean? = null
 private var cachedHeartPosition: HeartPosition? = null
-private var cachedLowLifesRedSky: Boolean? = null
 private var cachedHealthRendering: HealthRendering? = null
 
 fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_ID) {
@@ -50,15 +49,6 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
             descriptionBuilder {
                 addDefaultText(1)
                 enumConfigImage("heart_position") {cachedHeartPosition ?: heartPosition}
-            }
-        }
-        rootOptions.register("low_lifes_red_sky") {
-            binding(true, ::lowLifesRedSkyEnabled)
-            yesNoFormat()
-            cachePending(::cachedLowLifesRedSky::set)
-            descriptionBuilder {
-                addDefaultText(1)
-                localisedConfigImage("low_lifes_red_sky") {cachedLowLifesRedSky ?: lowLifesRedSkyEnabled}
             }
         }
         rootOptions.register("health_rendering") {

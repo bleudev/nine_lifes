@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.NineLifesClientData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -11,6 +10,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getShakeSpeed;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getShakeStrength;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Camera.class)
@@ -25,8 +27,8 @@ abstract public class CameraMixin {
 
     @Inject(method = "update", at = @At("TAIL"))
     private void applyShake(DeltaTracker deltaTracker, CallbackInfo ci) {
-        float strength = NineLifesClientData.INSTANCE.getShakeStrength();
-        float speed = NineLifesClientData.INSTANCE.getShakeSpeed();
+        float strength = getShakeStrength();
+        float speed = getShakeSpeed();
         if (strength > 0.0F) {
             float yaw = (float) (Math.sin(Util.getMillis() / 30.0 * speed) * strength);
             float pitch = (float) (Math.cos(Util.getMillis() / 60.0 * speed) * strength);
