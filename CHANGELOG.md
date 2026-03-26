@@ -10,7 +10,10 @@ Newer config is compatible with 3.4's one, but if you have problems with it repo
 about that in GitHub repository (bleudev [#75](https://github.com/bleudev/nine_lifes/pull/75))
 
 ## Version updates
-- 26.1-rc-1 (bleudev [#72](https://github.com/bleudev/nine_lifes/pull/72))
+- 26.1 (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
+- Fabric Language Kotlin: `1.13.9+kotlin.2.3.10 -> 1.13.10+kotlin.2.3.20` (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
+- [DEV] Fabric Loom: `1.15.4 -> 1.15.5` (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
+- [DEV] Update to Kotlin 2.3.20 (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
 ### 26.1 only
-- Fabric version was bumped up to `0.143.14+26.1` (bleudev [#72](https://github.com/bleudev/nine_lifes/pull/72))
-- YACL was bumped up to `3.9.0+26.1-fabric` (bleudev [#72](https://github.com/bleudev/nine_lifes/pull/72))
+- Fabric version was bumped up to `0.144.3+26.1` (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
+- YACL was bumped up to `3.9.1+26.1-fabric` (bleudev [#77](https://github.com/bleudev/nine_lifes/pull/77))
