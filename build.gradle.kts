@@ -1,10 +1,10 @@
 @file:Suppress("unused")
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    kotlin("plugin.serialization") version "2.3.10"
-    id("fabric-loom") version "1.15.4" apply false
-    id("com.modrinth.minotaur") version "2.+" apply false
+    kotlin("jvm") version "2.3.20"
+    kotlin("plugin.serialization") version "2.3.20"
+    id("fabric-loom") version "1.15.5" apply false
+    id("com.modrinth.minotaur") version "2.9.0" apply false
     id("maven-publish")
 }
 
@@ -34,4 +34,4 @@ private fun String.pre(num: Int): Pair<String, String> = this to "$this-pre-$num
 private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
 
 prConfigure("1.21.11", "26.1")
-prConfigure("26.1".rc(1), "26.2")
+prConfigure("26.1", "26.2")
