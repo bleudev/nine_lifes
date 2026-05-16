@@ -53,7 +53,7 @@ dependencies {
     implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
 
     implementation("org.quiltmc.parsers:gson:0.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 }
 
 tasks.processResources {
