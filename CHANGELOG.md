@@ -12,9 +12,10 @@ Use Fabric ServerEntityEvents.ENTITY_LOAD event instead (bleudev [#82](https://g
 ## Version updates
 - End of support for 26.1-26.1.1 (bleudev [#81](https://github.com/bleudev/nine_lifes/pull/81))
 - 26.1.2 (bleudev [#81](https://github.com/bleudev/nine_lifes/pull/81))
-- Fabric language kotlin version was bumped to `1.13.11+kotlin.2.3.21`
-- [DEV] Kotlin version was bumped to `2.3.21`
-- [DEV] Kotlin Serialization JSON version was bumped to `1.11.0` 
+- Fabric language kotlin version was bumped to `1.13.11+kotlin.2.3.21` (bleudev [#84](https://github.com/bleudev/nine_lifes/pull/84))
+- Fabric loader version was bumped to `0.19.2` (bleudev [#84](https://github.com/bleudev/nine_lifes/pull/84))
+- [DEV] Kotlin version was bumped to `2.3.21` (bleudev [#84](https://github.com/bleudev/nine_lifes/pull/84))
+- [DEV] Kotlin Serialization JSON version was bumped to `1.11.0` (bleudev [#84](https://github.com/bleudev/nine_lifes/pull/84))
 ### 26.1.2 only
 - Fabric API version was bumped to `0.149.0` (bleudev [#81](https://github.com/bleudev/nine_lifes/pull/81))
 - YACL version was bumped to `3.9.3` (bleudev [#81](https://github.com/bleudev/nine_lifes/pull/81))
