@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes
 
 import com.bleudev.nine_lifes.util.helper.PlatformHelper
+import net.minecraft.SharedConstants.TICKS_PER_MINUTE
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -13,7 +14,10 @@ const val ISSUES_LINK = "https://github.com/bleudev/nine_lifes/issues"
 const val MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes"
 
 const val MAX_LIFES: Int = 9
-const val WANDERING_ARMOR_STAND_SPAWN_CHANCE = 0.5f
+const val WSTAND_SPAWN_CHANCE = 0.5f
+const val WSTAND_WANDER_TICKS = 5 * TICKS_PER_MINUTE
+const val WSTAND_KICK_TICKS = 20
+const val WSTAND_KICK_TIMES = 3
 const val LIGHTNING_CHARGING_RADIUS = 1
 const val CHARGE_SCREEN_EFFECT_RADIUS_MIN = 3
 const val CHARGE_SCREEN_EFFECT_RADIUS_MAX = 20
