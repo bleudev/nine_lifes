@@ -5,6 +5,9 @@
 - `EntityLifecycleEvents.ENTITY_SPAWN` is deprecated and will be deleted in next major/minor version.
 Use Fabric ServerEntityEvents.ENTITY_LOAD event instead (bleudev [#82](https://github.com/bleudev/nine_lifes/pull/82))
 
+## Bug fixes
+- Health rendering config option was untranslated in Russian localization (bleudev [#85](https://github.com/bleudev/nine_lifes/pull/85))
+
 ## Dev changes
 ### 26.1.2 only
 - Use new fabric allow load event (bleudev [#82](https://github.com/bleudev/nine_lifes/pull/82))
