@@ -8,6 +8,7 @@ import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAtPla
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandRandomLookAroundGoal
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoidingRandomStrollGoal
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
+import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nine_lifes.util.sendPacket
 import net.minecraft.core.particles.ParticleTypes
@@ -63,12 +64,13 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         val player = damageSource.directEntity as? ServerPlayer
         this.kickTimes++
         this.ticksAfterKick = 0
-        if (this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)) {
-            kill()
-            return true
-        }
+        val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)
         player?.sendPacket(ArmorStandHitEvent(this.position()))
-        return false
+        if (bl) {
+            player?.sendPacket(ArmorStandKillEvent.INSTANCE)
+            kill()
+        }
+        return bl
     }
     override fun isInvulnerableTo(serverLevel: ServerLevel, damageSource: DamageSource): Boolean = !canKill(damageSource)
     override fun mobInteract(player: Player, hand: InteractionHand): InteractionResult {

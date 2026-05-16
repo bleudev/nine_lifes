@@ -26,14 +26,19 @@ val forceHardcore: Boolean get() = healthRendering(lifes)
 
 // Shaders
 val shaderRedMajStrength: Float get() =
-    listOf(if (!isInSurvival) 0f
-    else when (lifes) {
-        0 -> 1f
-        1 -> 1f
-        2 -> .666f
-        3 -> .333f
-        else -> 0f
-    }, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS, if (xOffset == 0f) 0f else 1f).max()
+    listOf(
+        if (!isInSurvival) 0f
+        else when (lifes) {
+            0 -> 1f
+            1 -> 1f
+            2 -> .666f
+            3 -> .333f
+            else -> 0f
+        },
+        stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS,
+        if (xOffset == 0f) 0f else 1f,
+        armor_stand_post_kill_ticks.toFloat() / WSTAND_POST_KILL_TICKS
+    ).max()
 
 private enum class Interpolation {
     SIN {
@@ -54,7 +59,8 @@ private val anaglyphEffect: Float get() = if (xOffset == 0f) listOf(
     amethysm_purpleness,
     whiteness,
     Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f,
-    stickAnaglyphEffect
+    stickAnaglyphEffect,
+    armor_stand_post_kill_ticks.toFloat() / WSTAND_POST_KILL_TICKS
 ).max() else 4 * xOffset
 val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
 val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f
@@ -63,6 +69,7 @@ val shaderCBlurStrength: Float get() = stickAnaglyphEffect * 4f
 var bed_not_safe_event_ticks = 0
 var bed_not_safe_event_running = false
 
+var armor_stand_post_kill_ticks = 0
 var armor_stand_hit_event_ticks = 0
     get() = field / 3
 var armor_stand_hit_event_running = false
