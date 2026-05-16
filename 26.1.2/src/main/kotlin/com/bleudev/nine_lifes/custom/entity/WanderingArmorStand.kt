@@ -6,6 +6,7 @@ import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoi
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nine_lifes.util.sendPacket
+import net.minecraft.SharedConstants.TICKS_PER_MINUTE
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -26,13 +27,12 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 
-// TODO: After feeding will be alive for the time, not forever
 class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level) {
     init { this.health = 1f }
 
     override fun defineSynchedData(builder: SynchedEntityData.Builder) {
         super.defineSynchedData(builder)
-        builder.define(CAN_WANDER, false)
+        builder.define(WANDER_TICKS, 0)
     }
 
     override fun registerGoals() {
@@ -61,26 +61,32 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun mobInteract(player: Player, hand: InteractionHand): InteractionResult {
         val stack = player.mainHandItem
         if (stack.`is`(Items.AMETHYST_SHARD)) {
+            player.consumeOneItemInHand(hand)
             repeat(3) {
                 level().addParticle(ParticleTypes.HEART,
                     getRandomX(1.0), randomY + 0.5, getRandomZ(1.0),
                     random.nextGaussian() * 0.02, random.nextGaussian() * 0.02, random.nextGaussian() * 0.02
                 )
             }
-            player.consumeOneItemInHand(hand)
-            this.canWander = true
+            this.wanderTicks = 5 * TICKS_PER_MINUTE
             return InteractionResult.SUCCESS
         }
         return super.mobInteract(player, hand)
     }
+    override fun tick() {
+        super.tick()
+        if (this.wanderTicks > 0) this.wanderTicks--
+    }
 
-    var canWander: Boolean
-        get() = this.entityData.get(CAN_WANDER)
-        set(v) = this.entityData.set(CAN_WANDER, v)
+    val canWander: Boolean
+        get() = wanderTicks > 0
+    var wanderTicks: Int
+        get() = this.entityData.get(WANDER_TICKS)
+        set(v) = this.entityData.set(WANDER_TICKS, v)
 
     companion object {
-        private val CAN_WANDER: EntityDataAccessor<Boolean> = SynchedEntityData
-            .defineId(WanderingArmorStand::class.java, EntityDataSerializers.BOOLEAN)
+        private val WANDER_TICKS: EntityDataAccessor<Int> = SynchedEntityData
+            .defineId(WanderingArmorStand::class.java, EntityDataSerializers.INT)
 
         fun createAttributes(): AttributeSupplier.Builder = createLivingAttributes()
             .add(Attributes.MAX_HEALTH, 1.0)
