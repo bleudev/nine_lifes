@@ -62,6 +62,7 @@ class NineLifes : ModInitializer {
         NineLifesCriterions.initialize()
         NineLifesStats.initialize()
         NineLifesItems.initialize()
+        NineLifesSounds.initialize()
         FabricPotionBrewingBuilder.BUILD.register {
             it.registerPotionRecipe(
                 Potions.MUNDANE,

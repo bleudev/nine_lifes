@@ -3,6 +3,7 @@ package com.bleudev.nine_lifes.custom.entity
 import com.bleudev.nine_lifes.WSTAND_KICK_TICKS
 import com.bleudev.nine_lifes.WSTAND_KICK_TIMES
 import com.bleudev.nine_lifes.WSTAND_WANDER_TICKS
+import com.bleudev.nine_lifes.custom.NineLifesSounds
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAtPlayerGoal
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandRandomLookAroundGoal
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoidingRandomStrollGoal
@@ -15,6 +16,7 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.damagesource.DamageSource
@@ -57,6 +59,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
     private fun kill() = (level() as? ServerLevel)?.let { kill(it) }
     override fun hurtServer(serverLevel: ServerLevel, damageSource: DamageSource, f: Float): Boolean {
+        level().playSound(null, x, y, z, NineLifesSounds.GLITCH, SoundSource.AMBIENT)
         val player = damageSource.directEntity as? ServerPlayer
         this.kickTimes++
         this.ticksAfterKick = 0

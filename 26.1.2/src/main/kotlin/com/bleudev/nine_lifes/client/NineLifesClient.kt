@@ -223,6 +223,8 @@ class NineLifesClient : ClientModInitializer {
     }
 
     private fun endClientLevelTick() {
+        println(armor_stand_hit_redness)
+
         val client = Minecraft.getInstance()
         storageTick()
         if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
