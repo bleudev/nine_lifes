@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes
 
-import com.bleudev.nine_lifes.api.event.EntityLifecycleEvents
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
@@ -12,6 +11,7 @@ import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder
 import net.minecraft.core.Registry
@@ -135,18 +135,19 @@ class NineLifes : ModInitializer {
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
         }
-        EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
+        ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
+            if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
             if (entity.type == EntityType.ARMOR_STAND) {
                 if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
-                        newEntity.setPos(entity.position())
                         newEntity.copyPosition(entity)
                         level.addFreshEntity(newEntity)
-                        entity.discard()
+                        return@register false
                     }
                 }
             }
+            return@register true
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
