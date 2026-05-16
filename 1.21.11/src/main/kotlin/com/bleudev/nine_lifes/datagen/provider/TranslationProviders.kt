@@ -186,7 +186,7 @@ class NineLifesRussianTranslationProvider(output: FabricDataOutput, registriesFu
         builder.addConfigOption("category.general.root.option.low_lifes_red_sky",
             "Красное небо когда мало жизней", "Когда включено небо будет краснеть при низком количестве жизней")
         builder.addConfigOption("category.general.root.option.health_rendering",
-            "Health rendering", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
+            "Рендеринг здоровья", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
         builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
