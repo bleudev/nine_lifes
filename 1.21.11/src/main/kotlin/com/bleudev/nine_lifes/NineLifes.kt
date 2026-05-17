@@ -62,6 +62,7 @@ class NineLifes : ModInitializer {
         NineLifesCriterions.initialize()
         NineLifesStats.initialize()
         NineLifesItems.initialize()
+        NineLifesSounds.initialize()
         FabricBrewingRecipeRegistryBuilder.BUILD.register {
             it.registerPotionRecipe(
                 Potions.MUNDANE,
@@ -139,7 +140,7 @@ class NineLifes : ModInitializer {
         }
         EntityLifecycleEvents.ENTITY_SPAWN.register { entity, level ->
             if (entity.type == EntityType.ARMOR_STAND) {
-                if (level.getRandom().nextFloat() < WANDERING_ARMOR_STAND_SPAWN_CHANCE) {
+                if (level.getRandom().nextFloat() < WSTAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
                         newEntity.setPos(entity.position())

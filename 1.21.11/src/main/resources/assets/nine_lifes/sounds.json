@@ -1,0 +1,14 @@
+{
+  "glitch": {
+    "subtitle": "sound.nine_lifes.glitch",
+    "sounds": [
+      "nine_lifes:glitch"
+    ]
+  },
+  "glitch2": {
+    "subtitle": "sound.nine_lifes.glitch2",
+    "sounds": [
+      "nine_lifes:glitch2"
+    ]
+  }
+}

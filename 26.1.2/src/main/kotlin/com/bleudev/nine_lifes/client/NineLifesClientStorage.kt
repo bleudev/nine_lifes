@@ -60,7 +60,7 @@ private val anaglyphEffect: Float get() = if (xOffset == 0f) listOf(
     whiteness,
     Interpolation.SIN(bed_not_safe_event_ticks.toFloat() / NOT_SAFE_ANAGLYPH_EVENT_DURATION).takeIf{bed_not_safe_event_running} ?: 0f,
     stickAnaglyphEffect,
-    armor_stand_post_kill_ticks.toFloat() / WSTAND_POST_KILL_TICKS
+    armor_stand_post_kill_ticks.toFloat() / WSTAND_POST_KILL_TICKS,
 ).max() else 8 * xOffset
 val shaderAnaglyphX: Float get() = anaglyphEffect * 0.01f
 val shaderAnaglyphY: Float get() = anaglyphEffect * 0.0025f

@@ -8,7 +8,6 @@ import net.minecraft.util.Util;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,14 +28,13 @@ abstract public class CameraMixin {
     private float xRot;
 
     @Shadow
-    private Vec3 position;
-
-    @Shadow
     protected abstract void setPosition(Vec3 vec3);
 
     @Shadow
-    @Final
-    private Quaternionf rotation;
+    public abstract Vec3 position();
+
+    @Shadow
+    public abstract Quaternionf rotation();
 
     @Inject(method = "update", at = @At("TAIL"))
     private void applyShake(DeltaTracker deltaTracker, CallbackInfo ci) {
@@ -49,8 +47,8 @@ abstract public class CameraMixin {
             this.setRotation((float) (this.yRot - dyrot * Math.sqrt(2)), this.xRot + (dxrot));
         }
         if (xOffset != 0) {
-            Vector3f off = new Vector3f(xOffset, 0, 0).rotate(this.rotation);
-            this.setPosition(this.position.add(off.x, off.y, off.z));
+            Vector3f off = new Vector3f(xOffset, 0, 0).rotate(this.rotation());
+            this.setPosition(this.position().add(off.x, off.y, off.z));
         }
     }
 }

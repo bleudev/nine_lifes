@@ -6,14 +6,16 @@ import net.minecraft.client.Camera;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getShakeSpeed;
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getShakeStrength;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.*;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Camera.class)
@@ -26,14 +28,28 @@ abstract public class CameraMixin {
     @Shadow
     private float xRot;
 
+    @Shadow
+    protected abstract void setPosition(Vec3 vec3);
+
+    @Shadow
+    public abstract Quaternionf rotation();
+
+    @Shadow
+    public abstract Vec3 position();
+
     @Inject(method = "setup", at = @At("TAIL"))
     private void applyShake(Level level, Entity entity, boolean bl, boolean bl2, float f, CallbackInfo ci) {
         float strength = getShakeStrength();
         float speed = getShakeSpeed();
+        float xOffset = getXOffset();
         if (strength > 0.0F) {
-            float yaw = (float) (Math.sin(Util.getMillis() / 30.0 * speed) * strength);
-            float pitch = (float) (Math.cos(Util.getMillis() / 60.0 * speed) * strength);
-            this.setRotation((float) (this.yRot - pitch * Math.sqrt(2)), this.xRot + (yaw));
+            float dxrot = (float) (Math.sin(Util.getMillis() / 30.0 * speed) * strength);
+            float dyrot = (float) (Math.cos(Util.getMillis() / 60.0 * speed) * strength);
+            this.setRotation((float) (this.yRot - dyrot * Math.sqrt(2)), this.xRot + (dxrot));
+        }
+        if (xOffset != 0) {
+            Vector3f off = new Vector3f(xOffset, 0, 0).rotate(this.rotation());
+            this.setPosition(this.position().add(off.x, off.y, off.z));
         }
     }
 }
