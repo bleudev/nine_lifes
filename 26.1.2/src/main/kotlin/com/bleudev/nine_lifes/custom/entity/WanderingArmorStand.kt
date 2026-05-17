@@ -1,8 +1,6 @@
 package com.bleudev.nine_lifes.custom.entity
 
-import com.bleudev.nine_lifes.WSTAND_KICK_TICKS
-import com.bleudev.nine_lifes.WSTAND_KICK_TIMES
-import com.bleudev.nine_lifes.WSTAND_WANDER_TICKS
+import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.custom.NineLifesSounds
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAtPlayerGoal
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandRandomLookAroundGoal
@@ -60,16 +58,21 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
     private fun kill() = (level() as? ServerLevel)?.let { kill(it) }
     override fun hurtServer(serverLevel: ServerLevel, damageSource: DamageSource, f: Float): Boolean {
-        level().playSound(null, x, y, z, NineLifesSounds.GLITCH, SoundSource.AMBIENT)
         val player = damageSource.directEntity as? ServerPlayer
         this.kickTimes++
         this.ticksAfterKick = 0
         val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)
-        player?.sendPacket(ArmorStandHitEvent(this.position()))
-        if (bl) {
-            player?.sendPacket(ArmorStandKillEvent.INSTANCE)
-            kill()
+        val snd = if (bl) NineLifesSounds.GLITCH2 else NineLifesSounds.GLITCH
+        val pitch = if (bl) 0.8f else 0.95f
+        val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
+        level().playSound(null, x, y, z, snd, SoundSource.AMBIENT, 1f, pitch)
+
+        serverLevel.getPlayers { it.position().distanceToSqr(this.position()) <= rad*rad }.forEach {
+            it.sendPacket(ArmorStandHitEvent(this.position()))
+            if (bl) it.sendPacket(ArmorStandKillEvent.INSTANCE)
         }
+        if (bl) kill()
+
         return bl
     }
     override fun isInvulnerableTo(serverLevel: ServerLevel, damageSource: DamageSource): Boolean = !canKill(damageSource)
