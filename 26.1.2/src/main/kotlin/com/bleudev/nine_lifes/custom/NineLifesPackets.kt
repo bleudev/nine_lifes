@@ -3,6 +3,7 @@ package com.bleudev.nine_lifes.custom
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.createIdentifier
@@ -11,6 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 object NineLifesPackets {
     val UNIT_AFTER_PLAYER_RESPAWN = createIdentifier("packet/unit/after_player_respawn")
+    val UNIT_ARMOR_STAND_KILL_EVENT = createIdentifier("packet/unit/armor_stand_kill_event")
     val UNIT_BETA_MODE_MESSAGE = createIdentifier("packet/unit/beta_mode_message")
     val UNIT_STICK_GIVE_HEART_SCREEN_EFFECT = createIdentifier("packet/unit/stick_give_heart_screen_effect")
 
@@ -28,6 +30,7 @@ object NineLifesPackets {
 
     fun initialize() {
         registerS2CPacket(AfterPlayerRespawn)
+        registerS2CPacket(ArmorStandKillEvent)
         registerS2CPacket(BetaModeMessage)
         registerS2CPacket(StickGiveHeartScreenEffect)
 

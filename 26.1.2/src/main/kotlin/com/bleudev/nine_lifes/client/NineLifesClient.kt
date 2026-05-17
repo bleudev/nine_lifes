@@ -1,9 +1,6 @@
 package com.bleudev.nine_lifes.client
 
-import com.bleudev.nine_lifes.ISSUES_LINK
-import com.bleudev.nine_lifes.NOT_SAFE_ANAGLYPH_EVENT_DURATION
-import com.bleudev.nine_lifes.STICK_PURPLENESS_GIVE_HEART_TICKS
-import com.bleudev.nine_lifes.STICK_USED_EFFECT_TICKS
+import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
@@ -19,6 +16,7 @@ import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
 import com.bleudev.nine_lifes.util.*
@@ -133,10 +131,14 @@ class NineLifesClient : ClientModInitializer {
             Component.translatable("chat.message.join.beta").append("\n").append(link(ISSUES_LINK))
             .withStyle(ChatFormatting.GOLD)) }
         registerReceiver(UpdateLifesCount) { lifes = it.lifes }
+        registerReceiver(ArmorStandKillEvent) {
+            armor_stand_post_kill_ticks = WSTAND_POST_KILL_TICKS
+        }
         registerReceiver(ArmorStandHitEvent) {
             if (!armor_stand_hit_event_running) {
                 armor_stand_hit_event_running = true
                 armor_stand_hit_event_ticks = 40
+                armor_stand_post_kill_ticks = 0
             }
         }
         registerReceiver(StartWhitenessScreen) {
@@ -169,7 +171,7 @@ class NineLifesClient : ClientModInitializer {
 
     private fun renderLifesCount(graphics: GuiGraphicsExtractor) {
         val client = Minecraft.getInstance()
-        if (client.player?.gameMode()?.isSurvival?.let { (!it) } == true) return
+        if (client.player?.gameMode()?.isSurvival == false) return
 
         val text = Component.literal(lifes.toString())
 
@@ -214,6 +216,8 @@ class NineLifesClient : ClientModInitializer {
     private fun renderOverlay(graphics: GuiGraphicsExtractor) {
         graphics.overlayWithColor(0xff0000.asColorWithAlpha(redness))
         graphics.overlayWithColor(0xffffff.asColorWithAlpha(whiteness))
+        if (armor_stand_post_kill_ticks >= WSTAND_POST_KILL_TICKS - WSTAND_POST_KILL_BLACK_TICKS)
+            graphics.overlayWithColor(0xff000000.toInt())
 
         val newTime = System.currentTimeMillis()
         if (lastMillis == 0L) lastMillis = newTime
@@ -225,6 +229,7 @@ class NineLifesClient : ClientModInitializer {
     private fun endClientLevelTick() {
         val client = Minecraft.getInstance()
         storageTick()
+        if (armor_stand_post_kill_ticks > 0) armor_stand_post_kill_ticks--
         if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
 
         if (heartbeat_ticks == 0 && client.player != null && client.player!!.isAlive) center_heart_info.doHeartbeat(2f)

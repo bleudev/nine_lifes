@@ -10,11 +10,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.effect.MobEffect
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.consume_effects.ConsumeEffect
+import java.util.*
 
 fun createIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
 
@@ -36,3 +38,6 @@ fun <T : Entity> registerEntity(path: String, type: EntityType.Builder<T>): Enti
 
 fun <T : Item> registerItem(name: String, itemFactory: (Item.Properties) -> T, properties: Item.Properties = Item.Properties()): T =
     BuiltInRegistries.ITEM.register(name, itemFactory(properties.setId(Registries.ITEM.key(name))))
+
+fun registerSound(name: String, range: Float? = null): SoundEvent =
+    BuiltInRegistries.SOUND_EVENT.register(name, SoundEvent(createIdentifier(name), Optional.ofNullable(range)))
