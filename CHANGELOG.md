@@ -6,7 +6,7 @@
 Use Fabric ServerEntityEvents.ENTITY_LOAD event instead (bleudev [#82](https://github.com/bleudev/nine_lifes/pull/82))
 
 ## New features
-- Wandering armor stand is now breakable: if you hit it 3 times quickly, the stand will break (with visual effects!) (bleudev [#86](https://github.com/bleudev/nine_lifes/pull/86))
+- Wandering armor stand is now breakable: if you hit it 3 times quickly, the stand will break (with visual effects!) (thanks [subo42161-netizen](https://github.com/subo42161-netizen) for issue) (bleudev [#86](https://github.com/bleudev/nine_lifes/pull/86))
 - Wandering armor stand will no longer last forever after feeding, but only for 5 minutes (bleudev [#86](https://github.com/bleudev/nine_lifes/pull/86))
 
 ## Bug fixes
