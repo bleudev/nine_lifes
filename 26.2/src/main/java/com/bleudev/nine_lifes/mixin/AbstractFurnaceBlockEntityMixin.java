@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,7 +54,7 @@ public class AbstractFurnaceBlockEntityMixin {
         if (!output.isEmpty() && output.is(mixin.tag)) {
             inv.set(2, ItemStack.EMPTY);
             serverLevel.removeBlock(blockPos, false);
-            explode(serverLevel, blockPos.getCenter(), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
+            explode(serverLevel, Vec3.atCenterOf(blockPos), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
         }
     }
 }

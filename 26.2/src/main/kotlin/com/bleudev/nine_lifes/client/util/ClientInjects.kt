@@ -20,7 +20,7 @@ fun GuiGraphicsExtractor.white() = white(1f)
 fun Minecraft.applyPostEffect(id: Identifier, pool: CrossFrameResourcePool) {
     val postChain = shaderManager.getPostChain(id, LevelTargetBundle.MAIN_TARGETS)
     if (postChain != null) {
-        val mainTarget = mainRenderTarget
+        val mainTarget = gameRenderer.mainRenderTarget()
         val frame = FrameGraphBuilder()
         val targets = PostChain.TargetBundle.of(PostChain.MAIN_TARGET_ID, frame.importExternal("main", mainTarget))
         postChain.addToFrame(frame, mainTarget.width, mainTarget.height, targets)

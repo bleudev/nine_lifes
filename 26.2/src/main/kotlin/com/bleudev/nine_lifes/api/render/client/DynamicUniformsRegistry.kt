@@ -65,7 +65,7 @@ object DynamicUniformsRegistryImpl {
                 initBuffers()
                 return
             }
-            encoder.mapBuffer(entry.value.currentBuffer(), false, true).use { view ->
+            entry.value.currentBuffer().map(false, true).use { view ->
                 view.data().position(0)
                 TRANSFORMERS[entry.key]!!(Std140Builder.intoBuffer(view.data()))
             }

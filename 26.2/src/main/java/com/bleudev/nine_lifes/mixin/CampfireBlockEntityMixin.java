@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +46,7 @@ public abstract class CampfireBlockEntityMixin {
             if (stack.isEmpty() || !stack.is(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
             if (self.cookingProgress[slot] == self.cookingTime[slot] - 1) {
                 level.removeBlock(pos, false);
-                explode(level, pos.getCenter(), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
+                explode(level, Vec3.atCenterOf(pos), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
                 return;
             }
         }

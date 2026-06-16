@@ -28,6 +28,6 @@ public class PostPassMixin {
 
     @Redirect(method = "lambda$addToFrame$1", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/PostPass;customUniforms:Ljava/util/Map;", opcode = Opcodes.GETFIELD))
     private Map<String, GpuBuffer> modifyUniforms(PostPass instance) {
-        return DynamicUniformsRegistryImpl.getNewUniforms$nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
+        return DynamicUniformsRegistryImpl.getNewUniforms$com_bleudev_nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
     }
 }

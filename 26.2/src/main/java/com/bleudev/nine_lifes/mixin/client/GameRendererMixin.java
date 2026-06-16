@@ -8,7 +8,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.resources.model.ModelManager;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,8 +27,8 @@ public class GameRendererMixin {
     private NineLifesPostRenderer nineLifesPostRenderer;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, RenderBuffers renderBuffers, ModelManager modelManager, CallbackInfo ci) {
-        nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool, ((GameRenderer) (Object) this)::getMinecraft);
+    private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
+        nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool, Minecraft::getInstance);
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER))

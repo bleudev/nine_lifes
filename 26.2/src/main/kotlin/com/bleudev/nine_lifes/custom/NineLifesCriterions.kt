@@ -2,8 +2,9 @@ package com.bleudev.nine_lifes.custom
 
 import com.bleudev.nine_lifes.custom.advancements.criterion.*
 import com.bleudev.nine_lifes.util.createIdentifier
-import net.minecraft.advancements.CriteriaTriggers
-import net.minecraft.advancements.CriterionTrigger
+import net.minecraft.advancements.triggers.CriterionTrigger
+import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerPlayer
 
 object NineLifesCriterions {
@@ -17,7 +18,7 @@ object NineLifesCriterions {
     val USED_CHARGED_TOTAL = create("used_charged_total", UsedChargedTotalCriterion())
     val ADVANCEMENT = create("advancement", AdvancementCriterion())
 
-    private fun <T : CriterionTrigger<*>> create(name: String, criterion: T) = CriteriaTriggers.register(createIdentifier(name).toString(), criterion)
+    private fun <T : CriterionTrigger<*>> create(name: String, criterion: T) = Registry.register(BuiltInRegistries.TRIGGER_TYPES, createIdentifier(name).toString(), criterion)
 
     internal fun initialize() {}
 

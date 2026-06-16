@@ -25,7 +25,7 @@ import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.EntitySpawnReason
-import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.Attributes
@@ -116,7 +116,7 @@ class NineLifes : ModInitializer {
             for (level in server.allLevels) {
                 for (player in level.players()) {
                     val box = ofDXYZ(player.position(), 20)
-                    level.getEntities(EntityType.ITEM) { entity ->
+                    level.getEntities(EntityTypes.ITEM) { entity ->
                         entityIn<ItemEntity>(box)(entity)
                     }.forEach(::itemEntityEnsureCustomFoods)
                     level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(box)).forEach { entity ->
@@ -133,12 +133,12 @@ class NineLifes : ModInitializer {
                 tryChargeItems(level)
             }
 
-            for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
+            for (world in server.allLevels) world.getEntities(EntityTypes.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
             if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
-            if (entity.type == EntityType.ARMOR_STAND) {
+            if (entity.type == EntityTypes.ARMOR_STAND) {
                 if (level.getRandom().nextFloat() < WSTAND_SPAWN_CHANCE) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
@@ -189,9 +189,9 @@ class NineLifes : ModInitializer {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
 
         val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
-        level.getEntities(EntityType.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
+        level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
             level.getEntities(
-                EntityType.ITEM,
+                EntityTypes.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
                 .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))
                 .forEach { itemEntity ->

@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntitySpawnReason
-import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.context.UseOnContext
 import kotlin.math.max
@@ -36,7 +36,7 @@ class AmethystStickItem(properties: Properties) : Item(properties) {
 
         if (bl) {
             (context.level as? ServerLevel)?.let { level ->
-                EntityType.LIGHTNING_BOLT.create(level, {},
+                EntityTypes.LIGHTNING_BOLT.create(level, {},
                     context.clickedPos, EntitySpawnReason.SPAWN_ITEM_USE, true, false)?.let {
                     level.addFreshEntity(it)
                 }

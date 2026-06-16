@@ -14,8 +14,12 @@ import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementType
-import net.minecraft.advancements.criterion.*
-import net.minecraft.advancements.criterion.MinMaxBounds.Ints
+import net.minecraft.advancements.predicates.DataComponentMatchers
+import net.minecraft.advancements.predicates.EnchantmentPredicate
+import net.minecraft.advancements.predicates.ItemPredicate
+import net.minecraft.advancements.predicates.MinMaxBounds
+import net.minecraft.advancements.triggers.InventoryChangeTrigger
+import net.minecraft.advancements.triggers.PlayerTrigger
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.component.predicates.DataComponentPredicates
 import net.minecraft.core.component.predicates.EnchantmentsPredicate
@@ -43,17 +47,18 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
             .of(itemLookup, Items.AMETHYST_SHARD)
             .withComponents(DataComponentMatchers.Builder.components()
                 .partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(
-                    EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), Ints.atLeast(1)))))
+                    EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), MinMaxBounds.Ints.atLeast(1))
+                )))
                 .build())
 
         val root = consumer.create("root", false, Items.AMETHYST_SHARD, AdvancementType.TASK) {
             addCriterion("joined", PlayerTrigger.TriggerInstance.tick())
         }
-        val trySleepWithoutShard = consumer.create("try_sleep_without_shard", true, Items.RED_BED, AdvancementType.TASK) {
+        val trySleepWithoutShard = consumer.create("try_sleep_without_shard", true, Items.BED.red, AdvancementType.TASK) {
             addCriterion("tried_sleep", NineLifesCriterions.BED_SLEEPING_PROBLEM.require(Player.BedSleepingProblem.NOT_SAFE, PROBLEM_NOT_NOW))
             parent(root)
         }
-        val sleptWithShard = consumer.create("slept_with_shard", true, Items.BLUE_BED, AdvancementType.TASK) {
+        val sleptWithShard = consumer.create("slept_with_shard", true, Items.BED.red, AdvancementType.TASK) {
             addCriterion("slept_with_shard", NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.require(true))
             parent(trySleepWithoutShard)
         }

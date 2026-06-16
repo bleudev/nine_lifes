@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.tags.TagAppender
-import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.DamageTypeTags
 import net.minecraft.world.damagesource.DamageType
 import net.minecraft.world.item.Item
@@ -28,7 +27,7 @@ class NineLifesItemTagsProvider(output: FabricPackOutput, lookupFuture: Completa
     }
 
     @Suppress("DEPRECATION")
-    private fun TagAppender<ResourceKey<Item>, Item>.add(vararg items: Item) {
+    private fun TagAppender<Item>.add(vararg items: Item) {
         for (item in items) {
             this.add(item.builtInRegistryHolder().key())
         }
