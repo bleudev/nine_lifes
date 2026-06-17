@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.*;
+import static com.bleudev.nine_lifes.client.config.NineLifesClientConfigKt.getDeathScreenRemaining;
 import static com.bleudev.nine_lifes.util.TranslationUtilsKt.deathScreenRemaining;
 
 @Mixin(DeathScreen.class)
@@ -30,7 +31,7 @@ public class DeathScreenMixin extends Screen {
         if (getForceHardcoreDeathScreen()) {
             return HARDCORE_TITLE;
         } else {
-            if (lifesCount >= 9) return VANILLA_TITLE;
+            if (lifesCount >= 9 || !getDeathScreenRemaining()) return VANILLA_TITLE;
             MutableComponent result = Component.translatable(deathScreenRemaining(lifesCount));
             if (lifesCount == 1) return result.withStyle(ChatFormatting.RED);
             return result;
