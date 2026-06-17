@@ -8,6 +8,7 @@ import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.config
+import com.bleudev.nine_lifes.util.deathScreenRemaining
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
@@ -84,6 +85,14 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
+        builder.add(deathScreenRemaining(1), "Last chance!")
+        builder.add(deathScreenRemaining(2), "2 lifes left")
+        builder.add(deathScreenRemaining(3), "3 lifes left")
+        builder.add(deathScreenRemaining(4), "4 lifes left")
+        builder.add(deathScreenRemaining(5), "5 lifes left")
+        builder.add(deathScreenRemaining(6), "6 lifes left")
+        builder.add(deathScreenRemaining(7), "7 lifes left")
+        builder.add(deathScreenRemaining(8), "8 lifes left")
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
@@ -174,6 +183,14 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
+        builder.add(deathScreenRemaining(1), "Последний шанс!")
+        builder.add(deathScreenRemaining(2), "2 жизни осталось")
+        builder.add(deathScreenRemaining(3), "3 жизни осталось")
+        builder.add(deathScreenRemaining(4), "4 жизни осталось")
+        builder.add(deathScreenRemaining(5), "5 жизней осталось")
+        builder.add(deathScreenRemaining(6), "6 жизней осталось")
+        builder.add(deathScreenRemaining(7), "7 жизней осталось")
+        builder.add(deathScreenRemaining(8), "8 жизней осталось")
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")

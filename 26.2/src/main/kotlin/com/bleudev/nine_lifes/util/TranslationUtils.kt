@@ -7,3 +7,5 @@ fun enumConfig(name: String, entry: String): String = config("enum.$name.$entry"
 
 fun advancement(name: String): String = "advancement.$MOD_ID.$name"
 fun advancementDescription(name: String): String = "advancement.$MOD_ID.description.$name"
+
+fun deathScreenRemaining(num: Int): String = "deathScreen.title.remaining.$num"
