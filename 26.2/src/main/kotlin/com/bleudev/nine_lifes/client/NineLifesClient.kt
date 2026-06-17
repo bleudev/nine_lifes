@@ -1,0 +1,269 @@
+package com.bleudev.nine_lifes.client
+
+import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
+import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
+import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
+import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
+import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.configInit
+import com.bleudev.nine_lifes.client.config.heartPosition
+import com.bleudev.nine_lifes.client.config.joinMessageEnabled
+import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
+import com.bleudev.nine_lifes.client.util.asColorWithAlpha
+import com.bleudev.nine_lifes.client.util.overlayWithColor
+import com.bleudev.nine_lifes.client.util.white
+import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
+import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
+import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
+import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
+import com.bleudev.nine_lifes.util.*
+import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
+import net.minecraft.ChatFormatting
+import net.minecraft.SharedConstants
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.util.ARGB
+import net.minecraft.world.level.GameType
+import org.joml.Vector4f
+
+class NineLifesClient : ClientModInitializer {
+    object Layers {
+        val OVERLAY_BEFORE_HOTBAR = createIdentifier("overlay_before_hotbar")
+        val OVERLAY = createIdentifier("overlay")
+        val LIFES_COUNT = createIdentifier("lifes_count")
+    }
+
+    object Sprites {
+        val HARDCORE = createIdentifier("textures/hud/sprites/hardcore.png")
+    }
+
+    private val clientInSurvivalLikeGameMode: Boolean
+        get() = Minecraft.getInstance().player?.gameMode()?.isSurvival ?: true
+
+    override fun onInitializeClient() {
+        configInit()
+
+        NineLifesEntityRenderers.initialize()
+
+        ClientTickEvents.END_LEVEL_TICK.register { endClientLevelTick() }
+        ClientRespawnEvents.RESPAWN.register { _ ->
+            should_death_screen_be_white = false
+        }
+
+        val fogTarget = Vector4f(1f, 1f, 1f, 1f)
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(fogTarget, when (lifes) {
+                5 -> .1f
+                4 -> .3f
+                in 0..3 -> 1f
+                else -> 0f
+            }) }
+        ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            current.lerp(fogTarget, stickUsedTicks.toFloat() / STICK_USED_EFFECT_TICKS)
+        }
+
+        ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            val ov4 = ARGB.vector3fFromRGB24(current).to4f(1f)
+            val v4 = ClientEnvironmentSetupEvents.FOG_COLOR.invoker()(ov4, ov4)
+            v4.asARGB()
+        }
+
+        ClientEnvironmentSetupEvents.FOG_START.register { _, current ->
+            current * if (clientInSurvivalLikeGameMode) when (lifes) {
+                5 -> .5f
+                4 -> .4f
+                3 -> .3f
+                2 -> .2f
+                1 -> .1f
+                else -> 1f
+            } else 1f
+        }
+
+        ClientEnvironmentSetupEvents.FOG_END.register { _, current ->
+            current * if (clientInSurvivalLikeGameMode) when (lifes) {
+                5 -> .5f
+                4 -> .4f
+                3 -> .3f
+                2 -> .2f
+                1 -> .1f
+                else -> 1f
+            } else 1f
+        }
+
+        PostEffectRegistry.registerNineLifes("redmaj", "anaglyph", "cblur")
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
+            putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
+            putVec2(shaderAnaglyphX, shaderAnaglyphY)
+        }
+        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("BlurPropConfig", createIdentifier("cblur")), {putFloat()}) {
+            putFloat(shaderCBlurStrength)
+        }
+
+        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
+        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
+        HudElementRegistry.addLast(Layers.OVERLAY) { g, _ -> renderOverlay(g) }
+
+        registerReceiver(AfterPlayerRespawn) { _, ctx ->
+            ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
+        }
+        registerReceiver(JoinMessage) { payload, ctx ->
+            if (joinMessageEnabled && (ctx.player().gameMode() ?: GameType.SURVIVAL).isSurvival) {
+                val careful = payload.lifes <= 5
+                ctx.player().sendSystemMessage(Component.translatable(
+                    if (careful) "chat.message.join.lives.careful" else "chat.message.join.lives",
+                    payload.lifes
+                ).withStyle(if (careful) ChatFormatting.RED else ChatFormatting.DARK_AQUA))
+            }
+        }
+        registerReceiver(BetaModeMessage) { _, ctx -> ctx.player().sendSystemMessage(
+            Component.translatable("chat.message.join.beta").append("\n").append(link(ISSUES_LINK))
+            .withStyle(ChatFormatting.GOLD)) }
+        registerReceiver(UpdateLifesCount) { lifes = it.lifes }
+        registerReceiver(ArmorStandKillEvent) {
+            armor_stand_post_kill_ticks = WSTAND_POST_KILL_TICKS
+        }
+        registerReceiver(ArmorStandHitEvent) {
+            if (!armor_stand_hit_event_running) {
+                armor_stand_hit_event_running = true
+                armor_stand_hit_event_ticks = 40
+                armor_stand_post_kill_ticks = 0
+            }
+        }
+        registerReceiver(StartWhitenessScreen) {
+            max_whiteness_screen_ticks = it.duration
+            max_whiteness_screen = it.strength
+            whiteness_screen_ticks = 0
+            whiteness_screen_running = true
+            should_death_screen_be_white = true
+        }
+        registerReceiver(StartAmethysmScreen) {
+            amethysm_effect_info.start(it.duration)
+        }
+        registerReceiver(StartChargeScreen) {
+            charge_effect_info.start(it.duration, it.strength)
+        }
+        registerReceiver(BedSleepingProblemEvent) { when (it.problem) {
+            PacketBedSleepingProblem.NOT_SAFE -> {
+                bed_not_safe_event_ticks = NOT_SAFE_ANAGLYPH_EVENT_DURATION
+                bed_not_safe_event_running = true
+            }
+        } }
+        registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
+        registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
+    }
+
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =
+        ClientPlayNetworking.registerGlobalReceiver(payloadCompanion.id) {p, c -> handler(p, c)}
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T) -> Unit) =
+        registerReceiver(payloadCompanion) {p, _ -> handler(p)}
+
+    private fun renderLifesCount(graphics: GuiGraphicsExtractor) {
+        val client = Minecraft.getInstance()
+        if (client.player?.gameMode()?.isSurvival == false) return
+
+        val text = Component.literal(lifes.toString())
+
+        val w: Int = graphics.guiWidth()
+        val h: Int = graphics.guiHeight()
+        val th = 18
+
+        val delta = lifes.toFloat() / 9
+        val color: Int = ARGB.colorFromFloat(0.75f, delta, delta, delta)
+
+        graphics.pose().pushMatrix()
+
+        val translatePosition = { dx: Int, dy: Int ->
+            graphics.pose().translate(-th * center_heart_info.scale / 2 + dx, (h - 45 - (h - dy)).toFloat())
+        }
+        when (heartPosition) {
+            HeartPosition.BOTTOM_LEFT -> translatePosition(25, h + 20)
+            HeartPosition.BOTTOM_CENTER -> translatePosition(w / 2, h)
+            HeartPosition.BOTTOM_RIGHT -> translatePosition(w - 25, h + 20)
+            HeartPosition.TOP_LEFT -> translatePosition(25, 60)
+            HeartPosition.TOP_CENTER -> translatePosition(w / 2, 60)
+            HeartPosition.TOP_RIGHT -> translatePosition(w - 25, 60)
+        }
+        graphics.pose().scale(center_heart_info.scale)
+
+        graphics.blit(RenderPipelines.GUI_TEXTURED, Sprites.HARDCORE,
+            0, -5, 0f, 0f, th, th, th, th, color)
+        graphics.text(client.font, text, client.font.width(text), 0, -0x1)
+
+        graphics.pose().popMatrix()
+    }
+
+    private fun renderOverlayBeforeHotBar(graphics: GuiGraphicsExtractor) {
+        graphics.overlayWithColor(0.5f * amethysm_purpleness, 0.5f, 0f, 0.5f)
+        graphics.overlayWithColor(0.5f * stick_purpleness, 0.5f, 0f, 0.5f)
+        graphics.white(amethysm_whiteness)
+        graphics.white(charge_effect_info.getWhiteness())
+    }
+
+    private var lastMillis = 0L
+
+    private fun renderOverlay(graphics: GuiGraphicsExtractor) {
+        graphics.overlayWithColor(0xff0000.asColorWithAlpha(redness))
+        graphics.overlayWithColor(0xffffff.asColorWithAlpha(whiteness))
+        if (armor_stand_post_kill_ticks >= WSTAND_POST_KILL_TICKS - WSTAND_POST_KILL_BLACK_TICKS)
+            graphics.overlayWithColor(0xff000000.toInt())
+
+        val newTime = System.currentTimeMillis()
+        if (lastMillis == 0L) lastMillis = newTime
+        val deltaTime = (newTime - lastMillis).toFloat()
+        lastMillis = newTime
+        center_heart_info.tick(deltaTime / 50)
+    }
+
+    private fun endClientLevelTick() {
+        val client = Minecraft.getInstance()
+        storageTick()
+        if (armor_stand_post_kill_ticks > 0) armor_stand_post_kill_ticks--
+        if (max_heartbeat_ticks == 0) max_heartbeat_ticks = getNextHeartbeatTime(client.player)
+
+        if (heartbeat_ticks == 0 && client.player != null && client.player!!.isAlive) center_heart_info.doHeartbeat(2f)
+        heartbeat_ticks++
+        if (heartbeat_ticks == max_heartbeat_ticks) {
+            heartbeat_ticks = 0
+            max_heartbeat_ticks = getNextHeartbeatTime(client.player)
+        }
+
+        if (armor_stand_hit_event_running) {
+            if (armor_stand_hit_event_ticks == 0) armor_stand_hit_event_running = false
+            else {
+                armor_stand_hit_event_ticks--
+
+                val fromTicks = 2 * SharedConstants.TICKS_PER_SECOND - armor_stand_hit_event_ticks
+
+                armor_stand_hit_redness = if (fromTicks <= .5 * SharedConstants.TICKS_PER_SECOND) (fromTicks / (.5f * SharedConstants.TICKS_PER_SECOND)).lerp()
+                else ((fromTicks - .5f * SharedConstants.TICKS_PER_SECOND) / (1.5f * SharedConstants.TICKS_PER_SECOND)).lerp(1f, 0f)
+            }
+        }
+
+        if (bed_not_safe_event_running) {
+            if (bed_not_safe_event_ticks == 0) bed_not_safe_event_running = false
+            else bed_not_safe_event_ticks--
+        }
+
+        redness = armor_stand_hit_redness.lerp(end = .2f)
+
+        if (whiteness_screen_running) {
+            if (whiteness_screen_ticks == max_whiteness_screen_ticks) whiteness_screen_running = false
+            else {
+                whiteness_screen_ticks++
+                whiteness = (whiteness_screen_ticks.toFloat() / max_whiteness_screen_ticks).lerp(end = max_whiteness_screen)
+            }
+        } else whiteness = 0f
+    }
+}
