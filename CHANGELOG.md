@@ -11,5 +11,5 @@ Nine Lifes finally is on 26.2! Enjoy playing this mod with new features of this 
 - [DEV] Gradle 9.4.1 (bleudev [#91](https://github.com/bleudev/nine_lifes/pull/91))
 
 ### 26.2 only
-- `fabric_api`: `0.152.1`
-- `yacl`: `3.9.4`
+- `fabric_api`: `0.152.1` (bleudev [#91](https://github.com/bleudev/nine_lifes/pull/91))
+- `yacl`: `3.9.4` (bleudev [#91](https://github.com/bleudev/nine_lifes/pull/91))
