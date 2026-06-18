@@ -8,7 +8,6 @@
     "BedBlockMixin",
     "CampfireBlockEntityMixin",
     "LivingEntityMixin",
-    "ServerLevelMixin",
     "ServerPlayerMixin"
   ],
   "client": [

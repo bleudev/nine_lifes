@@ -21,6 +21,7 @@ private var cachedJoinMessage: Boolean? = null
 private var cachedHeartbeat: Boolean? = null
 private var cachedHeartPosition: HeartPosition? = null
 private var cachedHealthRendering: HealthRendering? = null
+private var cachedDeathScreenRemaining: Boolean? = null
 
 fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_ID) {
     categories.register("general") {
@@ -60,6 +61,15 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
                 customImage(HealthRenderingImageRenderer {cachedHealthRendering ?: healthRendering})
             }
         }
+        rootOptions.register("death_screen_remaining") {
+            binding(true, ::deathScreenRemaining)
+            yesNoFormat()
+            cachePending(::cachedDeathScreenRemaining::set)
+            descriptionBuilder {
+                addDefaultText(1)
+                fullLocalisedConfigImage("death_screen_remaining") {cachedDeathScreenRemaining ?: deathScreenRemaining}
+            }
+        }
     }
 }.generateScreen(parent)
 
@@ -67,7 +77,8 @@ private fun OptionDsl<Boolean>.yesNoFormat() = controller { BooleanControllerBui
 private inline fun <reified T : Enum<T>> OptionDsl<T>.enumFormat() = controller { EnumControllerBuilder.create(it).enumClass(T::class.java) }
 private fun <T : Any> OptionDsl<T>.binding(default: T, property: KMutableProperty<T>) = binding(default, {property.getter.call()}, {property.setter.call(it)})
 private fun <T : Any> OptionDsl<T>.cachePending(cacher: (T) -> Unit) = addListener { option, event -> if (event == OptionEventListener.Event.STATE_CHANGE) cacher(option.pendingValue()) }
-private fun OptionDescription.Builder.localisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, condition))
+private fun OptionDescription.Builder.localisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, false, condition))
+private fun OptionDescription.Builder.fullLocalisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, true, condition))
 private fun <T : Enum<T>> OptionDescription.Builder.enumConfigImage(name: String, enumGetter: () -> T) = customImage(EnumImageRenderer(name, enumGetter))
 private fun OptionDescription.Builder.framedConfigImage(name: String, duration: Int, fps: Int, condition: () -> Boolean = {true}, useFirstFrameWhenFalse: Boolean = false) = customImage(
     AnimatedConditionImageRenderer(name, { ((it % (duration * 1000 / fps)) / (1000 / fps)).toInt() }, condition, useFirstFrameWhenFalse))
@@ -87,18 +98,23 @@ private abstract class MethodBasedImageRenderer : ImageRenderer {
     abstract fun getImagePath(): Identifier
 }
 
-private class LocalisedImageRenderer(val name: String, val condition: () -> Boolean) : MethodBasedImageRenderer() {
+private class LocalisedImageRenderer(val name: String, val localiseDisabled: Boolean = false, val condition: () -> Boolean) : MethodBasedImageRenderer() {
     override fun getImagePath(): Identifier {
         val mc = Minecraft.getInstance()
         val lang = mc.options.languageCode
-        val langPath = "textures/config/description/$lang/$name.png"
-        val langId = createIdentifier(langPath)
-        val fallbackId = createIdentifier("textures/config/description/$name.png")
-        val disabledId = createIdentifier("textures/config/description/${name}_disabled.png")
 
-        if (!condition()) return disabledId
-        return if (LocalisedImageRenderer::class.java.classLoader.getResource("assets/nine_lifes/$langPath") == null)
-            fallbackId else langId
+        var fallbackPath = "textures/config/description/$name"
+        var langPath = "textures/config/description/$lang/$name"
+        if (condition()) {
+            fallbackPath += ".png"
+            langPath += ".png"
+        } else {
+            fallbackPath += "_disabled.png"
+            langPath += "_disabled.png"
+            if (!localiseDisabled) return createIdentifier(fallbackPath)
+        }
+        return createIdentifier(if (LocalisedImageRenderer::class.java.classLoader.getResource("assets/nine_lifes/$langPath") == null)
+            fallbackPath else langPath)
     }
 }
 

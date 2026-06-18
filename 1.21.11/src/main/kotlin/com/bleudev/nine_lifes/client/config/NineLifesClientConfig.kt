@@ -24,6 +24,9 @@ internal var heartPosition: HeartPosition
 internal var healthRendering: HealthRendering
     get() = configLoad().healthRendering
     set(new) = configSave(configLoad().apply { healthRendering = new })
+internal var deathScreenRemaining: Boolean
+    get() = configLoad().deathScreenRemaining
+    set(new) = configSave(configLoad().apply { deathScreenRemaining = new })
 
 @Serializable
 data class NineLifesClientConfig(
@@ -31,6 +34,7 @@ data class NineLifesClientConfig(
     var heartbeat: Boolean = true,
     var heartPosition: HeartPosition = HeartPosition.BOTTOM_CENTER,
     var healthRendering: HealthRendering = HealthRendering.ALWAYS,
+    var deathScreenRemaining: Boolean = true,
 )
 
 interface TranslatableConfigEnumProvider {
