@@ -1,25 +1,43 @@
 package com.bleudev.nine_lifes.mixin.client;
 
 import com.bleudev.nine_lifes.client.util.ClientInjectsKt;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.network.chat.MutableComponent;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceHardcoreDeathScreen;
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.should_death_screen_be_white;
+import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.*;
+import static com.bleudev.nine_lifes.client.config.NineLifesClientConfigKt.getDeathScreenRemaining;
+import static com.bleudev.nine_lifes.util.TranslationUtilsKt.deathScreenRemaining;
 
 @Mixin(DeathScreen.class)
 public class DeathScreenMixin extends Screen {
+    @Unique
+    private static final Component HARDCORE_TITLE = Component.translatable("deathScreen.title.hardcore");
+    @Unique
+    private static final Component VANILLA_TITLE = Component.translatable("deathScreen.title");
+
+    @Unique
+    private Component getNewTitle(int lifesCount) {
+        if (getForceHardcoreDeathScreen()) {
+            return HARDCORE_TITLE;
+        } else {
+            if (lifesCount >= 9 || !getDeathScreenRemaining()) return VANILLA_TITLE;
+            MutableComponent result = Component.translatable(deathScreenRemaining(lifesCount));
+            if (lifesCount == 1) return result.withStyle(ChatFormatting.RED);
+            return result;
+        }
+    }
+
     @Mutable
     @Shadow
     @Final
@@ -29,25 +47,19 @@ public class DeathScreenMixin extends Screen {
         super(title);
     }
 
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;<init>(Lnet/minecraft/network/chat/Component;)V"))
-    private static Component changeTitle(Component original) {
-        return getForceHardcoreDeathScreen() ? Component.translatable("deathScreen.title.hardcore") : original;
-    }
-
     @Inject(method = "<init>", at = @At("RETURN"))
     private void changeHardcore(Component causeOfDeath, boolean hardcore, LocalPlayer player, CallbackInfo ci) {
-        if (getForceHardcoreDeathScreen())
-            this.hardcore = true;
+        if (getForceHardcoreDeathScreen() || lifes == 1) this.hardcore = true;
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void renderWhitenessEffect(GuiGraphics guiGraphics, int i, int j, float f, CallbackInfo ci) {
+    private void renderWhitenessEffect(GuiGraphics guiGraphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if (should_death_screen_be_white)
             ClientInjectsKt.white(guiGraphics);
     }
 
-    @Inject(method = "render", at = @At("TAIL"))
-    private void renderPostEffects(GuiGraphics graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
-        ClientInjectsKt.applyAnaglyph(this.minecraft);
+    @ModifyArgs(method = "visitText", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ActiveTextCollector;accept(Lnet/minecraft/client/gui/TextAlignment;IILnet/minecraft/network/chat/Component;)V"))
+    private void modifyTitle(Args args) {
+        if (((int)args.get(2)) == 30) args.set(3, getNewTitle(lifes));
     }
 }
