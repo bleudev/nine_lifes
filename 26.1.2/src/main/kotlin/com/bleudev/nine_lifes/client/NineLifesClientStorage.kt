@@ -20,7 +20,7 @@ var stickUsedTicks = 0
 private val isInSurvival: Boolean get() = Minecraft.getInstance().player?.gameMode()?.isSurvival == true
 
 // Lifes helper methods
-internal val forceHardcoreDeathScreen get() = lifes <= 1 && !should_death_screen_be_white
+internal val forceHardcoreDeathScreen get() = lifes <= 0 && !should_death_screen_be_white
 internal val forceAlwaysDay get() = lifes <= 3 && isInSurvival
 val forceHardcore: Boolean get() = healthRendering(lifes)
 

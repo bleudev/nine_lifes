@@ -5,9 +5,7 @@ import com.bleudev.nine_lifes.client.config.HealthRendering
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.util.advancement
-import com.bleudev.nine_lifes.util.advancementDescription
-import com.bleudev.nine_lifes.util.config
+import com.bleudev.nine_lifes.util.*
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
@@ -84,19 +82,29 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
+        builder.add(deathScreenRemaining(1), "Last chance!")
+        builder.add(deathScreenRemaining(2), "2 lifes left")
+        builder.add(deathScreenRemaining(3), "3 lifes left")
+        builder.add(deathScreenRemaining(4), "4 lifes left")
+        builder.add(deathScreenRemaining(5), "5 lifes left")
+        builder.add(deathScreenRemaining(6), "6 lifes left")
+        builder.add(deathScreenRemaining(7), "7 lifes left")
+        builder.add(deathScreenRemaining(8), "8 lifes left")
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
-        builder.addConfigOption("category.general.root.option.join_message",
+        builder.addConfigOption(rootOption("join_message"),
             "Enable join message", "Display message with lifes count on join server")
-        builder.addConfigOption("category.general.root.option.heartbeat",
+        builder.addConfigOption(rootOption("heartbeat"),
             "Enable heartbeat effect", "When true lifes count will beat")
-        builder.addConfigOption("category.general.root.option.heart_position",
+        builder.addConfigOption(rootOption("heart_position"),
             "Heart position", "Location of lifes count on the screen")
-        builder.addConfigOption("category.general.root.option.low_lifes_red_sky",
+        builder.addConfigOption(rootOption("low_lifes_red_sky"),
             "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
-        builder.addConfigOption("category.general.root.option.health_rendering",
+        builder.addConfigOption(rootOption("health_rendering"),
             "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
+        builder.addConfigOption(rootOption("death_screen_remaining"),
+            "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
         builder.addConfigEnum(HeartPosition,
             "Bottom left", "Bottom center", "Bottom right",
             "Top left", "Top center", "Top right"
@@ -174,19 +182,29 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
+        builder.add(deathScreenRemaining(1), "Последний шанс!")
+        builder.add(deathScreenRemaining(2), "2 жизни осталось")
+        builder.add(deathScreenRemaining(3), "3 жизни осталось")
+        builder.add(deathScreenRemaining(4), "4 жизни осталось")
+        builder.add(deathScreenRemaining(5), "5 жизней осталось")
+        builder.add(deathScreenRemaining(6), "6 жизней осталось")
+        builder.add(deathScreenRemaining(7), "7 жизней осталось")
+        builder.add(deathScreenRemaining(8), "8 жизней осталось")
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")
-        builder.addConfigOption("category.general.root.option.join_message",
+        builder.addConfigOption(rootOption("join_message"),
             "Включить приветственное сообщение", "Показывать сообщение с количеством жизней при заходе на сервер")
-        builder.addConfigOption("category.general.root.option.heartbeat",
+        builder.addConfigOption(rootOption("heartbeat"),
             "Включить эффект сербцебиения", "Когда включено сердце будет пульсировать")
-        builder.addConfigOption("category.general.root.option.heart_position",
+        builder.addConfigOption(rootOption("heart_position"),
             "Расположение сердца", "Расположение количества жизней на экране")
-        builder.addConfigOption("category.general.root.option.low_lifes_red_sky",
+        builder.addConfigOption(rootOption("low_lifes_red_sky"),
             "Красное небо когда мало жизней", "Когда включено небо будет краснеть при низком количестве жизней")
-        builder.addConfigOption("category.general.root.option.health_rendering",
+        builder.addConfigOption(rootOption("health_rendering"),
             "Рендеринг здоровья", "Контроллирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
+        builder.addConfigOption(rootOption("death_screen_remaining"),
+            "Оставшиеся жизни на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
         builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
