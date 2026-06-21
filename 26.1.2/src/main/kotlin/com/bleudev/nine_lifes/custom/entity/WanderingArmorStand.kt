@@ -8,6 +8,7 @@ import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoi
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
+import com.bleudev.nine_lifes.util.hurtUnknown
 import com.bleudev.nine_lifes.util.sendPacket
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -34,6 +35,15 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     init { this.health = 1f }
 
     private fun canKill(damageSource: DamageSource) = damageSource.`is`(DamageTypes.GENERIC_KILL)
+    private fun canTryKill(player: ServerPlayer): Boolean {
+        return player.foodData.foodLevel >= 5f
+    }
+    private fun triedKillReact(player: ServerPlayer) {
+        if (!player.gameMode().isSurvival) return
+        if (player.random.nextFloat() >= 0.5f) return
+        player.hurtUnknown(player.random.nextInt(6))
+        player.causeFoodExhaustion(20f)
+    }
 
     override fun defineSynchedData(builder: SynchedEntityData.Builder) {
         super.defineSynchedData(builder)
@@ -59,6 +69,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     private fun kill() = (level() as? ServerLevel)?.let { kill(it) }
     override fun hurtServer(serverLevel: ServerLevel, damageSource: DamageSource, f: Float): Boolean {
         val player = damageSource.directEntity as? ServerPlayer
+        if (player != null && !canTryKill(player)) return false
         this.kickTimes++
         this.ticksAfterKick = 0
         val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)
@@ -72,6 +83,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
             if (bl) it.sendPacket(ArmorStandKillEvent.INSTANCE)
         }
         if (bl) kill()
+        player?.let { triedKillReact(it) }
 
         return bl
     }
