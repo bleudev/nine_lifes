@@ -3,6 +3,7 @@
 ## New features
 
 - Display remaining lifes count in death screen (bleudev [#95](https://github.com/bleudev/nine_lifes/pull/95))
+- Chance to get hit from Wandering Armor Stand (bleudev [#96](https://github.com/bleudev/nine_lifes/pull/96))
 
 ## Fixes
 
