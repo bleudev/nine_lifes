@@ -65,9 +65,12 @@ fun Level.explode(pos: Vec3, strength: Float, damageSourceSupplier: (Level) -> D
 
 fun LivingEntity.hurtServer(damageSourceSupplier: (Level) -> DamageSource, amount: Float): Boolean =
     (level() as? ServerLevel)?.let {
+        if (amount <= 0) return@let false
         hurtServer(it, damageSourceSupplier(it), amount)
     } == true
 fun LivingEntity.hurtCharged(amount: Float) = hurtServer(NineLifesDamageTypes::chargedAmethyst, amount)
+fun LivingEntity.hurtUnknown(amount: Float) = hurtServer(NineLifesDamageTypes::unknown, amount)
+fun LivingEntity.hurtUnknown(amount: Int) = hurtUnknown(amount.toFloat())
 @Suppress("unused") // Public API
 fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = hurtServer(damageSourceSupplier, Float.MAX_VALUE)
 fun LivingEntity.killCharged() = hurtCharged(Float.MAX_VALUE)
