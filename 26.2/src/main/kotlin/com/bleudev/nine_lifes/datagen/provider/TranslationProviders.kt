@@ -82,7 +82,14 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
         // Gamerules
         builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
-        builder.addGameRule("take_lifes", "Take lifes", "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
+        builder.addGameRule("take_lifes", "Take lifes",
+            "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
+        builder.addGameRule("take_lifes_in_overworld", "Take lifes in the Overworld",
+            "Take lifes from dead players in the Overworld. Doesn't matter if taking is disabled.")
+        builder.addGameRule("take_lifes_in_nether", "Take lifes in the Nether",
+            "Take lifes from dead players in the Nether. Doesn't matter if taking is disabled.")
+        builder.addGameRule("take_lifes_in_end", "Take lifes in the End",
+            "Take lifes from dead players in the End. Doesn't matter if taking is disabled.")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         builder.add(deathScreenRemaining(1), "Last chance!")
@@ -185,7 +192,14 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
         // Gamerules
         builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
-        builder.addGameRule("take_lifes", "Отнимать жизни", "Отнимать жизни умерших игроков. Влияет только на отнятие, заряженные предметы продолжают добавлять жизни.")
+        builder.addGameRule("take_lifes", "Отнимать жизни",
+            "Отнимать жизни умерших игроков. Влияет только на отнятие, заряженные предметы продолжают добавлять жизни.")
+        builder.addGameRule("take_lifes_in_overworld", "Отнимать жизни в Верхнем Мире",
+            "Отнимать жизни умерших игроков в Верхнем Мире. Не имеет значения если отнятие жизней отключено.")
+        builder.addGameRule("take_lifes_in_nether", "Отнимать жизни в Незере",
+            "Отнимать жизни умерших игроков в Незере. Не имеет значения если отнятие жизней отключено.")
+        builder.addGameRule("take_lifes_in_end", "Отнимать жизни в Энде",
+            "Отнимать жизни умерших игроков в Энде. Не имеет значения если отнятие жизней отключено.")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")

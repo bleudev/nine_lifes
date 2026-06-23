@@ -172,7 +172,15 @@ class NineLifes : ModInitializer {
                     entity.awardStat(NineLifesStats.USED_CHARGED)
                     NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
-                else if (entity.level().gameRules.get(NineLifesGameRules.TAKE_LIFES)) entity.lifes -= 1
+                else {
+                    val lv = entity.level()
+                    var bl = true
+                    if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = false
+                    if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = false
+                    if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = false
+                    if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = false
+                    if (bl) entity.lifes -= 1
+                }
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->

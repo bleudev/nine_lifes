@@ -14,6 +14,17 @@ object NineLifesGameRules {
         .forBoolean(true)
         .category(CATEGORY)
         .buildAndRegister(createIdentifier("take_lifes"))
-
+    val TAKE_LIFES_IN_OVERWORLD: GameRule<Boolean> = GameRuleBuilder
+        .forBoolean(true)
+        .category(CATEGORY)
+        .buildAndRegister(createIdentifier("take_lifes_in_overworld"))
+    val TAKE_LIFES_IN_NETHER: GameRule<Boolean> = GameRuleBuilder
+        .forBoolean(true)
+        .category(CATEGORY)
+        .buildAndRegister(createIdentifier("take_lifes_in_nether"))
+    val TAKE_LIFES_IN_END: GameRule<Boolean> = GameRuleBuilder
+        .forBoolean(true)
+        .category(CATEGORY)
+        .buildAndRegister(createIdentifier("take_lifes_in_end"))
     fun initialize() {}
 }
