@@ -26,5 +26,10 @@ object NineLifesGameRules {
         .forBoolean(true)
         .category(CATEGORY)
         .buildAndRegister(createIdentifier("take_lifes_in_end"))
+    val MAX_CHARGED_ITEMS_AT_A_TIME: GameRule<Int> = GameRuleBuilder
+        .forInteger(5)
+        .range(-1, Int.MAX_VALUE)
+        .category(CATEGORY)
+        .buildAndRegister(createIdentifier("max_charged_items_at_a_time"))
     fun initialize() {}
 }
