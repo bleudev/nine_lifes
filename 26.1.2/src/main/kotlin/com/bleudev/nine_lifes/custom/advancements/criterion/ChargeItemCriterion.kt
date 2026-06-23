@@ -23,10 +23,8 @@ class ChargeItemCriterion : SimpleCriterionTrigger<ChargeItemCriterion.TriggerIn
     data class TriggerInstance(val playerPredicate: Optional<ContextAwarePredicate>, val item: Holder<Item>, val distance: Double): SimpleInstance {
         override fun player(): Optional<ContextAwarePredicate> = playerPredicate
 
-        fun requirementsMet(chargedItem: Item, distance: Double): Boolean {
-            println("MET? $chargedItem $distance $item $distance")
-            return ((item.value() == chargedItem) && (distance <= this.distance)).also { println("MET? $it") }
-        }
+        fun requirementsMet(chargedItem: Item, distance: Double): Boolean =
+            (item.value() == chargedItem) && (distance <= this.distance)
 
         companion object {
             val CODEC: Codec<TriggerInstance> = RecordCodecBuilder.create { it.group(
