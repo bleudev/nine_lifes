@@ -67,6 +67,7 @@ class NineLifes : ModInitializer {
         NineLifesStats.initialize()
         NineLifesItems.initialize()
         NineLifesSounds.initialize()
+        NineLifesGameRules.initialize()
         FabricPotionBrewingBuilder.BUILD.register {
             it.registerPotionRecipe(
                 Potions.MUNDANE,
@@ -171,7 +172,7 @@ class NineLifes : ModInitializer {
                     entity.awardStat(NineLifesStats.USED_CHARGED)
                     NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
-                else entity.lifes -= 1
+                else if (entity.level().gameRules.get(NineLifesGameRules.TAKE_LIFES)) entity.lifes -= 1
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->

@@ -80,6 +80,9 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+        // Gamerules
+        builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
+        builder.addGameRule("take_lifes", "Take lifes", "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         builder.add(deathScreenRemaining(1), "Last chance!")
@@ -180,6 +183,9 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
+        // Gamerules
+        builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
+        builder.addGameRule("take_lifes", "Отнимать жизни", "Отнимать жизни умерших игроков. Влияет только на отнятие, заряженные предметы продолжают добавлять жизни.")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")
@@ -247,4 +253,9 @@ private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: Transl
     enum.names.zip(translations).forEach { (key, translation) ->
         this.add(key, translation)
     }
+}
+
+private fun FabricLanguageProvider.TranslationBuilder.addGameRule(id: String, name: String, description: String) {
+    this.add("gamerule.nine_lifes.$id", name)
+    this.add("gamerule.nine_lifes.$id.description", description)
 }
