@@ -42,6 +42,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
 import net.minecraft.world.level.entity.EntityTypeTest
 import net.minecraft.world.phys.Vec3
+import java.util.*
 import kotlin.math.abs
 
 class NineLifes : ModInitializer {
@@ -50,6 +51,9 @@ class NineLifes : ModInitializer {
         val notSafeSleepTicks: HashMap<String, Int> = HashMap()
         val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
     }
+
+    private val lightningCharged = HashMap<UUID, Int>()
+    private val lightningChargedTicks = HashMap<UUID, Int>()
 
     override fun onInitialize() {
         NineLifesPackets.initialize()
@@ -131,6 +135,15 @@ class NineLifes : ModInitializer {
                     }
                 }
                 tryChargeItems(level)
+                for (uuid in lightningCharged.keys) {
+                    if (level.getEntity(uuid) == null && lightningChargedTicks.getOrDefault(uuid, 0) <= 0) {
+                        lightningCharged.remove(uuid)
+                        lightningChargedTicks.remove(uuid)
+                    }
+                }
+                lightningChargedTicks.entries.forEach { (k, v) ->
+                    lightningChargedTicks[k] = v-1
+                }
             }
 
             for (world in server.allLevels) world.getEntities(EntityTypes.WIND_CHARGE, alwaysTrue())
@@ -187,25 +200,45 @@ class NineLifes : ModInitializer {
 
     private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
+        val maxChargableShardsCount = 5
 
         val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
         level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
-            level.getEntities(
+            lightningCharged.putIfAbsent(lightning.uuid, 0)
+            lightningChargedTicks.putIfAbsent(lightning.uuid, 20)
+            for (itemEntity in level.getEntities(
                 EntityTypes.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
-                .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))
-                .forEach { itemEntity ->
-                    if (itemEntity.item.enchantments.getLevel(chargeEnchantment) == 0) {
+                .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))) {
+                if (lightningCharged[lightning.uuid]!! >= maxChargableShardsCount) return@forEach
+                if (itemEntity.item.enchantments.getLevel(chargeEnchantment) == 0) {
+                    val cnt = itemEntity.item.count
+                    val curr = lightningCharged[lightning.uuid]!!
+                    val remain = maxChargableShardsCount-curr
+                    if (cnt <= remain) {
+                        lightningCharged[lightning.uuid] = curr + 1
                         itemEntity.item.enchant(chargeEnchantment, 1)
-                        level.players().forEach { player ->
-                            val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
-                                .coerceAtLeast(.0)
-                            NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
-                            val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
-                            player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
-                        }
+                    }
+                    else {
+                        val new = EntityTypes.ITEM.create(level, EntitySpawnReason.CONVERSION) ?: continue
+                        new.copyPosition(itemEntity)
+                        new.item = itemEntity.item.copy()
+                        new.item.count = remain
+                        new.item.enchant(chargeEnchantment, 1)
+                        itemEntity.item.count -= remain
+                        lightningCharged[lightning.uuid] = maxChargableShardsCount
+                        level.addFreshEntity(new)
+                    }
+
+                    level.players().forEach { player ->
+                        val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
+                            .coerceAtLeast(.0)
+                        NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
+                        val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
+                        player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                     }
                 }
+            }
         }
     }
 
