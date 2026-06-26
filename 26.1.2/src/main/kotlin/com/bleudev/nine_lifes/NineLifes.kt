@@ -111,6 +111,14 @@ class NineLifes : ModInitializer {
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
                 // Custom foods
                 playerEnsureCustomFoods(it)
+
+                val lv = it.level()
+                var bl = false
+                if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = true
+                if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = true
+                if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = true
+                if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = true
+                it.sendPacket(UpdateForceVanillaDeathScreenState(bl))
             }
 
             for (entry in notSafeSleepTicks) {

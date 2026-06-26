@@ -13,6 +13,8 @@ import net.minecraft.world.entity.player.Player
 import java.util.*
 import kotlin.math.*
 
+internal var forceVanillaDeathScreen = false
+
 var lifes = 9
 @JvmField
 var stickUsedTicks = 0

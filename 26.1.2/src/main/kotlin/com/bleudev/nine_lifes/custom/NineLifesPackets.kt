@@ -22,6 +22,7 @@ object NineLifesPackets {
     val START_AMETHYSM_SCREEN = createIdentifier("packet/start_amethysm_screen")
     val START_CHARGE_SCREEN = createIdentifier("packet/start_charge_screen")
     val START_WHITENESS_SCREEN = createIdentifier("packet/start_whiteness_screen")
+    val UPDATE_FORCE_VANILLA_DEATH_SCREEN_STATE = createIdentifier("packet/update_force_vanilla_death_screen_state")
     val UPDATE_LIFES_COUNT = createIdentifier("packet/update_lifes_count")
     val UPDATE_STICK_USED_TICKS = createIdentifier("packet/update_stick_used_ticks")
 
@@ -40,6 +41,7 @@ object NineLifesPackets {
         registerS2CPacket(StartAmethysmScreen)
         registerS2CPacket(StartChargeScreen)
         registerS2CPacket(StartWhitenessScreen)
+        registerS2CPacket(UpdateForceVanillaDeathScreenState)
         registerS2CPacket(UpdateLifesCount)
         registerS2CPacket(UpdateStickUsedTicks)
     }

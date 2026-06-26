@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.client.config
 
 import com.bleudev.nine_lifes.LOGGER
+import com.bleudev.nine_lifes.client.forceVanillaDeathScreen
 import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
 import kotlinx.serialization.Serializable
@@ -11,7 +12,6 @@ import net.minecraft.network.chat.contents.TranslatableContents
 import java.nio.file.Files
 import java.nio.file.Path
 
-internal var forceVanillaDeathScreen = false
 
 // Public Properties
 internal var joinMessageEnabled: Boolean

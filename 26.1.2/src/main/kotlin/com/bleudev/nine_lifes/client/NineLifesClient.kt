@@ -162,6 +162,7 @@ class NineLifesClient : ClientModInitializer {
         } }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
+        registerReceiver(UpdateForceVanillaDeathScreenState) { forceVanillaDeathScreen = it.state }
     }
 
     private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =
