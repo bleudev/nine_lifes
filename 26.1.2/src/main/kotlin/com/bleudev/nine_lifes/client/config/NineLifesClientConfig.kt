@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.client.config
 
 import com.bleudev.nine_lifes.LOGGER
+import com.bleudev.nine_lifes.client.forceVanillaDeathScreen
 import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
 import kotlinx.serialization.Serializable
@@ -25,7 +26,7 @@ internal var healthRendering: HealthRendering
     get() = configLoad().healthRendering
     set(new) = configSave(configLoad().apply { healthRendering = new })
 internal var deathScreenRemaining: Boolean
-    get() = configLoad().deathScreenRemaining
+    get() = configLoad().deathScreenRemaining && !forceVanillaDeathScreen
     set(new) = configSave(configLoad().apply { deathScreenRemaining = new })
 
 @Serializable
@@ -51,7 +52,6 @@ enum class HeartPosition : NameableEnum {
     }
 }
 
-@Suppress("unused")
 enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boolean) : NameableEnum {
     ALWAYS({true}), TRUE({it <= 1}), NEVER({false});
 
@@ -87,7 +87,7 @@ private fun configSave(data: NineLifesClientConfig) {
     }
 }
 
-fun configInit() {
+internal fun configInit() {
     try {
         if (!Files.exists(configPath)) Files.writeString(configPath, "{}")
     } catch (e: Throwable) {

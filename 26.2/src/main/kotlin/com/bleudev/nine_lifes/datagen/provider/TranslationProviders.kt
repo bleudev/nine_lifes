@@ -80,6 +80,18 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+        // Gamerules
+        builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
+        builder.addGameRule("take_lifes", "Take lifes",
+            "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
+        builder.addGameRule("take_lifes_in_overworld", "Take lifes in the Overworld",
+            "Take lifes from dead players in the Overworld. Doesn't matter if taking is disabled.")
+        builder.addGameRule("take_lifes_in_nether", "Take lifes in the Nether",
+            "Take lifes from dead players in the Nether. Doesn't matter if taking is disabled.")
+        builder.addGameRule("take_lifes_in_end", "Take lifes in the End",
+            "Take lifes from dead players in the End. Doesn't matter if taking is disabled.")
+        builder.addGameRule("max_charged_items_at_a_time", "Max charged items at a time",
+            "The max number of charged items gained from a single lightning bolt. A value of -1 means infinity (no limit).")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         builder.add(deathScreenRemaining(1), "Last chance!")
@@ -180,6 +192,18 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
+        // Gamerules
+        builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
+        builder.addGameRule("take_lifes", "Отнимать жизни",
+            "Отнимать жизни умерших игроков. Влияет только на отнятие, заряженные предметы продолжают добавлять жизни.")
+        builder.addGameRule("take_lifes_in_overworld", "Отнимать жизни в Верхнем Мире",
+            "Отнимать жизни умерших игроков в Верхнем Мире. Не имеет значения если отнятие жизней отключено.")
+        builder.addGameRule("take_lifes_in_nether", "Отнимать жизни в Незере",
+            "Отнимать жизни умерших игроков в Незере. Не имеет значения если отнятие жизней отключено.")
+        builder.addGameRule("take_lifes_in_end", "Отнимать жизни в Энде",
+            "Отнимать жизни умерших игроков в Энде. Не имеет значения если отнятие жизней отключено.")
+        builder.addGameRule("max_charged_items_at_a_time", "Максимум заряженных предметов за раз",
+            "Максимальное количество заряженных предметов, получаемых от одного удара молнии. Значение -1 означает бесконечность (отсутствие ограничения).")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")
@@ -247,4 +271,9 @@ private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: Transl
     enum.names.zip(translations).forEach { (key, translation) ->
         this.add(key, translation)
     }
+}
+
+private fun FabricLanguageProvider.TranslationBuilder.addGameRule(id: String, name: String, description: String) {
+    this.add("gamerule.nine_lifes.$id", name)
+    this.add("gamerule.nine_lifes.$id.description", description)
 }

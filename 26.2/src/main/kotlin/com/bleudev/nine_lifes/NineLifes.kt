@@ -67,6 +67,7 @@ class NineLifes : ModInitializer {
         NineLifesStats.initialize()
         NineLifesItems.initialize()
         NineLifesSounds.initialize()
+        NineLifesGameRules.initialize()
         FabricPotionBrewingBuilder.BUILD.register {
             it.registerPotionRecipe(
                 Potions.MUNDANE,
@@ -110,6 +111,14 @@ class NineLifes : ModInitializer {
                 it.sendPacket(UpdateStickUsedTicks(it.stickUsedTicks))
                 // Custom foods
                 playerEnsureCustomFoods(it)
+
+                val lv = it.level()
+                var bl = false
+                if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = true
+                if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = true
+                if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = true
+                if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = true
+                it.sendPacket(UpdateForceVanillaDeathScreenState(bl))
             }
 
             for (entry in notSafeSleepTicks) {
@@ -171,7 +180,15 @@ class NineLifes : ModInitializer {
                     entity.awardStat(NineLifesStats.USED_CHARGED)
                     NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
-                else entity.lifes -= 1
+                else {
+                    val lv = entity.level()
+                    var bl = true
+                    if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = false
+                    if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = false
+                    if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = false
+                    if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = false
+                    if (bl) entity.lifes -= 1
+                }
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
         } }
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
@@ -200,7 +217,9 @@ class NineLifes : ModInitializer {
 
     private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
-        val maxChargableShardsCount = 5
+        var maxCount = level.gameRules.get(NineLifesGameRules.MAX_CHARGED_ITEMS_AT_A_TIME)
+        if (maxCount == 0) return
+        if (maxCount == -1) maxCount = Int.MAX_VALUE
 
         val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
         level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
@@ -210,11 +229,11 @@ class NineLifes : ModInitializer {
                 EntityTypes.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
                 .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))) {
-                if (lightningCharged[lightning.uuid]!! >= maxChargableShardsCount) return@forEach
+                if (lightningCharged[lightning.uuid]!! >= maxCount) return@forEach
                 if (itemEntity.item.enchantments.getLevel(chargeEnchantment) == 0) {
                     val cnt = itemEntity.item.count
                     val curr = lightningCharged[lightning.uuid]!!
-                    val remain = maxChargableShardsCount-curr
+                    val remain = maxCount-curr
                     if (cnt <= remain) {
                         lightningCharged[lightning.uuid] = curr + 1
                         itemEntity.item.enchant(chargeEnchantment, 1)
@@ -226,7 +245,7 @@ class NineLifes : ModInitializer {
                         new.item.count = remain
                         new.item.enchant(chargeEnchantment, 1)
                         itemEntity.item.count -= remain
-                        lightningCharged[lightning.uuid] = maxChargableShardsCount
+                        lightningCharged[lightning.uuid] = maxCount
                         level.addFreshEntity(new)
                     }
 

@@ -5,10 +5,7 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.client.config.HeartPosition
-import com.bleudev.nine_lifes.client.config.configInit
-import com.bleudev.nine_lifes.client.config.heartPosition
-import com.bleudev.nine_lifes.client.config.joinMessageEnabled
+import com.bleudev.nine_lifes.client.config.*
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -162,6 +159,7 @@ class NineLifesClient : ClientModInitializer {
         } }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
+        registerReceiver(UpdateForceVanillaDeathScreenState) { forceVanillaDeathScreen = it.state }
     }
 
     private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ClientPlayNetworking.Context) -> Unit) =
