@@ -33,6 +33,5 @@ private fun String.snapshot(num: Int): Pair<String, String> = this to "$this-sna
 private fun String.pre(num: Int): Pair<String, String> = this to "$this-pre-$num"
 private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
 
-prConfigure("1.21.11", "26.1")
 prConfigure("26.1.2", "26.2")
 prConfigure("26.2", "26.3")
