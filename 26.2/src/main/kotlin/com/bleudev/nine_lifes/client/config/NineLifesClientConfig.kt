@@ -11,6 +11,8 @@ import net.minecraft.network.chat.contents.TranslatableContents
 import java.nio.file.Files
 import java.nio.file.Path
 
+internal var forceVanillaDeathScreen = false
+
 // Public Properties
 internal var joinMessageEnabled: Boolean
     get() = configLoad().joinMessage
@@ -25,7 +27,7 @@ internal var healthRendering: HealthRendering
     get() = configLoad().healthRendering
     set(new) = configSave(configLoad().apply { healthRendering = new })
 internal var deathScreenRemaining: Boolean
-    get() = configLoad().deathScreenRemaining
+    get() = configLoad().deathScreenRemaining && !forceVanillaDeathScreen
     set(new) = configSave(configLoad().apply { deathScreenRemaining = new })
 
 @Serializable
@@ -51,7 +53,6 @@ enum class HeartPosition : NameableEnum {
     }
 }
 
-@Suppress("unused")
 enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boolean) : NameableEnum {
     ALWAYS({true}), TRUE({it <= 1}), NEVER({false});
 
@@ -87,7 +88,7 @@ private fun configSave(data: NineLifesClientConfig) {
     }
 }
 
-fun configInit() {
+internal fun configInit() {
     try {
         if (!Files.exists(configPath)) Files.writeString(configPath, "{}")
     } catch (e: Throwable) {
