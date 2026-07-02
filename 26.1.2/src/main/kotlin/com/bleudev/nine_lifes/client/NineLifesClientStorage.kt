@@ -10,6 +10,7 @@ import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.Level
 import java.util.*
 import kotlin.math.*
 
@@ -20,10 +21,11 @@ var lifes = 9
 var stickUsedTicks = 0
 
 private val isInSurvival: Boolean get() = Minecraft.getInstance().player?.gameMode()?.isSurvival == true
+private val isInOverworld: Boolean get() = Minecraft.getInstance().player?.level()?.dimension() == Level.OVERWORLD
 
 // Lifes helper methods
 internal val forceHardcoreDeathScreen get() = lifes <= 0 && !should_death_screen_be_white
-internal val forceAlwaysDay get() = lifes <= 3 && isInSurvival
+internal val forceAlwaysDay get() = lifes <= 3 && isInSurvival && isInOverworld
 val forceHardcore: Boolean get() = healthRendering(lifes)
 
 // Shaders
