@@ -13,4 +13,5 @@
   - `max_charged_items_at_a_time`
 
 ## Fixes
+- Fix wrong cloud rendering in non overworld dimensions (bleudev [#104](https://github.com/bleudev/nine_lifes/pull/104))
 - Delete some debug prints (bleudev [#99](https://github.com/bleudev/nine_lifes/pull/99))
