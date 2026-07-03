@@ -3,7 +3,7 @@
 plugins {
     kotlin("jvm") version "2.4.0"
     kotlin("plugin.serialization") version "2.4.0"
-    id("fabric-loom") version "1.15.5" apply false
+    id("fabric-loom") version "1.17.9" apply false
     id("com.modrinth.minotaur") version "2.9.0" apply false
     id("maven-publish")
 }
@@ -35,3 +35,4 @@ private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
 
 prConfigure("26.1.2", "26.2")
 prConfigure("26.2", "26.3")
+prConfigure("26.3".snapshot(2), "26.4")
