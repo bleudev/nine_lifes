@@ -1,7 +1,19 @@
 # 5.2
 
+# Target versions
+
+| MC Version      | Fabric |
+|-----------------|--------|
+| 26.3-snapshot-2 | ✅️     |
+| 26.2            | ✅️     |
+| 26.1.2          | ✅️     |
+
+
+# Changes
+
 ## Version changes
 - End of support for 1.21.11 (bleudev [#102](https://github.com/bleudev/nine_lifes/pull/102))
+- 26.3 snapshot 2 (bleudev [#105](https://github.com/bleudev/nine_lifes/pull/105))
 
 ## New features
 - Charge `max_charged_items_at_a_time` amethyst shards with lightning at a time (bleudev [#99](https://github.com/bleudev/nine_lifes/pull/99))
