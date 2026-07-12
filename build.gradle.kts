@@ -35,4 +35,4 @@ private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
 
 prConfigure("26.1.2", "26.2")
 prConfigure("26.2", "26.3")
-prConfigure("26.3".snapshot(2), "26.4")
+prConfigure("26.3".snapshot(3), "26.4")

@@ -1,10 +1,10 @@
 package com.bleudev.nine_lifes.api.render.client
 
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry.DynamicUniformTransformer
-import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.Std140Builder
 import com.mojang.blaze3d.buffers.Std140SizeCalculator
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.renderpearl.api.buffers.GpuBuffer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.renderer.MappableRingBuffer

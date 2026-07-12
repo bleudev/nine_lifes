@@ -4,8 +4,8 @@
   "package": "com.bleudev.nine_lifes.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "AbstractBedBlockMixin",
     "AbstractFurnaceBlockEntityMixin",
-    "BedBlockMixin",
     "CampfireBlockEntityMixin",
     "LivingEntityMixin",
     "ServerPlayerMixin"

@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.fabricmc.fabric.api.registry.FabricPotionBrewingBuilder
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
@@ -33,10 +32,7 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionContents
-import net.minecraft.world.item.alchemy.Potions
-import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
@@ -68,23 +64,6 @@ class NineLifes : ModInitializer {
         NineLifesItems.initialize()
         NineLifesSounds.initialize()
         NineLifesGameRules.initialize()
-        FabricPotionBrewingBuilder.BUILD.register {
-            it.registerPotionRecipe(
-                Potions.MUNDANE,
-                Ingredient.of(Items.AMETHYST_SHARD),
-                NineLifesPotions.AMETHYSM
-            )
-            it.registerPotionRecipe(
-                Potions.MUNDANE,
-                Ingredient.of(Items.SCULK, Items.SCULK_VEIN, Items.SCULK_SENSOR, Items.SCULK_CATALYST, Items.SCULK_SHRIEKER, Items.CALIBRATED_SCULK_SENSOR),
-                NineLifesPotions.INSOMNIA
-            )
-            it.registerPotionRecipe(
-                NineLifesPotions.INSOMNIA,
-                Ingredient.of(Items.REDSTONE),
-                NineLifesPotions.LONGER_INSOMNIA
-            )
-        }
         ServerPlayerEvents.JOIN.register { player ->
             if ((!player.isSpectator) && player.lifes == 0) player.resetLifes()
             val lifes = player.lifes

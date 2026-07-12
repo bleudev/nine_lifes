@@ -1,13 +1,13 @@
 package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.CHARGE_SCREEN_EFFECT_RADIUS_MAX
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NineLifesCriterions
 import com.bleudev.nine_lifes.custom.NineLifesEnchantments
 import com.bleudev.nine_lifes.custom.NineLifesItems
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
+import com.bleudev.nine_lifes.util.createIdentifier
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider
 import net.minecraft.advancements.Advancement
@@ -115,7 +115,7 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
     private var isRoot: Boolean = true
     private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder = Advancement.Builder.advancement().display(
         icon, Component.translatable(advancement(name)), Component.translatable(advancementDescription(name)), if (isRoot) background else null, type, name != "root", name != "root", hidden)
-        .applier().save(this, "$MOD_ID:$name").also { isRoot = false }
+        .applier().save(this, createIdentifier(name))
 
     private fun Advancement.Builder.requireAdvancement(holder: AdvancementHolder) =
         addCriterion("require_${holder.id.namespace}_${holder.id.path}", NineLifesCriterions.ADVANCEMENT.require(holder))
