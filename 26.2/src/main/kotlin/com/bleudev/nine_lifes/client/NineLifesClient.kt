@@ -5,7 +5,10 @@ import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.client.config.*
+import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.configInit
+import com.bleudev.nine_lifes.client.config.heartPosition
+import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
@@ -44,9 +47,6 @@ class NineLifesClient : ClientModInitializer {
         val HARDCORE = createIdentifier("textures/hud/sprites/hardcore.png")
     }
 
-    private val clientInSurvivalLikeGameMode: Boolean
-        get() = Minecraft.getInstance().player?.gameMode()?.isSurvival ?: true
-
     override fun onInitializeClient() {
         configInit()
 
@@ -59,6 +59,7 @@ class NineLifesClient : ClientModInitializer {
 
         val fogTarget = Vector4f(1f, 1f, 1f, 1f)
         ClientEnvironmentSetupEvents.FOG_COLOR.register { _, current ->
+            if (!isInSurvival || !isInOverworld) return@register current
             current.lerp(fogTarget, when (lifes) {
                 5 -> .1f
                 4 -> .3f
@@ -70,31 +71,34 @@ class NineLifesClient : ClientModInitializer {
         }
 
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
+            if (!isInSurvival || !isInOverworld) return@register current
             val ov4 = ARGB.vector3fFromRGB24(current).to4f(1f)
             val v4 = ClientEnvironmentSetupEvents.FOG_COLOR.invoker()(ov4, ov4)
             v4.asARGB()
         }
 
         ClientEnvironmentSetupEvents.FOG_START.register { _, current ->
-            current * if (clientInSurvivalLikeGameMode) when (lifes) {
+            if (!isInSurvival) return@register current
+            current * when (lifes) {
                 5 -> .5f
                 4 -> .4f
                 3 -> .3f
                 2 -> .2f
                 1 -> .1f
                 else -> 1f
-            } else 1f
+            }
         }
 
         ClientEnvironmentSetupEvents.FOG_END.register { _, current ->
-            current * if (clientInSurvivalLikeGameMode) when (lifes) {
+            if (!isInSurvival) return@register current
+            current * when (lifes) {
                 5 -> .5f
                 4 -> .4f
                 3 -> .3f
                 2 -> .2f
                 1 -> .1f
                 else -> 1f
-            } else 1f
+            }
         }
 
         PostEffectRegistry.registerNineLifes("redmaj", "anaglyph", "cblur")

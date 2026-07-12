@@ -16,17 +16,17 @@ import kotlin.math.*
 
 internal var forceVanillaDeathScreen = false
 
-var lifes = 9
+internal var lifes = 9
 @JvmField
 var stickUsedTicks = 0
 
-private val isInSurvival: Boolean get() = Minecraft.getInstance().player?.gameMode()?.isSurvival == true
-private val isInOverworld: Boolean get() = Minecraft.getInstance().player?.level()?.dimension() == Level.OVERWORLD
+val isInSurvival: Boolean get() = Minecraft.getInstance().player?.gameMode()?.isSurvival == true
+val isInOverworld: Boolean get() = Minecraft.getInstance().player?.level()?.dimension() == Level.OVERWORLD
 
 // Lifes helper methods
-internal val forceHardcoreDeathScreen get() = lifes <= 0 && !should_death_screen_be_white
-internal val forceAlwaysDay get() = lifes <= 3 && isInSurvival && isInOverworld
-val forceHardcore: Boolean get() = healthRendering(lifes)
+val forceHardcoreDeathScreen get() = lifes <= 0 && !should_death_screen_be_white
+val forceAlwaysDay get() = lifes <= 3 && isInSurvival && isInOverworld
+val forceHardcoreHearts: Boolean get() = healthRendering(lifes)
 
 // Shaders
 val shaderRedMajStrength: Float get() =
