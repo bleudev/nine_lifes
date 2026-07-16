@@ -4,19 +4,23 @@ import com.bleudev.nine_lifes.api.EmptyPredicate
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.buffers.Std140Builder
 import com.mojang.blaze3d.buffers.Std140SizeCalculator
+import com.mojang.renderpearl.api.buffers.GpuBuffer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.minecraft.client.renderer.MappableRingBuffer
 import net.minecraft.resources.Identifier
 import org.joml.*
 import java.nio.ByteBuffer
 
 @Environment(EnvType.CLIENT)
 interface PostEffectRegistry {
+    typealias UniformBuilderTransformer = PostEffectRegistry.Builder.UniformBuilder.() -> Unit
+
     fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder
     fun register(identifier: Identifier): Builder = register(identifier) { true }
 
     companion object {
-        private val INSTANCE = PostEffectRegistryImpl()
+        private val POST_EFFECT_REGISTRY = PostEffectRegistryImpl()
 
         /**
          * Register post effect to render.
@@ -30,7 +34,7 @@ interface PostEffectRegistry {
          * @param renderPredicate Post effect predicate (should post effect render this time?)
          * */
         fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder =
-            INSTANCE.register(identifier, renderPredicate)
+            POST_EFFECT_REGISTRY.register(identifier, renderPredicate)
         /**
          * Register post effect to render without predicate.
          *
@@ -42,7 +46,7 @@ interface PostEffectRegistry {
          * @param identifier Post effect identifier. It will render every frame.
          * */
         fun register(identifier: Identifier): Builder =
-            INSTANCE.register(identifier)
+            POST_EFFECT_REGISTRY.register(identifier)
         /**
          * Register post effect with default namespace ("minecraft").
          *
@@ -59,8 +63,13 @@ interface PostEffectRegistry {
         internal fun registerNineLifes(path: String): Builder =
             register(createIdentifier(path))
 
-        internal fun execute(renderer: (Identifier) -> Unit) =
-            INSTANCE.execute(renderer)
+        internal fun execute(renderer: (Identifier) -> Unit) {
+            UniformRegistryImpl.updateBuffers()
+            POST_EFFECT_REGISTRY.execute(renderer)
+        }
+        internal fun initBuffers() = UniformRegistryImpl.initBuffers()
+        internal fun getNewUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> =
+            UniformRegistryImpl.getNewUniforms(current, shaderId)
     }
 
     interface Builder {
@@ -190,11 +199,59 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
             name: String,
             transformer: PostEffectRegistry.Builder.UniformBuilder.() -> Unit
         ): PostEffectRegistry.Builder {
-            DynamicUniformsRegistry.register(
-                DynamicUniformsRegistry.Context(name, postEffectIdentifier),
+            UniformRegistryImpl.register(
+                PostEffectContext(name, postEffectIdentifier),
                 transformer
             )
             return this
         }
     }
+}
+
+private object UniformRegistryImpl {
+    private val BUFFER_QUERY: HashMap<PostEffectContext, () -> MappableRingBuffer> = HashMap()
+    private val BUFFERS: HashMap<PostEffectContext, MappableRingBuffer> = HashMap()
+    private val TRANSFORMERS: HashMap<PostEffectContext, PostEffectRegistry.UniformBuilderTransformer> = HashMap()
+
+    fun register(postEffectContext: PostEffectContext, transformer: PostEffectRegistry.UniformBuilderTransformer) {
+        val b = PostEffectRegistry.Builder.UniformBuilder()
+        b.transformer()
+        BUFFER_QUERY[postEffectContext] = { MappableRingBuffer( { "${postEffectContext.uniformName} UBO" }, 130, b.size()) }
+        TRANSFORMERS[postEffectContext] = transformer
+    }
+
+    fun initBuffers() {
+        BUFFERS.clear()
+        for (entry in BUFFER_QUERY) {
+            BUFFERS[entry.key] = entry.value()
+        }
+    }
+
+    fun updateBuffers() {
+        for (entry in BUFFERS) {
+            if (entry.value.currentBuffer().isClosed) {
+                initBuffers()
+                return
+            }
+            entry.value.currentBuffer().map(false, true).use { view ->
+                view.data().position(0)
+                TRANSFORMERS[entry.key]!!(PostEffectRegistry.Builder.UniformBuilder(view.data()))
+            }
+        }
+    }
+
+    fun getNewUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> {
+        for (entry in BUFFERS) {
+            val ids = entry.key.shadersIds
+            if (ids != null && shaderId !in ids) continue
+            if (current.containsKey(entry.key.uniformName)) {
+                current[entry.key.uniformName] = entry.value.currentBuffer()
+            }
+        }
+        return current
+    }
+}
+
+private data class PostEffectContext(val uniformName: String, val shadersIds: List<Identifier>? = null) {
+    constructor(uniformName: String, vararg shader: Identifier) : this(uniformName, shader.toList().ifEmpty { null })
 }
