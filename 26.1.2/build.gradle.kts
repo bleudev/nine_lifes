@@ -44,13 +44,13 @@ repositories {
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
+    minecraft("com.mojang:minecraft:${project.property("mc_version")}")
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
 
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
     implementation("maven.modrinth:yacl:${project.property("yacl_version")}")
+    implementation("maven.modrinth:modmenu:${project.property("modmenu_version")}")
 
     implementation("org.quiltmc.parsers:gson:0.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
@@ -58,22 +58,22 @@ dependencies {
 
 tasks.processResources {
     inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.property("minecraft_version"))
+    inputs.property("min_mc_version", project.property("min_mc_version"))
     inputs.property("max_exc_version", project.property("max_exc_version"))
     inputs.property("loader_version", project.property("loader_version"))
     inputs.property("fabric_version", project.property("fabric_version"))
-    inputs.property("modmenu_version", project.property("modmenu_version"))
     inputs.property("yacl_version", project.property("yacl_version"))
+    inputs.property("modmenu_version", project.property("modmenu_version"))
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
         expand("version" to project.version,
-            "minecraft_version" to project.property("minecraft_version")!!,
+            "min_mc_version" to project.property("min_mc_version")!!,
             "max_exc_version" to project.property("max_exc_version")!!,
             "loader_version" to project.property("loader_version")!!,
             "fabric_version" to project.property("fabric_version")!!,
-            "modmenu_version" to project.property("modmenu_version")!!,
             "yacl_version" to project.property("yacl_version")!!,
+            "modmenu_version" to project.property("modmenu_version")!!,
             "kotlin_loader_version" to project.property("kotlin_loader_version")!!)
     }
 }
