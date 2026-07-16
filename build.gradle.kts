@@ -55,4 +55,4 @@ private fun String.rc(num: Int): McInformation = McInformation.rc(this, num)
 
 prConfigure("26.1.2", "26.2", d().fabric("0.155.0+26.1.2").yacl("3.9.5+26.1-fabric").modmenu("18.0.0"))
 prConfigure("26.2", "26.3", d().fabric("0.155.0+26.2").yacl("3.9.5+26.2-fabric").modmenu("20.0.1"))
-prConfigure("26.3".snapshot(3), "26.4", d().fabric("0.155.0+26.3").yacl("3.9.5+26.3-fabric").modmenu("20.0.0"))
+prConfigure("26.3".snapshot(4), "26.4", d().fabric("0.155.1+26.3").yacl("3.9.5+26.3-fabric").modmenu("20.0.0"))
