@@ -31,8 +31,8 @@ public class GameRendererMixin {
         nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool, Minecraft::getInstance);
     }
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER))
-    private void renderAdditionalShader(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;blitEntityOutline()V", shift = At.Shift.AFTER))
+    private void renderAdditionalShader(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
         nineLifesPostRenderer.render();
     }
 }
