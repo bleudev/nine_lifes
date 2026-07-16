@@ -17,6 +17,10 @@
 Use `PostEffectRegistry` and `PostEffectRegistry.Builder` instead. See [#113](https://github.com/bleudev/nine_lifes/pull/113) for more
 (bleudev [#113](https://github.com/bleudev/nine_lifes/pull/113))
 
+## New features
+
+- New builder based post effect rendering system (bleudev [#113](https://github.com/bleudev/nine_lifes/pull/113))
+
 ## Fixes
 
 - Fog lifes count features are enabled in creative mode (bleudev [#111](https://github.com/bleudev/nine_lifes/pull/111))
