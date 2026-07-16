@@ -1,9 +1,5 @@
 package com.bleudev.nine_lifes.api.render.client
 
-import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry.DynamicUniformTransformer
-import com.mojang.blaze3d.buffers.Std140Builder
-import com.mojang.blaze3d.buffers.Std140SizeCalculator
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.renderpearl.api.buffers.GpuBuffer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -16,8 +12,7 @@ interface DynamicUniformsRegistry {
         constructor(uniformName: String, vararg shader: Identifier) : this(uniformName, shader.toList().ifEmpty { null })
     }
 
-    typealias UniformSizeTransformer = Std140SizeCalculator.() -> Std140SizeCalculator
-    typealias DynamicUniformTransformer = Std140Builder.() -> Unit
+    typealias UniformBuilderTransformer = PostEffectRegistry.Builder.UniformBuilder.() -> Unit
 
     companion object {
         /**
@@ -32,11 +27,10 @@ interface DynamicUniformsRegistry {
          * ```
          *
          * @param context Uniform context (name and (optionaly) shaders ids)
-         * @param sizeTransformer Function which transforms size calculator
          * @param transformer Uniform transformer
          * */
-        fun register(context: Context, sizeTransformer: UniformSizeTransformer, transformer: DynamicUniformTransformer) {
-            DynamicUniformsRegistryImpl.register(context, Std140SizeCalculator().sizeTransformer().get(), transformer)
+        fun register(context: Context, transformer: UniformBuilderTransformer) {
+            DynamicUniformsRegistryImpl.register(context, transformer)
         }
     }
 }
@@ -44,10 +38,12 @@ interface DynamicUniformsRegistry {
 object DynamicUniformsRegistryImpl {
     private val BUFFER_QUERY: HashMap<DynamicUniformsRegistry.Context, () -> MappableRingBuffer> = HashMap()
     private val BUFFERS: HashMap<DynamicUniformsRegistry.Context, MappableRingBuffer> = HashMap()
-    private val TRANSFORMERS: HashMap<DynamicUniformsRegistry.Context, DynamicUniformTransformer> = HashMap()
+    private val TRANSFORMERS: HashMap<DynamicUniformsRegistry.Context, DynamicUniformsRegistry.UniformBuilderTransformer> = HashMap()
 
-    internal fun register(context: DynamicUniformsRegistry.Context, size: Int, transformer: DynamicUniformTransformer) {
-        BUFFER_QUERY[context] = { MappableRingBuffer( { "${context.uniformName} UBO" }, 130, size) }
+    internal fun register(context: DynamicUniformsRegistry.Context, transformer: DynamicUniformsRegistry.UniformBuilderTransformer) {
+        val b = PostEffectRegistry.Builder.UniformBuilder()
+        b.transformer()
+        BUFFER_QUERY[context] = { MappableRingBuffer( { "${context.uniformName} UBO" }, 130, b.size()) }
         TRANSFORMERS[context] = transformer
     }
 
@@ -59,7 +55,6 @@ object DynamicUniformsRegistryImpl {
     }
 
     internal fun updateBuffers() {
-        val encoder = RenderSystem.getDevice().createCommandEncoder()
         for (entry in BUFFERS) {
             if (entry.value.currentBuffer().isClosed) {
                 initBuffers()
@@ -67,7 +62,7 @@ object DynamicUniformsRegistryImpl {
             }
             entry.value.currentBuffer().map(false, true).use { view ->
                 view.data().position(0)
-                TRANSFORMERS[entry.key]!!(Std140Builder.intoBuffer(view.data()))
+                TRANSFORMERS[entry.key]!!(PostEffectRegistry.Builder.UniformBuilder(view.data()))
             }
         }
     }

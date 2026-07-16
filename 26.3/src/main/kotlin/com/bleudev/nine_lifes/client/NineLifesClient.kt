@@ -101,15 +101,15 @@ class NineLifesClient : ClientModInitializer {
         }
 
         PostEffectRegistry.registerNineLifes("redmaj")
-            .uniform("ChmajConfig", {putVec3().putFloat()}) {
+            .uniform("ChmajConfig") {
                 putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
             }
         PostEffectRegistry.registerNineLifes("anaglyph")
-            .uniform("AnaglyphConfig", {putVec2()}) {
+            .uniform("AnaglyphConfig") {
                 putVec2(shaderAnaglyphX, shaderAnaglyphY)
             }
         PostEffectRegistry.registerNineLifes("cblur")
-            .uniform("BlurPropConfig", {putFloat()}) {
+            .uniform("BlurPropConfig") {
                 putFloat(shaderCBlurStrength)
             }
 
