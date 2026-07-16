@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistryImpl;
+import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,6 +28,6 @@ public class PostPassMixin {
 
     @Redirect(method = "lambda$addToFrame$1", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/PostPass;customUniforms:Ljava/util/Map;", opcode = Opcodes.GETFIELD))
     private Map<String, GpuBuffer> modifyUniforms(PostPass instance) {
-        return DynamicUniformsRegistryImpl.getNewUniforms$com_bleudev_nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
+        return PostEffectRegistry.Companion.newUniforms$com_bleudev_nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
     }
 }

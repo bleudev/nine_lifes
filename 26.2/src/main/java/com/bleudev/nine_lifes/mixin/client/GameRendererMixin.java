@@ -28,7 +28,7 @@ public class GameRendererMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
-        nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool, Minecraft::getInstance);
+        nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool);
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;doEntityOutline()V", shift = At.Shift.AFTER))
