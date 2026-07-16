@@ -8,60 +8,61 @@ import net.minecraft.resources.Identifier
 
 @Environment(EnvType.CLIENT)
 interface PostEffectRegistry {
+    fun register(identifier: Identifier, renderPredicate: EmptyPredicate)
+    fun register(identifier: Identifier) = register(identifier) { true }
+
     companion object {
+        private val INSTANCE = PostEffectRegistryImpl()
+
         /**
-         * Register post effects to render.
+         * Register post effect to render.
          *
          * Example:
          * ```kotlin
          * PostEffectRegistry.register(Identifier.fromNamespaceAndPath("test", "shader") to {shouldRender})
          * ```
          *
-         * @param effects post effects infos. First element in pair: post effect identifier, second element: post effect predicate (should post effect render this time?).
+         * @param identifier Post effect identifier
+         * @param renderPredicate Post effect predicate (should post effect render this time?)
          * */
-        fun register(vararg effects: Pair<Identifier, EmptyPredicate>) {
-            for ((id, pr) in effects) {
-                PostEffectRegistryImpl.register(id, pr)
-            }
-        }
+        fun register(identifier: Identifier, renderPredicate: EmptyPredicate) = INSTANCE.register(identifier, renderPredicate)
         /**
-         * Register post effects to render without predicates.
+         * Register post effect to render without predicate.
          *
          * Example:
          * ```kotlin
          * PostEffectRegistry.register(Identifier.fromNamespaceAndPath("test", "shader"))
          * ```
          *
-         * @param identifiers Post effects identifiers. All post effects will render every frame.
+         * @param identifier Post effect identifier. It will render every frame.
          * */
-        fun register(vararg identifiers: Identifier) = register(*identifiers.map { it to {true} }.toTypedArray())
+        fun register(identifier: Identifier) = INSTANCE.register(identifier)
         /**
-         * Register post effects with default namespace ("minecraft").
+         * Register post effect with default namespace ("minecraft").
          *
          * Example:
          * ```kotlin
-         * PostEffectRegistry.registerDefault("shader")
+         * PostEffectRegistry.registerDefault("creeper")
          * ```
          *
-         * @param paths Post effects paths without namespace.
+         * @param path Post effect path without namespace.
          * */
         @Suppress("unused") // Public API
-        fun registerDefault(vararg paths: String) = register(*paths.map(Identifier::withDefaultNamespace).toTypedArray())
+        fun registerDefault(path: String) = register(Identifier.withDefaultNamespace(path))
 
-        internal fun registerNineLifes(vararg paths: String) {
-            register(*paths.map(::createIdentifier).toTypedArray())
-        }
+        internal fun registerNineLifes(path: String) = register(createIdentifier(path))
+        internal fun execute(renderer: (Identifier) -> Unit) = INSTANCE.execute(renderer)
     }
 }
 
-object PostEffectRegistryImpl {
+private class PostEffectRegistryImpl : PostEffectRegistry {
     private val POST_EFFECTS = HashMap<Identifier, EmptyPredicate>()
 
-    internal fun register(identifier: Identifier, predicate: EmptyPredicate) {
+    override fun register(identifier: Identifier, predicate: EmptyPredicate) {
         POST_EFFECTS[identifier] = predicate
     }
 
-    internal fun execute(renderer: (Identifier) -> Unit) {
+    fun execute(renderer: (Identifier) -> Unit) {
         for ((id, pr) in POST_EFFECTS) {
             if (pr()) {
                 renderer(id)

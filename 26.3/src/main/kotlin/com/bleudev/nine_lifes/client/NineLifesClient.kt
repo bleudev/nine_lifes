@@ -101,7 +101,9 @@ class NineLifesClient : ClientModInitializer {
             }
         }
 
-        PostEffectRegistry.registerNineLifes("redmaj", "anaglyph", "cblur")
+        PostEffectRegistry.registerNineLifes("redmaj")
+        PostEffectRegistry.registerNineLifes("anaglyph")
+        PostEffectRegistry.registerNineLifes("cblur")
         DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
             putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
         }
