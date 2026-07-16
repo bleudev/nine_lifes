@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes.client
 import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
-import com.bleudev.nine_lifes.api.render.client.DynamicUniformsRegistry
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.configInit
@@ -102,17 +101,17 @@ class NineLifesClient : ClientModInitializer {
         }
 
         PostEffectRegistry.registerNineLifes("redmaj")
+            .uniform("ChmajConfig", {putVec3().putFloat()}) {
+                putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
+            }
         PostEffectRegistry.registerNineLifes("anaglyph")
+            .uniform("AnaglyphConfig", {putVec2()}) {
+                putVec2(shaderAnaglyphX, shaderAnaglyphY)
+            }
         PostEffectRegistry.registerNineLifes("cblur")
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("ChmajConfig", createIdentifier("redmaj")), {putVec3().putFloat()}) {
-            putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("AnaglyphConfig", createIdentifier("anaglyph")), {putVec2()}) {
-            putVec2(shaderAnaglyphX, shaderAnaglyphY)
-        }
-        DynamicUniformsRegistry.register(DynamicUniformsRegistry.Context("BlurPropConfig", createIdentifier("cblur")), {putFloat()}) {
-            putFloat(shaderCBlurStrength)
-        }
+            .uniform("BlurPropConfig", {putFloat()}) {
+                putFloat(shaderCBlurStrength)
+            }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }

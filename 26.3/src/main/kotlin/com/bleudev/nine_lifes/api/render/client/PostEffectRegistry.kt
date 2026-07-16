@@ -8,8 +8,8 @@ import net.minecraft.resources.Identifier
 
 @Environment(EnvType.CLIENT)
 interface PostEffectRegistry {
-    fun register(identifier: Identifier, renderPredicate: EmptyPredicate)
-    fun register(identifier: Identifier) = register(identifier) { true }
+    fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder
+    fun register(identifier: Identifier): Builder = register(identifier) { true }
 
     companion object {
         private val INSTANCE = PostEffectRegistryImpl()
@@ -25,7 +25,8 @@ interface PostEffectRegistry {
          * @param identifier Post effect identifier
          * @param renderPredicate Post effect predicate (should post effect render this time?)
          * */
-        fun register(identifier: Identifier, renderPredicate: EmptyPredicate) = INSTANCE.register(identifier, renderPredicate)
+        fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder =
+            INSTANCE.register(identifier, renderPredicate)
         /**
          * Register post effect to render without predicate.
          *
@@ -36,7 +37,8 @@ interface PostEffectRegistry {
          *
          * @param identifier Post effect identifier. It will render every frame.
          * */
-        fun register(identifier: Identifier) = INSTANCE.register(identifier)
+        fun register(identifier: Identifier): Builder =
+            INSTANCE.register(identifier)
         /**
          * Register post effect with default namespace ("minecraft").
          *
@@ -48,18 +50,29 @@ interface PostEffectRegistry {
          * @param path Post effect path without namespace.
          * */
         @Suppress("unused") // Public API
-        fun registerDefault(path: String) = register(Identifier.withDefaultNamespace(path))
+        fun registerDefault(path: String): Builder =
+            register(Identifier.withDefaultNamespace(path))
+        internal fun registerNineLifes(path: String): Builder =
+            register(createIdentifier(path))
 
-        internal fun registerNineLifes(path: String) = register(createIdentifier(path))
-        internal fun execute(renderer: (Identifier) -> Unit) = INSTANCE.execute(renderer)
+        internal fun execute(renderer: (Identifier) -> Unit) =
+            INSTANCE.execute(renderer)
+    }
+
+    interface Builder {
+        fun uniform(
+            name: String, sizeTransformer: DynamicUniformsRegistry.UniformSizeTransformer,
+            transformer: DynamicUniformsRegistry.DynamicUniformTransformer
+        ): Builder
     }
 }
 
 private class PostEffectRegistryImpl : PostEffectRegistry {
     private val POST_EFFECTS = HashMap<Identifier, EmptyPredicate>()
 
-    override fun register(identifier: Identifier, predicate: EmptyPredicate) {
+    override fun register(identifier: Identifier, predicate: EmptyPredicate): PostEffectRegistry.Builder {
         POST_EFFECTS[identifier] = predicate
+        return BuilderImpl(identifier)
     }
 
     fun execute(renderer: (Identifier) -> Unit) {
@@ -67,6 +80,21 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
             if (pr()) {
                 renderer(id)
             }
+        }
+    }
+
+    private class BuilderImpl(val postEffectIdentifier: Identifier) : PostEffectRegistry.Builder {
+        override fun uniform(
+            name: String,
+            sizeTransformer: DynamicUniformsRegistry.UniformSizeTransformer,
+            transformer: DynamicUniformsRegistry.DynamicUniformTransformer
+        ): PostEffectRegistry.Builder {
+            DynamicUniformsRegistry.register(
+                DynamicUniformsRegistry.Context(name, postEffectIdentifier),
+                sizeTransformer,
+                transformer
+            )
+            return this
         }
     }
 }
