@@ -146,6 +146,9 @@ class AmethysmEffectInfo {
         ticks = 0
         this.duration = duration
     }
+    fun stop() {
+        running = false
+    }
 
     fun tick() {
         if (running) {
@@ -166,6 +169,9 @@ class AmethysmEffectInfo {
                 amethysm_whiteness = 0f
                 amethysm_purpleness = 0f
             }
+        } else {
+            amethysm_whiteness = 0f
+            amethysm_purpleness = 0f
         }
     }
 }
