@@ -4,7 +4,6 @@ import com.bleudev.nine_lifes.client.render.NineLifesPostRenderer;
 import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -32,7 +31,7 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;blitEntityOutline()V", shift = At.Shift.AFTER))
-    private void renderAdditionalShader(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
+    private void renderAdditionalShader(CallbackInfo ci) {
         nineLifesPostRenderer.render();
     }
 }
