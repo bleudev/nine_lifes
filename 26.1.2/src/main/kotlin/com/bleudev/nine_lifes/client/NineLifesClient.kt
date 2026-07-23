@@ -54,6 +54,7 @@ class NineLifesClient : ClientModInitializer {
         ClientTickEvents.END_LEVEL_TICK.register { endClientLevelTick() }
         ClientRespawnEvents.RESPAWN.register { _ ->
             should_death_screen_be_white = false
+            amethysm_effect_info.stop()
         }
 
         val fogTarget = Vector4f(1f, 1f, 1f, 1f)
