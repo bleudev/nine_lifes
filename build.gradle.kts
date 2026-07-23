@@ -15,24 +15,44 @@ repositories {
 private val changelog = project.file("CHANGELOG.md").readText()
 private val readme = project.file("README.md").readText()
 
-private fun prConfigure(projectAndMinecraftVersions: Pair<String, String>, maxExclusiveVersion: String) {
+private data class McInformation(val base: String, val dependency: String, val fabricModJson: String) {
+    companion object {
+        fun snapshot(v: String, num: Int): McInformation = McInformation(v, "$v-snapshot-$num", "$v-alpha.$num")
+        fun pre(v: String, num: Int): McInformation = McInformation(v, "$v-pre-$num", "$v-pre.$num")
+        fun rc(v: String, num: Int): McInformation = McInformation(v, "$v-rc-$num", "$v-rc.$num")
+        fun release(v: String): McInformation = McInformation(v, v, v)
+    }
+}
+private data class Deps(val dFabric: String? = null, val dYacl: String? = null, val dModMenu: String? = null) {
+    fun fabric(new: String): Deps = Deps(new, dYacl, dModMenu)
+    fun yacl(new: String): Deps = Deps(dFabric, new, dModMenu)
+    fun modmenu(new: String): Deps = Deps(dFabric, dYacl, new)
+}
+private fun d() = Deps()
+
+private fun prConfigure(mcInfo: McInformation, maxExclusiveVersion: String, deps: Deps) {
     val versionSuffix = if (project.findProperty("beta_mode") == "true") "_beta" else ""
-    project(":${projectAndMinecraftVersions.first}") {
+    project(":${mcInfo.base}") {
         extensions.extraProperties.apply {
-            set("minecraft_version", projectAndMinecraftVersions.second)
+            set("mc_version", mcInfo.dependency)
+            set("min_mc_version", mcInfo.fabricModJson)
             set("max_exc_version", maxExclusiveVersion)
-            set("mod_version", "${project.findProperty("general_version")}$versionSuffix+${projectAndMinecraftVersions.first}")
+            set("mod_version", "${project.findProperty("general_version")}$versionSuffix+${mcInfo.base}")
             set("changelog", changelog)
             set("readme", readme)
+
+            if (deps.dFabric != null) set("fabric_version", deps.dFabric)
+            if (deps.dYacl != null) set("yacl_version", deps.dYacl)
+            if (deps.dModMenu != null) set("modmenu_version", deps.dModMenu)
         }
     }
 }
-private fun prConfigure(v: String, maxExv: String) = prConfigure(v to v, maxExv)
+private fun prConfigure(v: String, maxExv: String, deps: Deps) = prConfigure(McInformation.release(v), maxExv, deps)
 
-private fun String.snapshot(num: Int): Pair<String, String> = this to "$this-snapshot-$num"
-private fun String.pre(num: Int): Pair<String, String> = this to "$this-pre-$num"
-private fun String.rc(num: Int): Pair<String, String> = this to "$this-rc-$num"
+private fun String.snapshot(num: Int): McInformation = McInformation.snapshot(this, num)
+private fun String.pre(num: Int): McInformation = McInformation.pre(this, num)
+private fun String.rc(num: Int): McInformation = McInformation.rc(this, num)
 
-prConfigure("26.1.2", "26.2")
-prConfigure("26.2", "26.3")
-prConfigure("26.3".snapshot(3), "26.4")
+prConfigure("26.1.2", "26.2", d().fabric("0.155.0+26.1.2").yacl("3.9.5+26.1-fabric").modmenu("18.0.0"))
+prConfigure("26.2", "26.3", d().fabric("0.155.0+26.2").yacl("3.9.5+26.2-fabric").modmenu("20.0.1"))
+prConfigure("26.3".snapshot(5), "26.4", d().fabric("0.155.3+26.3").yacl("3.9.6+26.3-fabric").modmenu("21.0.0-alpha.1"))
