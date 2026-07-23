@@ -29,3 +29,4 @@ Use `PostEffectRegistry` and `PostEffectRegistry.Builder` instead. See [#113](ht
 ## Fixes
 
 - Fog lifes count features are enabled in creative mode (bleudev [#111](https://github.com/bleudev/nine_lifes/pull/111))
+- Amethysm's visual effect doesn't disappear when dying with it (bleudev [#117](https://github.com/bleudev/nine_lifes/pull/117))
