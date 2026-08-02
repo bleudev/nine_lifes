@@ -133,6 +133,13 @@ object NineLifesCommands {
         return 1
     }
 
+    fun nlGetPlayers(ctx: CommandContext<CommandSourceStack>): Int {
+        EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
+            ctx.getSource().sendSuccess({ Component.translatable("commands.nl.get.player.success", player.lifes, player.gameProfile.name) }, false)
+        }
+        return 1
+    }
+
     fun initialize() {
         CommandRegistrationCallback.EVENT.register { d, _, _ ->
             d.register(Commands.literal("nl")
@@ -164,6 +171,10 @@ object NineLifesCommands {
                     .executes(::nlRevive)
                     .then(playersArgument
                         .executes(::nlRevivePlayers)))
+                .then(Commands.literal("get")
+                    .requiresAdmin()
+                    .then(playersArgument
+                        .executes(::nlGetPlayers)))
             )
         }
     }

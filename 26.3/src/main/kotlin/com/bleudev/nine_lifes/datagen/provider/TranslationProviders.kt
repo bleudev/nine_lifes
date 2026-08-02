@@ -77,6 +77,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add("commands.nl.add.player.success.neg", $$"%2$s's lifes count was successfully decreased by %1$s")
         builder.add("commands.nl.revive.success", "You were revived")
         builder.add("commands.nl.revive.player.success", $$"%1$s was revived")
+        builder.add("commands.nl.get.player.success", $$"%2$s's lifes count: %1$s")
 
         builder.add("commands.not_a_player", "The command is available only to players")
         // Entities
@@ -192,6 +193,7 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add("commands.nl.add.player.success.neg", $$"Количество жизней %2$s успешно уменьшилось на %1$s")
         builder.add("commands.nl.revive.success", "Вы были возрождены")
         builder.add("commands.nl.revive.player.success", $$"Игрок %1$s был возрождён")
+        builder.add("commands.nl.get.player.success", $$"Количество жизней %2$s: %1$s")
 
         builder.add("commands.not_a_player", "Команда доступна только для игроков")
         // Entities
