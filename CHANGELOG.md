@@ -1,4 +1,4 @@
-# 6.1
+# 6.2
 
 ## Targets
 
@@ -9,7 +9,3 @@
 | 26.1.2            | ✅️     |
 
 ## Changes
-
-### New features
-
-- `/nl add` and `/nl get` commands (bleudev [#119](https://github.com/bleudev/nine_lifes/pull/119))
