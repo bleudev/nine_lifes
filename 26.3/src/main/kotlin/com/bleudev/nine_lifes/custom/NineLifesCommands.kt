@@ -35,6 +35,8 @@ object NineLifesCommands {
         .argument("players", EntityArgument.players())
     val lifesArgument: RequiredArgumentBuilder<CommandSourceStack, Int> = Commands
         .argument("lifes", IntegerArgumentType.integer(1, 9))
+    val lifesAddArgument: RequiredArgumentBuilder<CommandSourceStack, Int> = Commands
+        .argument("lifes", IntegerArgumentType.integer(-9, 9))
 
     fun nl(context: CommandContext<CommandSourceStack>): Int {
         context.getSource().sendSuccess({
@@ -51,7 +53,7 @@ object NineLifesCommands {
 
     fun nlReset(context: CommandContext<CommandSourceStack>): Int {
         val player = context.getSource().player.requireNotNullOr {
-            context.getSource().sendFailure(Component.translatable("commands.nl.reset.not_a_player"))
+            context.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
         player.resetLifes()
         context.getSource().sendSuccess({ Component.translatable("commands.nl.reset.success") }, false)
@@ -69,7 +71,7 @@ object NineLifesCommands {
     fun nlSetLifes(ctx: CommandContext<CommandSourceStack>): Int {
         val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
         val player = ctx.getSource().player.requireNotNullOr {
-            ctx.getSource().sendFailure(Component.translatable("commands.nl.set.not_a_player"))
+            ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
         player.lifes = lifes
         ctx.getSource().sendSuccess({ Component.translatable("commands.nl.set.success", lifes) }, false)
@@ -85,9 +87,36 @@ object NineLifesCommands {
         return 1
     }
 
+    fun nlAddLifes(ctx: CommandContext<CommandSourceStack>): Int {
+        val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
+        val player = ctx.getSource().player.requireNotNullOr {
+            ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
+        }; if (player == null) return -1
+        player.lifes += lifes
+        if (player.lifes <= 0) player.lifes = 1
+        ctx.getSource().sendSuccess({
+            if (lifes < 0) Component.translatable("commands.nl.add.success.neg", -lifes)
+            else Component.translatable("commands.nl.add.success", lifes)
+        }, false)
+        return 1
+    }
+
+    fun nlAddLifesPlayers(ctx: CommandContext<CommandSourceStack>): Int {
+        val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
+        EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
+            player.lifes += lifes
+            if (player.lifes <= 0) player.lifes = 1
+            ctx.getSource().sendSuccess({
+                if (lifes < 0) Component.translatable("commands.nl.add.player.success.neg", -lifes, player.gameProfile.name)
+                else Component.translatable("commands.nl.add.player.success", lifes, player.gameProfile.name)
+            }, false)
+        }
+        return 1
+    }
+
     fun nlRevive(ctx: CommandContext<CommandSourceStack>): Int {
         val player = ctx.getSource().player.requireNotNullOr {
-            ctx.getSource().sendFailure(Component.translatable("commands.nl.revive.not_a_player"))
+            ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
         player.revive()
         ctx.getSource().sendSuccess({ Component.translatable("commands.nl.revive.success") }, false)
@@ -121,6 +150,14 @@ object NineLifesCommands {
                         .executes(::nlSetLifes)
                         .then(playersArgument
                             .executes(::nlSetLifesPlayers)))
+                )
+                .then(Commands.literal("add")
+                    .requiresAdmin()
+                    .then(lifesAddArgument
+                        .suggests { _, b -> b.suggestMany(-1, -3, 1, 3).buildFuture() }
+                        .executes(::nlAddLifes)
+                        .then(playersArgument
+                            .executes(::nlAddLifesPlayers)))
                 )
                 .then(Commands.literal("revive")
                     .requiresAdmin()
