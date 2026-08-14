@@ -13,3 +13,4 @@
 ### Fixes
 
 - Untranslated sound subtitles (bleudev [#125](https://github.com/bleudev/nine_lifes/pull/125))
+- Cannot kill wandering armor stand with low food level in creative mode (bleudev [#126](https://github.com/bleudev/nine_lifes/pull/126))

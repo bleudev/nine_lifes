@@ -36,7 +36,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
 
     private fun canKill(damageSource: DamageSource) = damageSource.`is`(DamageTypes.GENERIC_KILL)
     private fun canTryKill(player: ServerPlayer): Boolean {
-        return player.foodData.foodLevel >= 5f
+        return !player.gameMode().isSurvival || player.foodData.foodLevel >= 5f
     }
     private fun triedKillReact(player: ServerPlayer) {
         if (!player.gameMode().isSurvival) return
