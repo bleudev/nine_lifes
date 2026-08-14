@@ -13,6 +13,8 @@ import net.minecraft.commands.arguments.EntityArgument
 import net.minecraft.commands.arguments.selector.EntitySelector
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.level.GameType
 
 object NineLifesCommands {
     private val links: List<Pair<String, LinkData>> = listOf(
@@ -31,10 +33,19 @@ object NineLifesCommands {
         return res
     }
 
+    private fun modifyGameModeWithLifes(player: ServerPlayer, oldLifesCount: Int, newLifesCount: Int) {
+        if (oldLifesCount == 0 && newLifesCount > 0 && player.isSpectator) {
+            player.setGameMode(GameType.SURVIVAL)
+        }
+        if (oldLifesCount > 0 && newLifesCount == 0 && player.isSurvival) {
+            player.kill(player.level())
+        }
+    }
+
     val playersArgument: RequiredArgumentBuilder<CommandSourceStack, EntitySelector> = Commands
         .argument("players", EntityArgument.players())
     val lifesArgument: RequiredArgumentBuilder<CommandSourceStack, Int> = Commands
-        .argument("lifes", IntegerArgumentType.integer(1, 9))
+        .argument("lifes", IntegerArgumentType.integer(0, 9))
     val lifesAddArgument: RequiredArgumentBuilder<CommandSourceStack, Int> = Commands
         .argument("lifes", IntegerArgumentType.integer(-9, 9))
 
@@ -55,14 +66,18 @@ object NineLifesCommands {
         val player = context.getSource().player.requireNotNullOr {
             context.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
+        val old = player.lifes
         player.resetLifes()
+        modifyGameModeWithLifes(player, old, player.lifes)
         context.getSource().sendSuccess({ Component.translatable("commands.nl.reset.success") }, false)
         return 1
     }
 
     fun nlResetPlayers(ctx: CommandContext<CommandSourceStack>): Int {
         EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
+            val old = player.lifes
             player.resetLifes()
+            modifyGameModeWithLifes(player, old, player.lifes)
             ctx.getSource().sendSuccess({ Component.translatable("commands.nl.reset.player.success", player.gameProfile.name) }, false)
         }
         return 1
@@ -73,7 +88,9 @@ object NineLifesCommands {
         val player = ctx.getSource().player.requireNotNullOr {
             ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
+        val old = player.lifes
         player.lifes = lifes
+        modifyGameModeWithLifes(player, old, player.lifes)
         ctx.getSource().sendSuccess({ Component.translatable("commands.nl.set.success", lifes) }, false)
         return 1
     }
@@ -81,7 +98,9 @@ object NineLifesCommands {
     fun nlSetLifesPlayers(ctx: CommandContext<CommandSourceStack>): Int {
         val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
         EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
+            val old = player.lifes
             player.lifes = lifes
+            modifyGameModeWithLifes(player, old, player.lifes)
             ctx.getSource().sendSuccess({ Component.translatable("commands.nl.set.player.success", lifes, player.gameProfile.name) }, false)
         }
         return 1
@@ -92,8 +111,10 @@ object NineLifesCommands {
         val player = ctx.getSource().player.requireNotNullOr {
             ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
         }; if (player == null) return -1
+        val old = player.lifes
         player.lifes += lifes
-        if (player.lifes <= 0) player.lifes = 1
+        if (player.lifes <= 0) player.lifes = 0
+        modifyGameModeWithLifes(player, old, player.lifes)
         ctx.getSource().sendSuccess({
             if (lifes < 0) Component.translatable("commands.nl.add.success.neg", -lifes)
             else Component.translatable("commands.nl.add.success", lifes)
@@ -104,8 +125,10 @@ object NineLifesCommands {
     fun nlAddLifesPlayers(ctx: CommandContext<CommandSourceStack>): Int {
         val lifes = IntegerArgumentType.getInteger(ctx, lifesArgument.name)
         EntityArgument.getOptionalPlayers(ctx, playersArgument.name).forEach { player ->
+            val old = player.lifes
             player.lifes += lifes
-            if (player.lifes <= 0) player.lifes = 1
+            if (player.lifes <= 0) player.lifes = 0
+            modifyGameModeWithLifes(player, old, player.lifes)
             ctx.getSource().sendSuccess({
                 if (lifes < 0) Component.translatable("commands.nl.add.player.success.neg", -lifes, player.gameProfile.name)
                 else Component.translatable("commands.nl.add.player.success", lifes, player.gameProfile.name)

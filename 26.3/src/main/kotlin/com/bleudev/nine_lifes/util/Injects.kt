@@ -41,6 +41,7 @@ fun ServerPlayer.revive() {
     if (isSpectator) setGameMode(GameType.SURVIVAL)
     addEffect(MobEffectInstance(NineLifesMobEffects.AMETHYSM, 100, 0))
 }
+val ServerPlayer.isSurvival: Boolean get() = gameMode().isSurvival
 
 // Networking
 fun ServerPlayer.sendPacket(payload: CustomPacketPayload) = ServerPlayNetworking.send(this, payload)
