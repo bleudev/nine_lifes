@@ -96,6 +96,9 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
             "Take lifes from dead players in the End. Doesn't matter if taking is disabled.")
         builder.addGameRule("max_charged_items_at_a_time", "Max charged items at a time",
             "The max number of charged items gained from a single lightning bolt. A value of -1 means infinity (no limit).")
+        // Sounds
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Wandering armor stand hurts")
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Wandering armor stand disappears")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
         builder.add(deathScreenRemaining(1), "Last chance!")
@@ -212,6 +215,9 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
             "Отнимать жизни умерших игроков в Энде. Не имеет значения если отнятие жизней отключено.")
         builder.addGameRule("max_charged_items_at_a_time", "Максимум заряженных предметов за раз",
             "Максимальное количество заряженных предметов, получаемых от одного удара молнии. Значение -1 означает бесконечность (отсутствие ограничения).")
+        // Sounds
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Бродячая стойка для брони ранена")
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Бродячая стойка для брони пропадает")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")
