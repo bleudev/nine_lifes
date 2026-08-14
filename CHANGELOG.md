@@ -10,6 +10,10 @@
 
 ## Changes
 
+### New features
+
+- Only player can hit wandering armor stand (bleudev [#128](https://github.com/bleudev/nine_lifes/pull/128))
+
 ### Fixes
 
 - Untranslated sound subtitles (bleudev [#125](https://github.com/bleudev/nine_lifes/pull/125))
