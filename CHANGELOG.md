@@ -13,6 +13,7 @@
 ### New features
 
 - Only player can hit wandering armor stand (bleudev [#128](https://github.com/bleudev/nine_lifes/pull/128))
+- Set game mode when changing lifes count (bleudev [#129](https://github.com/bleudev/nine_lifes/pull/129))
 
 ### Fixes
 
