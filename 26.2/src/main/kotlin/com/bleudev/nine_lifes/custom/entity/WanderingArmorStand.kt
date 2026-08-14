@@ -73,7 +73,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         this.kickTimes++
         this.ticksAfterKick = 0
         val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)
-        val snd = if (bl) NineLifesSounds.GLITCH2 else NineLifesSounds.GLITCH
+        val snd = if (bl) NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
         val pitch = if (bl) 0.8f else 0.95f
         val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
         level().playSound(null, x, y, z, snd, SoundSource.AMBIENT, 1f, pitch)
