@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.data.tags.TagAppender
 import net.minecraft.tags.DamageTypeTags
 import net.minecraft.world.damagesource.DamageType
+import net.minecraft.world.damagesource.DamageTypes
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import java.util.concurrent.CompletableFuture
@@ -37,6 +38,7 @@ class NineLifesItemTagsProvider(output: FabricPackOutput, lookupFuture: Completa
 class NineLifesDamageTypeTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFuture<HolderLookup.Provider>) : FabricTagsProvider<DamageType>(output, Registries.DAMAGE_TYPE, lookupFuture ) {
     override fun addTags(registries: HolderLookup.Provider) {
         builder(NineLifesDamageTypeTags.GIVES_LIFE).add(NineLifesDamageTypes.CHARGED_AMETHYST)
+        builder(NineLifesDamageTypeTags.CAN_HIT_WSTAND).add(DamageTypes.PLAYER_ATTACK)
         // TODO
 //        builder(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).addTag(DamageTypeTags.IS_LIGHTNING).addTag(DamageTypeTags.IS_FIRE)
 
