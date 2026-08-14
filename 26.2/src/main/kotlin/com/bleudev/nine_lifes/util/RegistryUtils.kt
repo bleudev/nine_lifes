@@ -18,7 +18,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.consume_effects.ConsumeEffect
 import java.util.*
 
-fun createIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
+internal fun createIdentifier(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
 
 private fun <T : Any> ResourceKey<Registry<T>>.key(name: String) =
     ResourceKey.create(this, createIdentifier(name))
@@ -27,17 +27,17 @@ private fun <V : Any, T : V> Registry<V>.register(id: Identifier, element: T) =
 private fun <V : Any, T : V> Registry<V>.register(name: String, element: T) =
     register(createIdentifier(name), element)
 
-fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
+internal fun registerMobEffect(name: String, effect: MobEffect): Holder<MobEffect> =
     Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, createIdentifier(name), effect)
 
-fun <T : ConsumeEffect> registerConsumeEffectType(name: String, mCodec: MapCodec<T>, sCodec: StreamCodec<RegistryFriendlyByteBuf, T>): ConsumeEffect.Type<T> =
+internal fun <T : ConsumeEffect> registerConsumeEffectType(name: String, mCodec: MapCodec<T>, sCodec: StreamCodec<RegistryFriendlyByteBuf, T>): ConsumeEffect.Type<T> =
     BuiltInRegistries.CONSUME_EFFECT_TYPE.register(name, ConsumeEffect.Type(mCodec, sCodec))
 
-fun <T : Entity> registerEntity(path: String, type: EntityType.Builder<T>): EntityType<T> =
-    BuiltInRegistries.ENTITY_TYPE.register(Identifier.parse(path) /* For compatibility */, type.build(Registries.ENTITY_TYPE.key(path)))
+internal fun <T : Entity> registerEntity(name: String, type: EntityType.Builder<T>): EntityType<T> =
+    BuiltInRegistries.ENTITY_TYPE.register(name, type.build(Registries.ENTITY_TYPE.key(name)))
 
-fun <T : Item> registerItem(name: String, itemFactory: (Item.Properties) -> T, properties: Item.Properties = Item.Properties()): T =
+internal fun <T : Item> registerItem(name: String, itemFactory: (Item.Properties) -> T, properties: Item.Properties = Item.Properties()): T =
     BuiltInRegistries.ITEM.register(name, itemFactory(properties.setId(Registries.ITEM.key(name))))
 
-fun registerSound(name: String, range: Float? = null): SoundEvent =
+internal fun registerSound(name: String, range: Float? = null): SoundEvent =
     BuiltInRegistries.SOUND_EVENT.register(name, SoundEvent(createIdentifier(name), Optional.ofNullable(range)))
