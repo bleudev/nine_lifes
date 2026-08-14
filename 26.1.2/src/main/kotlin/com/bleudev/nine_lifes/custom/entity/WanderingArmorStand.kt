@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.custom.entity
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesSounds
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAtPlayerGoal
 import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandRandomLookAroundGoal
@@ -34,10 +35,10 @@ import net.minecraft.world.level.Level
 class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level) {
     init { this.health = 1f }
 
-    private fun canKill(damageSource: DamageSource) = damageSource.`is`(DamageTypes.GENERIC_KILL)
-    private fun canTryKill(player: ServerPlayer): Boolean {
-        return !player.gameMode().isSurvival || player.foodData.foodLevel >= 5f
-    }
+    private fun sourceCanInstaKill(damageSource: DamageSource) = damageSource.`is`(DamageTypes.GENERIC_KILL)
+    private fun sourceCanHit(damageSource: DamageSource) = sourceCanInstaKill(damageSource) ||
+        damageSource.`is`(NineLifesDamageTypeTags.CAN_HIT_WSTAND)
+    private fun playerCanHit(player: ServerPlayer): Boolean = !player.gameMode().isSurvival || player.foodData.foodLevel >= 5f
     private fun triedKillReact(player: ServerPlayer) {
         if (!player.gameMode().isSurvival) return
         if (player.random.nextFloat() >= 0.5f) return
@@ -68,11 +69,12 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
     private fun kill() = (level() as? ServerLevel)?.let { kill(it) }
     override fun hurtServer(serverLevel: ServerLevel, damageSource: DamageSource, f: Float): Boolean {
+        if (!sourceCanHit(damageSource)) return false
         val player = damageSource.directEntity as? ServerPlayer
-        if (player != null && !canTryKill(player)) return false
+        if (player != null && !playerCanHit(player)) return false
         this.kickTimes++
         this.ticksAfterKick = 0
-        val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || canKill(damageSource)
+        val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || sourceCanInstaKill(damageSource)
         val snd = if (bl) NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
         val pitch = if (bl) 0.8f else 0.95f
         val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
@@ -87,7 +89,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
 
         return bl
     }
-    override fun isInvulnerableTo(serverLevel: ServerLevel, damageSource: DamageSource): Boolean = !canKill(damageSource)
+    override fun isInvulnerableTo(serverLevel: ServerLevel, damageSource: DamageSource): Boolean = !sourceCanInstaKill(damageSource)
     override fun mobInteract(player: Player, hand: InteractionHand): InteractionResult {
         if (player.getItemInHand(hand).`is`(Items.AMETHYST_SHARD)) {
             player.consumeOneItemInHand(hand)

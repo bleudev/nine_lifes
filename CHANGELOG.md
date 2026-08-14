@@ -10,7 +10,15 @@
 
 ## Changes
 
+### New features
+
+- Only player can hit wandering armor stand (bleudev [#128](https://github.com/bleudev/nine_lifes/pull/128))
+
 ### Fixes
 
 - Untranslated sound subtitles (bleudev [#125](https://github.com/bleudev/nine_lifes/pull/125))
 - Cannot kill wandering armor stand with low food level in creative mode (bleudev [#126](https://github.com/bleudev/nine_lifes/pull/126))
+
+#### Breaking
+
+- Wrong Wandering Armor Stand identifier namespace (bleudev [#128](https://github.com/bleudev/nine_lifes/pull/128))

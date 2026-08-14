@@ -31,6 +31,7 @@ object NineLifesItemTags {
 
 object NineLifesDamageTypeTags {
     val GIVES_LIFE: TagKey<DamageType> = of("gives_life")
+    val CAN_HIT_WSTAND: TagKey<DamageType> = of("can_hit_wstand")
     val IS_LIGHTNING_OR_FIRE: TagKey<DamageType> = of("is_lightning_or_fire")
 
     private fun of(name: String): TagKey<DamageType> = ofRegistry(Registries.DAMAGE_TYPE, name)
