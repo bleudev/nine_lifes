@@ -118,9 +118,9 @@ modrinth {
     gameVersions.addAll("26.2")
     loaders.add("fabric")
     dependencies {
-        required.project("fabric-api")
-        required.project("yacl")
-        required.project("fabric-language-kotlin")
+        required.version("fabric-api", project.property("fabric_version") as String)
+        required.version("yacl", project.property("yacl_version") as String)
+        required.version("fabric-language-kotlin", project.property("kotlin_loader_version") as String)
         optional.project("modmenu")
     }
 }

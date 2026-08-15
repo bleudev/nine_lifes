@@ -4,11 +4,24 @@
 
 | Minecraft Version | Fabric |
 |-------------------|--------|
-| 26.3-snapshot-5   | ✅️     |
+| 26.3-snapshot-8   | ✅️     |
 | 26.2              | ✅️     |
 | 26.1.2            | ✅️     |
 
 ## Changes
+
+### Version updates
+
+- Minecraft 26.3-snapshot-8 (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130))
+- Dependency updates (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130))
+  - 26.1.2
+    - Fabric API: `0.155.2`
+    - YACL: `3.9.6`
+  - 26.2
+    - Fabric API: `0.157.0`
+    - YACL: `3.9.6`
+  - 26.3
+    - Fabric API: `0.157.1`
 
 ### New features
 

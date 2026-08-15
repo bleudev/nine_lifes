@@ -3,23 +3,24 @@
 ![9 lifes indicator](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/9lifes_indicator.png)
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
-[![Latest version](https://img.shields.io/badge/Latest_version-6.1-orange)](https://modrinth.com/mod/nine_lifes/versions)
-[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-26.1.2--26.3--snapshot--5-green)](https://modrinth.com/mod/nine_lifes)
+[![Latest version](https://img.shields.io/badge/Latest_version-6.2-orange)](https://modrinth.com/mod/nine_lifes/versions)
+[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-26.1.2--26.3--snapshot--8-green)](https://modrinth.com/mod/nine_lifes)
 [![Environment](https://img.shields.io/badge/Environment-Client%2BServer-blue)](https://modrinth.com/mod/nine_lifes)
 [![GitHub contributors](https://img.shields.io/github/contributors/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)
 [![GitHub last commit](https://img.shields.io/github/last-commit/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)
 
-Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Cool challenge for those who are tired of the vanilla hardcore. For changes in lives count - use `/nl` command. Enjoy!)
+Nine lifes - is a mod which gives you only 9 lifes for entire your survival. Cool challenge for those who are tired of
+the vanilla hardcore. For changes in lifes count - use `/nl` command. Enjoy!)
 
 ![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
 
 ### Supported Minecraft versions and minimal requirements
 | Minecraft version | Max Nine lifes version | Fabric Language Kotlin    | Fabric API  | YACL                        | Fabric Loader |
 |-------------------|------------------------|:--------------------------|:------------|:----------------------------|---------------|
-| 26.3-snapshot-5   | ✅ 6.1                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.3 | \>= 3.9.6                   | \>= 0.19.2    |
-| 26.2              | ✅ 6.1                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.0 | \>= 3.9.5                   | \>= 0.19.2    |
-| 26.1.2            | ✅ 6.1                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.0 | \>= 3.9.5                   | \>= 0.19.2    |
+| 26.3-snapshot-8   | ✅ 6.2                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.157.1 | \>= 3.9.6                   | \>= 0.19.2    |
+| 26.2              | ✅ 6.2                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.157.0 | \>= 3.9.6                   | \>= 0.19.2    |
+| 26.1.2            | ✅ 6.2                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.2 | \>= 3.9.6                   | \>= 0.19.2    |
 | 26.1-26.1.1       | ❌ 4.0                 | \>= 1.13.10+kotlin.2.3.20 | \>= 0.144.3 | \>= 3.9.1                   | \>= 0.18.4    |
 | 1.21.11           | ❌ 5.1                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.141.3 | \>= 3.8.2                   | \>= 0.19.2    |
 | 1.21.10           | ❌ 3.0                 | \>= 1.13.9+kotlin.2.3.10  | \>= 0.138.3 | \>= 3.8.2                   | \>= 0.18.4    |
