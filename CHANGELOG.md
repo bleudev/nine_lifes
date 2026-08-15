@@ -12,8 +12,8 @@
 
 ### Version updates
 
-- Minecraft 26.3-snapshot-8 (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130))
-- Dependency updates (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130))
+- Minecraft 26.3-snapshot-8 (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130) [#131](https://github.com/bleudev/nine_lifes/pull/131))
+- Dependency updates (bleudev [#130](https://github.com/bleudev/nine_lifes/pull/130) [#131](https://github.com/bleudev/nine_lifes/pull/131))
   - 26.1.2
     - Fabric API: `0.155.2`
     - YACL: `3.9.6`
