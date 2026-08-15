@@ -5,8 +5,9 @@ import com.mojang.blaze3d.resource.CrossFrameResourcePool;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FirstPersonHandsAndItemsRenderer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.resources.model.ModelManager;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +27,7 @@ public class GameRendererMixin {
     private NineLifesPostRenderer nineLifesPostRenderer;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initCustomShadersRenderer(Minecraft minecraft, ItemInHandRenderer itemInHandRenderer, ModelManager modelManager, CallbackInfo ci) {
+    private void initCustomShadersRenderer(Minecraft minecraft, FirstPersonHandsAndItemsRenderer firstPersonHandsAndItemsRenderer, ModelManager modelManager, ItemModelResolver itemModelResolver, CallbackInfo ci) {
         nineLifesPostRenderer = new NineLifesPostRenderer(resourcePool);
     }
 

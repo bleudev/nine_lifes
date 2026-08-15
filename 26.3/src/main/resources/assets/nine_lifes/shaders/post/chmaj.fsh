@@ -9,7 +9,7 @@ layout(std140) uniform SamplerInfo {
 };
 
 layout(std140) uniform ChmajConfig {
-    vec4 ChMatrix;
+    vec3 ChMatrix;
     float Strength;
 };
 

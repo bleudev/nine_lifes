@@ -20,13 +20,14 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements CustomLivingEntity {
     @Shadow
-    public abstract boolean hasEffect(Holder<@NotNull MobEffect> holder);
+    public abstract boolean hasEffect(Holder<@NotNull MobEffect> effect);
 
     @Shadow
     public abstract boolean isSleeping();
@@ -49,12 +50,12 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    private void readDamageTicks(ValueInput valueInput, CallbackInfo ci) {
-        damage_ticks = valueInput.getInt("damage_ticks").orElse(-1);
+    private void readDamageTicks(ValueInput input, CallbackInfo ci) {
+        damage_ticks = input.getInt("damage_ticks").orElse(-1);
     }
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    private void addDamageTicks(ValueOutput valueOutput, CallbackInfo ci) {
-        valueOutput.putInt("damage_ticks", damage_ticks);
+    private void addDamageTicks(ValueOutput output, CallbackInfo ci) {
+        output.putInt("damage_ticks", damage_ticks);
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
@@ -76,7 +77,7 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
-    private void remove(Entity.RemovalReason removalReason, CallbackInfo ci) {
+    private void remove(Entity.RemovalReason reason, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
         var level = entity.level();
@@ -87,9 +88,9 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
     }
 
     @Inject(method = "startSleeping", at = @At("HEAD"), cancellable = true)
-    private void startSleeping(BlockPos bedPosition, CallbackInfo ci) {
+    private void startSleeping(BlockPos bedPosition, CallbackInfoReturnable<Boolean> cir) {
         if (hasEffect(NineLifesMobEffects.INSOMNIA)) {
-            ci.cancel();
+            cir.setReturnValue(false);
         }
     }
 
