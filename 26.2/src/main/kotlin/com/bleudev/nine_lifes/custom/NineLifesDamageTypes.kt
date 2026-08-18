@@ -5,22 +5,32 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.damagesource.DamageType
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
 
 object NineLifesDamageTypes {
     private fun key(name: String): ResourceKey<DamageType> =
         ResourceKey.create(Registries.DAMAGE_TYPE, createIdentifier(name))
 
-    private fun source(level: Level, key: ResourceKey<DamageType>): DamageSource = level.damageSources().source(key)
+    private fun source(level: Level, key: ResourceKey<DamageType>, cause: Entity? = null): DamageSource =
+        level.damageSources().source(key, cause)
 
     val AMETHYSM: ResourceKey<DamageType> = key("amethysm")
     val CHARGED_AMETHYST: ResourceKey<DamageType> = key("charged_amethyst")
     val UNKNOWN: ResourceKey<DamageType> = key("unknown")
 
     @JvmStatic
+    fun amethysm(level: Level, cause: Entity): DamageSource = source(level, AMETHYSM, cause)
+    @JvmStatic
     fun amethysm(level: Level): DamageSource = source(level, AMETHYSM)
+
+    @JvmStatic
+    fun chargedAmethyst(level: Level, cause: Entity): DamageSource = source(level, CHARGED_AMETHYST, cause)
     @JvmStatic
     fun chargedAmethyst(level: Level): DamageSource = source(level, CHARGED_AMETHYST)
+
+    @JvmStatic
+    fun unknown(level: Level, cause: Entity): DamageSource = source(level, UNKNOWN, cause)
     @JvmStatic
     fun unknown(level: Level): DamageSource = source(level, UNKNOWN)
 }

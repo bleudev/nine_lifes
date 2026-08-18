@@ -36,17 +36,18 @@ public abstract class CampfireBlockEntityMixin {
 
     @Inject(method = "cookTick", at = @At("TAIL"))
     private static void explodeOnEnd(
-        ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity campfire,
-        RecipeManager.CachedCheck<@NotNull SingleRecipeInput, @NotNull CampfireCookingRecipe> recipe,
-        CallbackInfo ci) {
-        var self = (CampfireBlockEntityMixin) (Object) campfire;
+        ServerLevel level, BlockPos pos, BlockState state, CampfireBlockEntity entity,
+        RecipeManager.CachedCheck<@NotNull SingleRecipeInput, @NotNull CampfireCookingRecipe> recipeCache,
+        CallbackInfo ci
+    ) {
+        var self = (CampfireBlockEntityMixin) (Object) entity;
         if (self == null) return;
         for (int slot = 0; slot < 4; slot++) {
             ItemStack stack = self.getItems().get(slot);
             if (stack.isEmpty() || !stack.is(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
             if (self.cookingProgress[slot] == self.cookingTime[slot] - 1) {
                 level.removeBlock(pos, false);
-                explode(level, Vec3.atCenterOf(pos), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
+                explode(level, Vec3.atCenterOf(pos), 4f, NineLifesDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
                 return;
             }
         }
