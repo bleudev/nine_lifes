@@ -34,7 +34,7 @@ public class AbstractFurnaceBlockEntityMixin {
     private @Nullable TagKey<Item> tag;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, RecipeType<?> recipeType, CallbackInfo ci) {
+    private void init(BlockEntityType<?> type, BlockPos worldPosition, BlockState blockState, RecipeType<?> recipeType, CallbackInfo ci) {
         tag = Map.of(
             RecipeType.SMELTING, NineLifesItemTags.CAUSE_FURNACE_EXPLODE,
             RecipeType.BLASTING, NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE,
@@ -43,8 +43,8 @@ public class AbstractFurnaceBlockEntityMixin {
     }
 
     @Inject(method = "serverTick", at = @At("RETURN"))
-    private static void tick(ServerLevel serverLevel, BlockPos blockPos, BlockState blockState, AbstractFurnaceBlockEntity abstractFurnaceBlockEntity, CallbackInfo ci) {
-        AbstractFurnaceBlockEntityMixin mixin = (AbstractFurnaceBlockEntityMixin) (Object) abstractFurnaceBlockEntity;
+    private static void tick(ServerLevel level, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity entity, CallbackInfo ci) {
+        AbstractFurnaceBlockEntityMixin mixin = (AbstractFurnaceBlockEntityMixin) (Object) entity;
         assert mixin != null;
         NonNullList<ItemStack> inv = mixin.items;
         ItemStack output = inv.get(2);
@@ -52,8 +52,8 @@ public class AbstractFurnaceBlockEntityMixin {
         if (mixin.tag == null) return;
         if (!output.isEmpty() && output.is(mixin.tag)) {
             inv.set(2, ItemStack.EMPTY);
-            serverLevel.removeBlock(blockPos, false);
-            explode(serverLevel, blockPos.getCenter(), 4f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK, null);
+            level.removeBlock(pos, false);
+            explode(level, pos.getCenter(), 4f, NineLifesDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
         }
     }
 }
