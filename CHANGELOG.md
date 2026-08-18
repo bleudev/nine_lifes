@@ -9,3 +9,7 @@
 | 26.1.2            | ✅️     |
 
 ## Changes
+
+## Bug fixes
+
+- Player which used charged amethyst gives lifes to player died due explosion (bleudev [#135](https://github.com/bleudev/nine_lifes/pull/135))
