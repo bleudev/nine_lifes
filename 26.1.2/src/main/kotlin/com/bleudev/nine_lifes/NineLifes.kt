@@ -136,7 +136,13 @@ class NineLifes : ModInitializer {
                         when (entity.damageTicks) {
                             -1 -> return@forEach
                             0 -> {
-                                level.explode(entity.position(), 7f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.MOB, entity)
+                                level.explode(
+                                    entity.position(),
+                                    7f,
+                                    { NineLifesDamageTypes.chargedAmethyst(it, entity) },
+                                    Level.ExplosionInteraction.MOB,
+                                    entity
+                                )
                                 entity.killCharged()
                             }
                         }
@@ -174,7 +180,10 @@ class NineLifes : ModInitializer {
         }
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
-                if (damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE)) {
+                if (
+                    damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE) &&
+                    (damageSource.entity == null || damageSource.entity == entity)
+                ) {
                     NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
                     entity.lifes += 1
                     entity.awardStat(NineLifesStats.USED_CHARGED)
