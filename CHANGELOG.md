@@ -16,4 +16,5 @@
 
 ## Bug fixes
 
+- Shards charges incorrectly (bleudev [#137](https://github.com/bleudev/nine_lifes/pull/137))
 - Player which used charged amethyst gives lifes to player died due explosion (bleudev [#135](https://github.com/bleudev/nine_lifes/pull/135))
