@@ -115,7 +115,7 @@ modrinth {
     }
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
-    gameVersions.addAll("26.3-snapshot-8")
+    gameVersions.addAll("26.3-snapshot-9")
     loaders.add("fabric")
     dependencies {
         required.version("fabric-api", project.property("fabric_version") as String)
