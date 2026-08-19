@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
 import net.minecraft.util.Mth
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.LivingEntity
@@ -31,8 +32,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.alchemy.PotionContents
+import net.minecraft.world.item.component.DamageResistant
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity
@@ -44,12 +47,11 @@ import kotlin.math.abs
 class NineLifes : ModInitializer {
     companion object {
         @JvmStatic
-        val notSafeSleepTicks: HashMap<String, Int> = HashMap()
-        val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
+        internal val notSafeSleepTicks: HashMap<String, Int> = HashMap()
     }
 
-    private val lightningCharged = HashMap<UUID, Int>()
-    private val lightningChargedTicks = HashMap<UUID, Int>()
+    private val lightningUsed = ArrayList<UUID>()
+    private val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
 
     override fun onInitialize() {
         NineLifesPackets.initialize()
@@ -129,15 +131,6 @@ class NineLifes : ModInitializer {
                     }
                 }
                 tryChargeItems(level)
-                for (uuid in lightningCharged.keys) {
-                    if (level.getEntity(uuid) == null && lightningChargedTicks.getOrDefault(uuid, 0) <= 0) {
-                        lightningCharged.remove(uuid)
-                        lightningChargedTicks.remove(uuid)
-                    }
-                }
-                lightningChargedTicks.entries.forEach { (k, v) ->
-                    lightningChargedTicks[k] = v-1
-                }
             }
 
             for (world in server.allLevels) world.getEntities(EntityTypes.WIND_CHARGE, alwaysTrue())
@@ -193,8 +186,9 @@ class NineLifes : ModInitializer {
                         problem = Player.BedSleepingProblem.NOT_SAFE
                     }
                 }
-            if (problem != null && problem.message != null)
+            if (problem?.message != null) {
                 NineLifesCriterions.BED_SLEEPING_PROBLEM.trigger(player, problem)
+            }
             problem
         }
         EntitySleepEvents.START_SLEEPING.register { entity, _ ->
@@ -211,39 +205,85 @@ class NineLifes : ModInitializer {
 
         val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
         level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
-            lightningCharged.putIfAbsent(lightning.uuid, 0)
-            lightningChargedTicks.putIfAbsent(lightning.uuid, 20)
-            for (itemEntity in level.getEntities(
+            if (lightning.uuid in lightningUsed) return@forEach
+            lightningUsed.add(lightning.uuid)
+
+            val itemEntities = level.getEntities(
                 EntityTypes.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
-                .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) }))) {
-                if (lightningCharged[lightning.uuid]!! >= maxCount) return@forEach
-                if (itemEntity.item.enchantments.getLevel(chargeEnchantment) == 0) {
-                    val cnt = itemEntity.item.count
-                    val curr = lightningCharged[lightning.uuid]!!
-                    val remain = maxCount-curr
-                    if (cnt <= remain) {
-                        lightningCharged[lightning.uuid] = curr + 1
-                        itemEntity.item.enchant(chargeEnchantment, 1)
+                .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) })
+            )
+            val original = HashMap<Item, Int>()
+            val charged = HashMap<Item, Int>()
+            for (item in itemEntities) {
+                (if (item.item.enchantments.getLevel(chargeEnchantment) > 0) charged else original)
+                .compute(item.item.item) { _, value -> // item.item.item... Understandable
+                    (value ?: 0) + item.item.count
+                }
+                item.remove(Entity.RemovalReason.DISCARDED)
+            }
+            var remain = maxCount
+            while (remain > 0) {
+                val kk = original.keys.toList()
+                if (kk.isNotEmpty()) {
+                    var vv = original[kk[0]]!!
+                    var nvv = 0
+                    if (vv <= remain) {
+                        nvv += vv
+                        remain -= vv
+                        vv = 0
                     }
                     else {
-                        val new = EntityTypes.ITEM.create(level, EntitySpawnReason.CONVERSION) ?: continue
-                        new.copyPosition(itemEntity)
-                        new.item = itemEntity.item.copy()
-                        new.item.count = remain
-                        new.item.enchant(chargeEnchantment, 1)
-                        itemEntity.item.count -= remain
-                        lightningCharged[lightning.uuid] = maxCount
-                        level.addFreshEntity(new)
+                        nvv += remain
+                        vv -= remain
+                        remain = 0
                     }
+                    original[kk[0]] = vv
+                    if (vv == 0) {
+                        original.remove(kk[0])
+                    }
+                    charged.compute(kk[0]) { _, v -> (v ?: 0) + nvv }
+                }
+            }
+            println("O $original C $charged")
 
-                    level.players().forEach { player ->
-                        val distance = (player.position().distanceTo(itemEntity.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
-                            .coerceAtLeast(.0)
-                        NineLifesCriterions.CHARGE_ITEM.trigger(player, itemEntity.item.item, distance)
-                        val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
-                        player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
+            for (o in original) {
+                var vv = o.value
+                while (vv > 0) {
+                    val cnt = vv.coerceAtMost(o.key.defaultMaxStackSize)
+                    val new = EntityTypes.ITEM.create(level, EntitySpawnReason.CONVERSION) ?: break
+                    new.copyPosition(lightning)
+                    new.item = ItemStack(o.key, cnt)
+                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
+                    level.addFreshEntity(new)
+                    vv -= cnt
+                }
+            }
+            for (c in charged) {
+                var vv = c.value
+                while (vv > 0) {
+                    val cnt = vv.coerceAtMost(c.key.defaultMaxStackSize)
+                    val new = EntityTypes.ITEM.create(level, EntitySpawnReason.CONVERSION) ?: break
+                    new.copyPosition(lightning)
+                    new.item = ItemStack(c.key, cnt)
+                    new.item.enchant(chargeEnchantment, 1)
+                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
+                    level.addFreshEntity(new)
+                    vv -= cnt
+                }
+            }
+
+            if (charged.count { it.value > 0 } > 0) {
+                level.players().forEach { player ->
+                    val distance = (player.position().distanceTo(lightning.position()) - CHARGE_SCREEN_EFFECT_RADIUS_MIN)
+                        .coerceAtLeast(.0)
+                    for ((key, value) in charged) {
+                        if (value > 0) {
+                            NineLifesCriterions.CHARGE_ITEM.trigger(player, key, distance)
+                        }
                     }
+                    val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
+                    player.sendPacket(StartChargeScreen(CHARGE_SCREEN_DURATION, strength.toFloat()))
                 }
             }
         }
@@ -277,7 +317,7 @@ class NineLifes : ModInitializer {
             if (!actionBox.contains(player.position())) return@forEach
             val inventory = player.inventory
             var inventoryUpdated = false
-            for (slot in 0..<inventory.toList().size) {
+            for (slot in inventory.toList().indices) {
                 val stack = inventory.getItem(slot)
                 var newStack = stack.copy()
 

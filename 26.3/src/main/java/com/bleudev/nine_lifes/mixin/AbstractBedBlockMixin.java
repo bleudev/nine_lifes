@@ -21,7 +21,7 @@ public class AbstractBedBlockMixin {
     private void cancelUseIfAnaglyph(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (level.isClientSide()) return;
         String name = player.getGameProfile().name();
-        HashMap<String, Integer> map = NineLifes.getNotSafeSleepTicks();
+        HashMap<String, Integer> map = NineLifes.getNotSafeSleepTicks$com_bleudev_nine_lifes();
         if (map.containsKey(name)) {
             if (map.get(name) > 0) cir.setReturnValue(InteractionResult.PASS);
         }
