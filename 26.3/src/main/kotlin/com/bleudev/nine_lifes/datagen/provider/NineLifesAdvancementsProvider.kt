@@ -113,9 +113,20 @@ class NineLifesAdvancementsProvider(output: FabricPackOutput,
     private val background: Identifier = Identifier.withDefaultNamespace("block/amethyst_block")
 
     private var isRoot: Boolean = true
-    private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder = Advancement.Builder.advancement().display(
-        icon, Component.translatable(advancement(name)), Component.translatable(advancementDescription(name)), if (isRoot) background else null, type, name != "root", name != "root", hidden)
-        .applier().save(this, createIdentifier(name))
+    private fun Consumer<AdvancementHolder>.create(name: String, hidden: Boolean, icon: Item, type: AdvancementType, applier: Advancement.Builder.() -> Advancement.Builder): AdvancementHolder =
+        if (name == "root") Advancement.Builder.advancement().rootDisplay(
+            icon,
+            Component.translatable(advancement(name)),
+            Component.translatable(advancementDescription(name)),
+            background,
+            type, false, false, hidden
+        ).applier().save(this, createIdentifier(name))
+        else Advancement.Builder.advancement().display(
+            icon,
+            Component.translatable(advancement(name)),
+            Component.translatable(advancementDescription(name)),
+            type, true, true, hidden
+        ).applier().save(this, createIdentifier(name))
 
     private fun Advancement.Builder.requireAdvancement(holder: AdvancementHolder) =
         addCriterion("require_${holder.id.namespace}_${holder.id.path}", NineLifesCriterions.ADVANCEMENT.require(holder))
