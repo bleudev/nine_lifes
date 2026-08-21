@@ -135,6 +135,28 @@ class NineLifes : ModInitializer {
 
             for (world in server.allLevels) world.getEntities(EntityType.WIND_CHARGE, alwaysTrue())
                 .forEach { tryWindChargeFeatures(world, it) }
+
+            val players = server.playerList.players.toList()
+            val hasAmethysm = arrayListOf<ServerPlayer>()
+            val hasCharged = arrayListOf<ServerPlayer>()
+
+            val chargeEnchantment = NineLifesEnchantments.Holders.charge(server.registryAccess())
+            for (player in players) {
+                if (player.hasEffect(NineLifesMobEffects.AMETHYSM)) {
+                    hasAmethysm.add(player)
+                }
+                if (player.inventory.any { it.enchantments.getLevel(chargeEnchantment) > 0 }) {
+                    hasCharged.add(player)
+                }
+            }
+
+            for (player in players) {
+                var amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player) } ?: 999f
+                var charged = hasCharged.toList().minOfOrNull { it.distanceTo(player) } ?: 999f
+                if (amethysm == 0f) amethysm = 999f
+                if (charged == 0f) charged = 4f
+                player.sendPacket(DistanceUpdate(amethysm, charged))
+            }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
             if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
