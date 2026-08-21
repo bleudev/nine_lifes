@@ -5,6 +5,7 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.client.config.healthRendering
 import com.bleudev.nine_lifes.client.config.heartbeatEnabled
 import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nine_lifes.util.reverseDelta
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.Minecraft
@@ -103,6 +104,14 @@ val xOffset: Float
 var stick_purpleness: Float = 0f
     get() = max(field, ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE_TICKS).toFloat() / STICK_USED_EFFECT_SHAKE_TICKS).coerceIn(0f, 1f))
 var stick_purpleness_ticks: Int = 0
+// Player amethysm effect
+var playerAmethysmDistance: Float = 999f
+val playerAmethysmStrength: Float get() = (playerAmethysmDistance / PLAYER_AMETHYSM_RADIUS)
+    .coerceIn(0f, 1f).reverseDelta() * .1f
+// Player charged effect
+var playerChargedDistance: Float = 999f
+val playerChargedStrength: Float get() = (playerChargedDistance / PLAYER_CHARGED_RADIUS)
+    .coerceIn(0f, 1f).reverseDelta() * .75f
 
 var amethysm_effect_info = AmethysmEffectInfo()
 var charge_effect_info = ChargeEffectInfo()

@@ -18,6 +18,7 @@ object NineLifesPackets {
 
     val ARMOR_STAND_HIT_EVENT = createIdentifier("packet/armor_stand_hit_event")
     val BED_SLEEPING_PROBLEM_EVENT = createIdentifier("packet/bed_sleeping_problem_event")
+    val DISTANCE_UPDATE = createIdentifier("packet/distance_update")
     val JOIN_MESSAGE = createIdentifier("packet/join_message")
     val START_AMETHYSM_SCREEN = createIdentifier("packet/start_amethysm_screen")
     val START_CHARGE_SCREEN = createIdentifier("packet/start_charge_screen")
@@ -37,6 +38,7 @@ object NineLifesPackets {
 
         registerS2CPacket(ArmorStandHitEvent)
         registerS2CPacket(BedSleepingProblemEvent)
+        registerS2CPacket(DistanceUpdate)
         registerS2CPacket(JoinMessage)
         registerS2CPacket(StartAmethysmScreen)
         registerS2CPacket(StartChargeScreen)

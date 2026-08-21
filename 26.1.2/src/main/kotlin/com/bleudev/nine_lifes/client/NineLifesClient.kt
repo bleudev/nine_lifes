@@ -113,6 +113,14 @@ class NineLifesClient : ClientModInitializer {
             .uniform("BlurPropConfig") {
                 putFloat(shaderCBlurStrength)
             }
+        PostEffectRegistry.registerNineLifes("player_amethysm")
+            .uniform("CustomConvolveConfig") {
+                putFloat(playerAmethysmStrength).putFloat(5f)
+            }
+        PostEffectRegistry.registerNineLifes("player_charged")
+            .uniform("CustomConvolveConfig") {
+                putFloat(playerChargedStrength).putFloat(10f)
+            }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
@@ -163,6 +171,10 @@ class NineLifesClient : ClientModInitializer {
                 bed_not_safe_event_running = true
             }
         } }
+        registerReceiver(DistanceUpdate) { payload ->
+            playerAmethysmDistance = payload.toAmethysm
+            playerChargedDistance = payload.toCharged
+        }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
         registerReceiver(UpdateForceVanillaDeathScreenState) { forceVanillaDeathScreen = it.state }
