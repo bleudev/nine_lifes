@@ -33,6 +33,7 @@ class NineLifesRecipesProvider(output: FabricPackOutput,
 
     private class NineLifesRecipeProviderImpl(recipes: BootstrapContext<Recipe<*>>, advancements: BootstrapContext<Advancement>) : RecipeProvider(recipes, advancements) {
         override fun buildRecipes() {
+            recipe
             SimpleCookingRecipeBuilder.blasting(Ingredient.of(Items.AMETHYST_SHARD), RecipeCategory.MISC, CookingBookCategory.MISC, Items.AMETHYST_SHARD, 0.1f, 100).unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD)).save(output, "blasting_amethyst_shard")
             SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.AMETHYST_SHARD), RecipeCategory.MISC, CookingBookCategory.MISC, Items.AMETHYST_SHARD, 0.1f, 200).unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD)).save(output, "smelting_amethyst_shard")
             SimpleCookingRecipeBuilder.smoking(Ingredient.of(Items.AMETHYST_SHARD), RecipeCategory.MISC, Items.AMETHYST_SHARD, 0.1f, 100).unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD)).save(output, "smoking_amethyst_shard")
