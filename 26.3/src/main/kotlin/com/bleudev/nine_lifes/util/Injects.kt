@@ -85,4 +85,5 @@ fun SuggestionsBuilder.suggestMany(vararg integers: Int) = this.apply { for (i i
 
 // Convert
 fun Vector3f.to4f(w: Float): Vector4f = Vector4f(x, y, z, w)
+fun Vector4f.to3f(): Vector3f = Vector3f(x, y, z)
 fun Vector4f.asARGB(): Int = ARGB.colorFromFloat(w, x, y, z)

@@ -72,9 +72,9 @@ class NineLifesClient : ClientModInitializer {
 
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             if (!isInSurvival || !isInOverworld) return@register current
-            val ov4 = ARGB.vector3fFromRGB24(current).to4f(1f)
+            val ov4 = current.to4f(1f)
             val v4 = ClientEnvironmentSetupEvents.FOG_COLOR.invoker()(ov4, ov4)
-            v4.asARGB()
+            v4.to3f()
         }
 
         ClientEnvironmentSetupEvents.FOG_START.register { _, current ->
