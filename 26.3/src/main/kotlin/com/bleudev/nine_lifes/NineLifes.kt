@@ -140,12 +140,11 @@ class NineLifes : ModInitializer {
             val hasAmethysm = arrayListOf<ServerPlayer>()
             val hasCharged = arrayListOf<ServerPlayer>()
 
-            val chargeEnchantment = NineLifesEnchantments.Holders.charge(server.registryAccess())
             for (player in players) {
                 if (player.hasEffect(NineLifesMobEffects.AMETHYSM)) {
                     hasAmethysm.add(player)
                 }
-                if (player.inventory.any { it.enchantments.getLevel(chargeEnchantment) > 0 }) {
+                if (player.inventory.anyWithContainers { it.isCharged(server) }) {
                     hasCharged.add(player)
                 }
             }

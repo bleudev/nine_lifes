@@ -2,12 +2,17 @@ package com.bleudev.nine_lifes.util
 
 import com.bleudev.nine_lifes.MAX_LIFES
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
+import com.bleudev.nine_lifes.custom.NineLifesEnchantments
 import com.bleudev.nine_lifes.custom.NineLifesMobEffects
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.core.HolderGetter
+import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
@@ -18,11 +23,14 @@ import net.minecraft.world.damagesource.DamageSource
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.level.ExplosionDamageCalculator
 import net.minecraft.world.level.GameType
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.LevelReader
 import net.minecraft.world.phys.Vec3
 import org.joml.Vector3f
 import org.joml.Vector4f
@@ -36,6 +44,7 @@ fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
 fun Float.lerp(start: Float = 0f, end: Float = 1f): Float = start + coerceIn(0f, 1f) * (end - start)
 fun Float.reverseDelta(max: Float = 1f): Float = max - this
 
+// Player
 fun ServerPlayer.resetLifes() {this.lifes = MAX_LIFES}
 fun ServerPlayer.revive() {
     resetLifes()
@@ -76,6 +85,38 @@ fun LivingEntity.hurtUnknown(amount: Int) = hurtUnknown(amount.toFloat())
 @Suppress("unused") // Public API
 fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = hurtServer(damageSourceSupplier, Float.MAX_VALUE)
 fun LivingEntity.killCharged() = hurtCharged(Float.MAX_VALUE)
+
+fun Inventory.anyWithContainers(predicate: (ItemStack) -> Boolean): Boolean = this.any { it.anyWithContainers(predicate) }
+private fun ItemStack.anyWithContainers(predicate: (ItemStack) -> Boolean): Boolean {
+    if (predicate(this)) return true
+    // Containers
+    val container = this.get(DataComponents.CONTAINER)
+    if (container != null) {
+        for (item in container.nonEmptyItemCopyStream()) {
+            if (item.anyWithContainers(predicate)) return true
+        }
+    }
+    // Bundles
+    val bundle = this.get(DataComponents.BUNDLE_CONTENTS)
+    if (bundle != null) {
+        for (itemTemplate in bundle.items()) {
+            val item = itemTemplate.create()
+            if (item.anyWithContainers(predicate)) return true
+        }
+    }
+    // Sulfur cubes
+    val sulfur = this.get(DataComponents.SULFUR_CUBE_CONTENT)
+    if (sulfur != null) {
+        val item = sulfur.absorbedBlockItemStack().create()
+        if (item.anyWithContainers(predicate)) return true
+    }
+    return false
+}
+fun <T : HolderGetter<Enchantment>> ItemStack.isCharged(getter: T): Boolean = this.enchantments.getLevel(NineLifesEnchantments.Holders.charge(getter)) > 0
+fun <T : HolderGetter.Provider> ItemStack.isCharged(provider: T): Boolean = this.isCharged(provider.lookupOrThrow(Registries.ENCHANTMENT))
+fun ItemStack.isCharged(server: MinecraftServer): Boolean = this.isCharged(server.registryAccess())
+@Suppress("unused") // Public API
+fun ItemStack.isCharged(level: LevelReader): Boolean = this.isCharged(level.registryAccess())
 
 // Commands
 fun <T : ArgumentBuilder<CommandSourceStack, T>> ArgumentBuilder<CommandSourceStack, T>.requiresAdmin(): T =
