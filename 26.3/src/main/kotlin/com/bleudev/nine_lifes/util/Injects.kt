@@ -82,10 +82,12 @@ fun LivingEntity.hurtServer(damageSourceSupplier: (Level) -> DamageSource, amoun
 fun LivingEntity.hurtCharged(amount: Float) = hurtServer(NineLifesDamageTypes::chargedAmethyst, amount)
 fun LivingEntity.hurtUnknown(amount: Float) = hurtServer(NineLifesDamageTypes::unknown, amount)
 fun LivingEntity.hurtUnknown(amount: Int) = hurtUnknown(amount.toFloat())
-@Suppress("unused") // Public API
 fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = hurtServer(damageSourceSupplier, Float.MAX_VALUE)
-fun LivingEntity.killCharged() = hurtCharged(Float.MAX_VALUE)
+fun LivingEntity.killCharged() = kill(NineLifesDamageTypes::chargedAmethyst)
 
+/**
+ * Returns if there is at least one [ItemStack] in inventory (including items in containers, bundles, etc.) matching given `predicate`
+ */
 fun Inventory.anyWithContainers(predicate: (ItemStack) -> Boolean): Boolean = this.any { it.anyWithContainers(predicate) }
 private fun ItemStack.anyWithContainers(predicate: (ItemStack) -> Boolean): Boolean {
     if (predicate(this)) return true
@@ -112,9 +114,29 @@ private fun ItemStack.anyWithContainers(predicate: (ItemStack) -> Boolean): Bool
     }
     return false
 }
+/**
+ * Returns if this [ItemStack] is charged.
+ *
+ * An [ItemStack] is charged when it's enchanted with `nine_lifes:charge` enchantment with level bigger that zero.
+ */
 fun <T : HolderGetter<Enchantment>> ItemStack.isCharged(getter: T): Boolean = this.enchantments.getLevel(NineLifesEnchantments.Holders.charge(getter)) > 0
+/**
+ * Returns if this [ItemStack] is charged.
+ *
+ * An [ItemStack] is charged when it's enchanted with `nine_lifes:charge` enchantment with level bigger that zero.
+ */
 fun <T : HolderGetter.Provider> ItemStack.isCharged(provider: T): Boolean = this.isCharged(provider.lookupOrThrow(Registries.ENCHANTMENT))
+/**
+ * Returns if this [ItemStack] is charged.
+ *
+ * An [ItemStack] is charged when it's enchanted with `nine_lifes:charge` enchantment with level bigger that zero.
+ */
 fun ItemStack.isCharged(server: MinecraftServer): Boolean = this.isCharged(server.registryAccess())
+/**
+ * Returns if this [ItemStack] is charged.
+ *
+ * An [ItemStack] is charged when it's enchanted with `nine_lifes:charge` enchantment with level bigger that zero.
+ */
 @Suppress("unused") // Public API
 fun ItemStack.isCharged(level: LevelReader): Boolean = this.isCharged(level.registryAccess())
 
