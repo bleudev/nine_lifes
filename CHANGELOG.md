@@ -1,4 +1,4 @@
-# 6.4: Wandering armor stand update!!
+# 6.4
 
 ## Targets
 
@@ -10,12 +10,15 @@
 
 ## Changes
 
+### Dependencies
+
+- [DEV] Gradle 9.6.1 (bleudev)
+
 ### New features
 
 #### Wandering armor stand
 
 - You can now hang armor, elytras, heads etc. like with normal armor stands!!! (bleudev)
-- Added wiggle effect (bleudev)
 - Fluids won't affect wandering armor stand anymore (I hope) (bleudev)
 
 #### Public API [DEV]
