@@ -32,7 +32,10 @@ import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents
+import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
 
 class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level) {
@@ -73,25 +76,33 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun doPush(entity: Entity) {}
     override fun isAffectedByFluids(): Boolean = false
     override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
-    private fun kill() = (level() as? ServerLevel)?.let { kill(it) }
-    override fun hurtServer(serverLevel: ServerLevel, damageSource: DamageSource, f: Float): Boolean {
-        if (!sourceCanHit(damageSource)) return false
-        val player = damageSource.directEntity as? ServerPlayer
+    private fun kill() {
+        for (slot in EquipmentSlot.VALUES) {
+            val itemStack = this.equipment.set(slot, ItemStack.EMPTY)
+            if (!itemStack.isEmpty && !EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
+                Block.popResource(this.level(), this.blockPosition().above(), itemStack)
+            }
+        }
+        (level() as? ServerLevel)?.let { kill(it) }
+    }
+    override fun hurtServer(level: ServerLevel, source: DamageSource, damage: Float): Boolean {
+        if (!sourceCanHit(source)) return false
+        val player = source.directEntity as? ServerPlayer
         if (player != null && !playerCanHit(player)) return false
         this.kickTimes++
         this.ticksAfterKick = 0
-        val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || sourceCanInstaKill(damageSource)
+        val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || sourceCanInstaKill(source)
         val snd = if (bl) NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
         val pitch = if (bl) 0.8f else 0.95f
         val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
         level().playSound(null, x, y, z, snd, SoundSource.AMBIENT, 1f, pitch)
 
-        serverLevel.getPlayers { it.position().distanceToSqr(this.position()) <= rad*rad }.forEach {
+        level.getPlayers { it.position().distanceToSqr(this.position()) <= rad*rad }.forEach {
             it.sendPacket(ArmorStandHitEvent(this.position()))
             if (bl) it.sendPacket(ArmorStandKillEvent.INSTANCE)
         }
         if (bl) kill()
-        else lastHit = serverLevel.gameTime
+        else lastHit = level.gameTime
         player?.let { triedKillReact(it) }
 
         return bl
