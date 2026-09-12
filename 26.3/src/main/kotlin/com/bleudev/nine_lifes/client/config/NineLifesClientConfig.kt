@@ -43,9 +43,6 @@ internal var playerChargedSelf: Boolean
 internal var playerAmethysmPlayers: Boolean
     get() = configLoad().chargedAmethysm.amethysm.players
     set(new) = configSave(configLoad().apply { chargedAmethysm.amethysm.players = new })
-internal var playerAmethysmSelf: Boolean
-    get() = configLoad().chargedAmethysm.amethysm.self
-    set(new) = configSave(configLoad().apply { chargedAmethysm.amethysm.self = new })
 
 @Serializable
 data class NineLifesClientConfig(
@@ -66,7 +63,7 @@ data class NineLifesClientConfig(
         @Serializable
         data class ChargedData(var self: Boolean = true, var players: Boolean = true)
         @Serializable
-        data class AmethysmData(var self: Boolean = true, var players: Boolean = true)
+        data class AmethysmData(var players: Boolean = true)
     }
 }
 

@@ -7,12 +7,14 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class DistanceUpdate(val toAmethysm: Float, val toCharged: Float) : CustomPacketPayload {
+class DistanceUpdate(val toAmethysm: Float, val toCharged: Float, val hasAmethysm: Boolean, val hasCharged: Boolean) : CustomPacketPayload {
     companion object : PacketPayloadCompanion<DistanceUpdate> {
         override val idLocation = NineLifesPackets.DISTANCE_UPDATE
         override val codec: StreamCodec<RegistryFriendlyByteBuf, DistanceUpdate> = StreamCodec.composite(
             ByteBufCodecs.FLOAT, DistanceUpdate::toAmethysm,
             ByteBufCodecs.FLOAT, DistanceUpdate::toCharged,
+            ByteBufCodecs.BOOL, DistanceUpdate::hasAmethysm,
+            ByteBufCodecs.BOOL, DistanceUpdate::hasCharged,
             ::DistanceUpdate
         )
     }

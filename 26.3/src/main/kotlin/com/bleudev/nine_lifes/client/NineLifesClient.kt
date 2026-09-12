@@ -177,7 +177,9 @@ class NineLifesClient : ClientModInitializer {
         } }
         registerReceiver(DistanceUpdate) { payload ->
             playerAmethysmDistance = payload.toAmethysm
+            selfAmethysm = payload.hasAmethysm
             playerChargedDistance = payload.toCharged
+            selfCharged = payload.hasCharged
         }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }

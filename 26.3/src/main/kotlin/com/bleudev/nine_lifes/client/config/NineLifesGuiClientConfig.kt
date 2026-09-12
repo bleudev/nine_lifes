@@ -116,14 +116,6 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
                         addDefaultText(1)
                     }
                 }
-                options.register("self") {
-                    binding(true, ::playerAmethysmSelf)
-                    yesNoFormat()
-                    available(playerChargedAmethysm)
-                    descriptionBuilder {
-                        addDefaultText(1)
-                    }
-                }
             }
         }
     }
