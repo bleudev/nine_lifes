@@ -18,11 +18,12 @@
 ### Dependencies
 
 #### Minecraft
-- End of support for Minecraft 26.1.2 (bleudev [#144](https://github.com/bleudev/nine_lifes/pull/144))
+- End of support for Minecraft `26.1.2` (bleudev [#144](https://github.com/bleudev/nine_lifes/pull/144))
 
 #### Others
-- Fabric Loader 0.19.5 (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
-- [DEV] Gradle 9.6.1 (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
+- Fabric Language Kotlin `1.14.1+kotlin.2.4.20` (bleudev [#147](https://github.com/bleudev/nine_lifes/pull/147))
+- Fabric Loader `0.19.5` (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
+- [DEV] Gradle `9.6.1` (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
 
 ### New features
 
