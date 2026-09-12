@@ -18,7 +18,10 @@ import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
-import com.bleudev.nine_lifes.util.*
+import com.bleudev.nine_lifes.util.createIdentifier
+import com.bleudev.nine_lifes.util.lerp
+import com.bleudev.nine_lifes.util.link
+import com.bleudev.nine_lifes.util.to4f
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
@@ -33,6 +36,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
+import org.joml.Vector3f
 import org.joml.Vector4f
 
 class NineLifesClient : ClientModInitializer {
@@ -72,9 +76,9 @@ class NineLifesClient : ClientModInitializer {
 
         ClientEnvironmentSetupEvents.SKY_COLOR.register { _, current ->
             if (!isInSurvival || !isInOverworld) return@register current
-            val ov4 = ARGB.vector3fFromRGB24(current).to4f(1f)
+            val ov4 = current.to4f(1f)
             val v4 = ClientEnvironmentSetupEvents.FOG_COLOR.invoker()(ov4, ov4)
-            v4.asARGB()
+            v4.xyz(Vector3f())
         }
 
         ClientEnvironmentSetupEvents.FOG_START.register { _, current ->

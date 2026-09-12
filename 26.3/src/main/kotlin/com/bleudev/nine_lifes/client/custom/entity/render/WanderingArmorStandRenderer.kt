@@ -43,16 +43,10 @@ class WanderingArmorStandRenderer(ctx: EntityRendererProvider.Context) : LivingE
         state.wiggle = (entity.level().gameTime - entity.lastHit).toFloat() + partialTicks
 
     }
-    override fun setupRotations(
-        state: ArmorStandRenderState,
-        poseStack: PoseStack,
-        bodyRot: Float,
-        entityScale: Float
-    ) {
-        super.setupRotations(state, poseStack, bodyRot, entityScale)
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0f - bodyRot))
+    override fun setupRotations(state: ArmorStandRenderState, poseStack: PoseStack, bodyRot: Float, entityScale: Float) {
+        poseStack.rotateDegrees(Axis.YP, 180.0f - bodyRot)
         if (state.wiggle < 5.0f) {
-            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.sin((state.wiggle / 1.5f * Math.PI.toFloat()).toDouble()) * 3.0f))
+            poseStack.rotateDegrees(Axis.YP, Mth.sin((state.wiggle / 1.5f * Math.PI.toFloat()).toDouble()) * 3.0f)
         }
     }
 }

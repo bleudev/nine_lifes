@@ -62,11 +62,12 @@ interface PostEffectRegistry {
         internal fun registerNineLifes(path: String): Builder =
             register(createIdentifier(path))
 
-        internal fun execute(renderer: (Identifier) -> Unit) {
+        internal fun visit(renderer: (Identifier) -> Unit) {
+            UniformRegistryImpl.initBuffers() // Try init
             UniformRegistryImpl.updateBuffers()
-            POST_EFFECT_REGISTRY.execute(renderer)
+            POST_EFFECT_REGISTRY.visit(renderer)
         }
-        internal fun initBuffers() = UniformRegistryImpl.initBuffers()
+
         internal fun newUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> =
             UniformRegistryImpl.newUniforms(current, shaderId)
     }
@@ -185,7 +186,7 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
         return BuilderImpl(identifier)
     }
 
-    fun execute(renderer: (Identifier) -> Unit) {
+    fun visit(renderer: (Identifier) -> Unit) {
         for ((id, pr) in postEffects) {
             if (pr()) {
                 renderer(id)
@@ -214,6 +215,7 @@ private object UniformRegistryImpl {
     private val BUFFER_QUERY: HashMap<PostEffectContext, () -> MappableRingBuffer> = HashMap()
     private val BUFFERS: HashMap<PostEffectContext, MappableRingBuffer> = HashMap()
     private val TRANSFORMERS: HashMap<PostEffectContext, UniformBuilderTransformer> = HashMap()
+    private var initialized: Boolean = false
 
     fun register(postEffectContext: PostEffectContext, transformer: UniformBuilderTransformer) {
         val b = Builder.UniformBuilder()
@@ -223,30 +225,33 @@ private object UniformRegistryImpl {
     }
 
     fun initBuffers() {
-        BUFFERS.clear()
-        for (entry in BUFFER_QUERY) {
-            BUFFERS[entry.key] = entry.value()
+        if (!initialized) {
+            initialized = true
+            BUFFERS.clear()
+            for ((ctx, factory) in BUFFER_QUERY) {
+                BUFFERS[ctx] = factory()
+            }
         }
     }
 
     fun updateBuffers() {
-        for (entry in BUFFERS) {
-            if (entry.value.currentBuffer().isClosed) {
+        for ((ctx, buffer) in BUFFERS) {
+            if (buffer.currentBuffer().isClosed) {
                 initBuffers()
                 return
             }
-            entry.value.currentBuffer().map(false, true).use { view ->
+            buffer.currentBuffer().map(false, true).use { view ->
                 view.data().position(0)
-                TRANSFORMERS[entry.key]!!(Builder.UniformBuilder(view.data()))
+                TRANSFORMERS[ctx]!!(Builder.UniformBuilder(view.data()))
             }
         }
     }
 
     fun newUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> {
-        for (entry in BUFFERS) {
-            if (shaderId != entry.key.postEffect) continue
-            if (current.containsKey(entry.key.uniform))
-                current[entry.key.uniform] = entry.value.currentBuffer()
+        for ((ctx, buffer) in BUFFERS) {
+            if (shaderId != ctx.postEffect) continue
+            if (current.containsKey(ctx.uniform))
+                current[ctx.uniform] = buffer.currentBuffer()
         }
         return current
     }

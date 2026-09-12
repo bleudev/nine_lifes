@@ -1,4 +1,4 @@
-# 6.4
+# 7.0
 
 ## Targets
 
@@ -6,12 +6,18 @@
 |-------------------|--------------------------------------------------|
 | 26.3-snapshot-9   | ✅️                                               |
 | 26.2              | ✅️                                               |
-| 26.1.2            | ⚠️ (Will no longer supported after 26.3 release) |
 
 ## Changes
 
+### Breaking changes
+
+#### 26.3
+
+- [DEV] `ClientEnvironmentSetupEvents.SKY_COLOR` now use `Vector3fc` instead of `Int` (how Mojang) (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
+
 ### Dependencies
 
+- Fabric Loader 0.19.5 (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
 - [DEV] Gradle 9.6.1 (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
 
 ### New features
@@ -28,5 +34,6 @@
 
 ### Fixes
 
+- Amethyst stick use cause server freeze forever in some situations (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
 - Containers, bundles etc. weren't considered in players with charged items finder (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
 - Deleted arms from wandering armor stand by default (without code modification) (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))

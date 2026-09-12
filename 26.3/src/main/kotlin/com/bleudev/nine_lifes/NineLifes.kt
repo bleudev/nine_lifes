@@ -244,29 +244,26 @@ class NineLifes : ModInitializer {
                 item.remove(Entity.RemovalReason.DISCARDED)
             }
             var remain = maxCount
-            while (remain > 0) {
-                val kk = original.keys.toList()
-                if (kk.isNotEmpty()) {
-                    var vv = original[kk[0]]!!
-                    var nvv = 0
-                    if (vv <= remain) {
-                        nvv += vv
-                        remain -= vv
-                        vv = 0
-                    }
-                    else {
-                        nvv += remain
-                        vv -= remain
-                        remain = 0
-                    }
-                    original[kk[0]] = vv
-                    if (vv == 0) {
-                        original.remove(kk[0])
-                    }
-                    charged.compute(kk[0]) { _, v -> (v ?: 0) + nvv }
+            while (remain > 0 && original.isNotEmpty()) {
+                val e = original.entries.first()
+                var vv = e.value
+                var nvv: Int
+                if (vv <= remain) {
+                    nvv = vv
+                    remain -= vv
+                    vv = 0
                 }
+                else {
+                    nvv = remain
+                    vv -= remain
+                    remain = 0
+                }
+                e.setValue(vv)
+                if (vv == 0) {
+                    original.remove(e.key)
+                }
+                charged.compute(e.key) { _, v -> (v ?: 0) + nvv }
             }
-            println("O $original C $charged")
 
             for (o in original) {
                 var vv = o.value

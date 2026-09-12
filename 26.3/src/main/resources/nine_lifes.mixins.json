@@ -16,8 +16,8 @@
     "client.EffectsInInventoryMixin",
     "client.EnvironmentAttributeProbeMixin",
     "client.FogRendererMixin",
-    "client.GameRendererMixin",
     "client.HudMixin",
+    "client.LocalPlayerMixin",
     "client.PostPassMixin"
   ],
   "injectors": {

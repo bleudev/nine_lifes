@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
+import org.joml.Vector3fc
 import org.joml.Vector4f
 
 @Environment(EnvType.CLIENT)
@@ -30,7 +31,7 @@ object ClientEnvironmentSetupEvents {
     private typealias EventLayer<T> = (original: T, current: T) -> T
 
     typealias FogColor = EventLayer<Vector4f>
-    typealias SkyColor = EventLayer<Int>
+    typealias SkyColor = EventLayer<Vector3fc>
     typealias FogStart = EventLayer<Float>
     typealias FogEnd = EventLayer<Float>
 }
