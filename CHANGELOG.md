@@ -9,6 +9,12 @@
 
 ## Changes
 
+### Breaking changes
+
+#### 26.3
+
+- [DEV] `ClientEnvironmentSetupEvents.SKY_COLOR` now use `Vector3fc` instead of `Int` (how Mojang) (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
+
 ### Dependencies
 
 - Fabric Loader 0.19.5 (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
