@@ -2,10 +2,10 @@
 
 ## Targets
 
-| Minecraft Version | Fabric                                           |
-|-------------------|--------------------------------------------------|
-| 26.3-snapshot-9   | ✅️                                               |
-| 26.2              | ✅️                                               |
+| Minecraft Version | Fabric |
+|-------------------|--------|
+| 26.3-pre-3        | ✅️     |
+| 26.2              | ✅️     |
 
 ## Changes
 
@@ -17,6 +17,10 @@
 
 ### Dependencies
 
+#### Minecraft
+- End of support for Minecraft 26.1.2 (bleudev [#144](https://github.com/bleudev/nine_lifes/pull/144))
+
+#### Others
 - Fabric Loader 0.19.5 (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
 - [DEV] Gradle 9.6.1 (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
 
