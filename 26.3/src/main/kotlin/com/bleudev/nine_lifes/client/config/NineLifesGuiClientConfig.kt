@@ -22,6 +22,7 @@ private var cachedHeartbeat: Boolean? = null
 private var cachedHeartPosition: HeartPosition? = null
 private var cachedHealthRendering: HealthRendering? = null
 private var cachedDeathScreenRemaining: Boolean? = null
+private var cachedChargedAmethysm: Boolean? = null
 
 fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_ID) {
     categories.register("general") {
@@ -68,6 +69,61 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
             descriptionBuilder {
                 addDefaultText(1)
                 fullLocalisedConfigImage("death_screen_remaining") {cachedDeathScreenRemaining ?: deathScreenRemaining}
+            }
+        }
+        categories.register("charged_amethysm") {
+            rootOptions.register("enabled") {
+                binding(true, ::playerChargedAmethysm)
+                yesNoFormat()
+                cachePending(::cachedChargedAmethysm::set)
+                addListener { option, _ ->
+                    if (thisCategory.isDone) {
+                        thisCategory.get().groups().flatMap { it.options() }.forEach {
+                            if (it.name() != option.name()) {
+                                it.setAvailable(cachedChargedAmethysm ?: playerChargedAmethysm)
+                            }
+                        }
+                    }
+                }
+                descriptionBuilder {
+                    addDefaultText(1)
+                }
+            }
+            groups.register("charged") {
+                options.register("players") {
+                    binding(true, ::playerChargedPlayers)
+                    yesNoFormat()
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                    }
+                }
+                options.register("self") {
+                    binding(true, ::playerChargedSelf)
+                    yesNoFormat()
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                    }
+                }
+            }
+            groups.register("amethysm") {
+                options.register("players") {
+                    binding(true, ::playerAmethysmPlayers)
+                    yesNoFormat()
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                    }
+                }
+                options.register("self") {
+                    binding(true, ::playerAmethysmSelf)
+                    yesNoFormat()
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                    }
+                }
             }
         }
     }
