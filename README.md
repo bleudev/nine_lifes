@@ -16,10 +16,10 @@ the vanilla hardcore. For changes in lifes count - use `/nl` command. Enjoy!)
 ![Only for Fabric](https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FyphNcXz%2Ffabric-only-banner.png&n=-1)
 
 ### Supported Minecraft versions and minimal requirements
-| Minecraft version | Max Nine lifes version | Fabric Language Kotlin    | Fabric API  | YACL                        | Fabric Loader |
+| Minecraft version | Max Nine Lifes version | Fabric Language Kotlin    | Fabric API  | YACL                        | Fabric Loader |
 |-------------------|------------------------|:--------------------------|:------------|:----------------------------|---------------|
-| 26.3-pre-3        | ✅ 7.0                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.160.2 | \>= 3.9.6                   | \>= 0.19.5    |
-| 26.2              | ✅ 7.0                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.157.0 | \>= 3.9.6                   | \>= 0.19.5    |
+| 26.3-pre-3        | ✅ 7.0                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.160.2 | \>= 3.9.6                   | \>= 0.19.5    |
+| 26.2              | ✅ 7.0                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.157.0 | \>= 3.9.6                   | \>= 0.19.5    |
 | 26.1.2            | ❌ 6.3                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.2 | \>= 3.9.6                   | \>= 0.19.2    |
 | 26.1-26.1.1       | ❌ 4.0                 | \>= 1.13.10+kotlin.2.3.20 | \>= 0.144.3 | \>= 3.9.1                   | \>= 0.18.4    |
 | 1.21.11           | ❌ 5.1                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.141.3 | \>= 3.8.2                   | \>= 0.19.2    |
