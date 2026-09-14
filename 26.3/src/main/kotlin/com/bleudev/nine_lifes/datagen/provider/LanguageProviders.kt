@@ -125,17 +125,20 @@ class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("death_screen_remaining"),
             "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
 
-        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm"),
             "Amethysm/charged")
-        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").root().option("enabled"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").root().option("enabled"),
             "Charged amethyst (wip)", "CHARGED PLACEHOLDER")
-
-        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged"),
-            "Charged", "CHARGED PLACEHOLDER=")
-        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged").option("players"),
-            "Players", "CHARGED PLAYERS PLACEHOLDER")
-        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged").option("self"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged"),
+            "Charged")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged").option("self"),
             "Self", "CHARGED SELF PLACEHOLDER")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged").option("players"),
+            "Players", "CHARGED PLAYERS PLACEHOLDER")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("amethysm"),
+            "Amethysm")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("amethysm").option("players"),
+            "Players", "AMETHYSM PLAYERS PLACEHOLDER")
 
         builder.addConfigEnum(HeartPosition,
             "Bottom left", "Bottom center", "Bottom right",
@@ -256,6 +259,22 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
             "Рендеринг здоровья", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
         builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("death_screen_remaining"),
             "Оставшиеся жизни на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
+
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm"),
+            "Аметизм/Заряженные предметы")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").root().option("enabled"),
+            "Включить", "Включает/выключает полностью эффекты рядом с игроками с заряженными предметами или аметизмом. Удобно когда нужно быстро выключить одной кнопкой.")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged"),
+            "Заряженные предметы")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged").option("self"),
+            "Этот игрок", "Показывать эффект при наличии в инвентаре заряженных предметов.")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("charged").option("players"),
+            "Остальные игроки", "Показывать эффект рядом с игроками с заряженными предметами.")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("amethysm"),
+            "Аметизм")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("charged_amethysm").group("amethysm").option("players"),
+            "Остальные игроки", "Показывать эффект рядом с игроками с аметизмом.")
+
         builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
