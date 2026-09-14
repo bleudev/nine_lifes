@@ -71,7 +71,7 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
                 fullLocalisedConfigImage("death_screen_remaining") {cachedDeathScreenRemaining ?: deathScreenRemaining}
             }
         }
-        categories.register("charged_amethysm") {
+        categories.register("h_charged_amethysm") {
             rootOptions.register("enabled") {
                 binding(true, ::playerChargedAmethysm)
                 yesNoFormat()

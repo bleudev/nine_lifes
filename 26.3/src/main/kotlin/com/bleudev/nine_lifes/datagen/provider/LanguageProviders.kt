@@ -12,7 +12,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
 
-class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
+class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
     override fun generateTranslations(
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
@@ -112,18 +112,31 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         // Config
         builder.add(config("title"), "Nine lifes config")
         builder.add(config("category.general"), "General")
-        builder.addConfigOption(rootOption("join_message"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("join_message"),
             "Enable join message", "Display message with lifes count on join server")
-        builder.addConfigOption(rootOption("heartbeat"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("heartbeat"),
             "Enable heartbeat effect", "When true lifes count will beat")
-        builder.addConfigOption(rootOption("heart_position"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("heart_position"),
             "Heart position", "Location of lifes count on the screen")
-        builder.addConfigOption(rootOption("low_lifes_red_sky"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("low_lifes_red_sky"),
             "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
-        builder.addConfigOption(rootOption("health_rendering"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("health_rendering"),
             "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
-        builder.addConfigOption(rootOption("death_screen_remaining"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("death_screen_remaining"),
             "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
+
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm"),
+            "Amethysm/charged")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").root().option("enabled"),
+            "Charged amethyst (wip)", "CHARGED PLACEHOLDER")
+
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged"),
+            "Charged", "CHARGED PLACEHOLDER=")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged").option("players"),
+            "Players", "CHARGED PLAYERS PLACEHOLDER")
+        builder.addConfigOption(ConfigTranslationBuilder.default().category("h_charged_amethysm").group("charged").option("self"),
+            "Self", "CHARGED SELF PLACEHOLDER")
+
         builder.addConfigEnum(HeartPosition,
             "Bottom left", "Bottom center", "Bottom right",
             "Top left", "Top center", "Top right"
@@ -134,7 +147,7 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
     }
 }
 
-class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
+class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
@@ -231,17 +244,17 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         // Config
         builder.add(config("title"), "Конфиг Nine lifes")
         builder.add(config("category.general"), "Главные")
-        builder.addConfigOption(rootOption("join_message"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("join_message"),
             "Включить приветственное сообщение", "Показывать сообщение с количеством жизней при заходе на сервер")
-        builder.addConfigOption(rootOption("heartbeat"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("heartbeat"),
             "Включить эффект сербцебиения", "Когда включено сердце будет пульсировать")
-        builder.addConfigOption(rootOption("heart_position"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("heart_position"),
             "Расположение сердца", "Расположение количества жизней на экране")
-        builder.addConfigOption(rootOption("low_lifes_red_sky"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("low_lifes_red_sky"),
             "Красное небо когда мало жизней", "Когда включено небо будет краснеть при низком количестве жизней")
-        builder.addConfigOption(rootOption("health_rendering"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("health_rendering"),
             "Рендеринг здоровья", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
-        builder.addConfigOption(rootOption("death_screen_remaining"),
+        builder.addConfigOption(ConfigTranslationBuilder.default().category().root().option("death_screen_remaining"),
             "Оставшиеся жизни на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
         builder.addConfigEnum(HeartPosition,
             "Снизу слева", "Снизу в центре", "Снизу справа",
@@ -277,9 +290,9 @@ private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: Strin
 private fun FabricLanguageProvider.TranslationBuilder.addStat(statId: Identifier, translation: String) {
     this.add(statId.toLanguageKey("stat"), translation)
 }
-private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(name: String, nameTranslation: String, descriptionTranslation: String? = null) {
-    this.add(config(name), nameTranslation)
-    descriptionTranslation?.let { this.add(config("$name.description"), descriptionTranslation) }
+private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(translation: ConfigTranslationBuilder, nameTranslation: String, descriptionTranslation: String? = null) {
+    this.add(ConfigTranslationBuilder.default().update(translation).build(), nameTranslation)
+    descriptionTranslation?.let { this.add(ConfigTranslationBuilder.default().update(translation).description().build(), descriptionTranslation) }
 }
 private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {
     enum.names.zip(translations).forEach { (key, translation) ->
