@@ -3,16 +3,20 @@ package com.bleudev.nine_lifes.datagen.provider
 import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HealthRendering
 import com.bleudev.nine_lifes.client.config.HeartPosition
-import com.bleudev.nine_lifes.client.config.TranslatableConfigEnumProvider
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.util.*
+import com.bleudev.nine_lifes.util.ConfigTranslationKeyBuilder
+import com.bleudev.nine_lifes.util.advancement
+import com.bleudev.nine_lifes.util.advancementDescription
+import com.bleudev.nine_lifes.util.deathScreenRemaining
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.core.HolderLookup
 import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
+import kotlin.enums.enumEntries
+import kotlin.reflect.jvm.jvmName
 
-class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
+class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
     override fun generateTranslations(
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
@@ -110,31 +114,53 @@ class NineLifesDefaultTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(deathScreenRemaining(7), "7 lifes left")
         builder.add(deathScreenRemaining(8), "8 lifes left")
         // Config
-        builder.add(config("title"), "Nine lifes config")
-        builder.add(config("category.general"), "General")
-        builder.addConfigOption(rootOption("join_message"),
+        var tb = ConfigTranslationKeyBuilder.default()
+
+        builder.add(tb.additional("title"), "Nine lifes config")
+        /// General
+        tb = tb.category()
+        builder.add(tb, "General")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("join_message"),
             "Enable join message", "Display message with lifes count on join server")
-        builder.addConfigOption(rootOption("heartbeat"),
+        builder.addConfigOption(tb.option("heartbeat"),
             "Enable heartbeat effect", "When true lifes count will beat")
-        builder.addConfigOption(rootOption("heart_position"),
+        builder.addConfigOption(tb.option("heart_position"),
             "Heart position", "Location of lifes count on the screen")
-        builder.addConfigOption(rootOption("low_lifes_red_sky"),
+        builder.addConfigOption(tb.option("low_lifes_red_sky"),
             "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
-        builder.addConfigOption(rootOption("health_rendering"),
+        builder.addConfigOption(tb.option("health_rendering"),
             "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
-        builder.addConfigOption(rootOption("death_screen_remaining"),
+        builder.addConfigOption(tb.option("death_screen_remaining"),
             "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
-        builder.addConfigEnum(HeartPosition,
+        /// Charged/Amethysm
+        tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
+        builder.addConfigOption(tb, "Amethysm/Charged Items")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("enabled"),
+            "Enable", "Toggles the effects near players with charged items or Amethysm on or off. Useful for quickly disabling everything with a single button.")
+        tb = tb.group("charged")
+        builder.addConfigOption(tb, "Charged Items")
+        builder.addConfigOption(tb.option("self"),
+            "This Player", "Show the effect when holding charged items in the inventory.")
+        builder.addConfigOption(tb.option("players"),
+            "Other Players", "Show the effect near players with charged items.")
+        tb = tb.group("amethysm")
+        builder.addConfigOption(tb, "Amethysm")
+        builder.addConfigOption(tb.option("players"),
+            "Other Players", "Show the effect near players with Amethysm.")
+
+        builder.addConfigEnum<HeartPosition>(
             "Bottom left", "Bottom center", "Bottom right",
             "Top left", "Top center", "Top right"
         )
-        builder.addConfigEnum(HealthRendering,
+        builder.addConfigEnum<HealthRendering>(
             "Hardcore", "True hardcore", "Vanilla"
         )
     }
 }
 
-class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
+class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
@@ -229,25 +255,46 @@ class NineLifesRussianTranslationProvider(output: FabricPackOutput, registriesFu
         builder.add(deathScreenRemaining(7), "7 жизней осталось")
         builder.add(deathScreenRemaining(8), "8 жизней осталось")
         // Config
-        builder.add(config("title"), "Конфиг Nine lifes")
-        builder.add(config("category.general"), "Главные")
-        builder.addConfigOption(rootOption("join_message"),
+        var tb = ConfigTranslationKeyBuilder.default()
+        builder.add(tb.additional("title"), "Конфиг Nine lifes")
+        /// General
+        tb = tb.category()
+        builder.add(tb, "Главные")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("join_message"),
             "Включить приветственное сообщение", "Показывать сообщение с количеством жизней при заходе на сервер")
-        builder.addConfigOption(rootOption("heartbeat"),
+        builder.addConfigOption(tb.option("heartbeat"),
             "Включить эффект сербцебиения", "Когда включено сердце будет пульсировать")
-        builder.addConfigOption(rootOption("heart_position"),
+        builder.addConfigOption(tb.option("heart_position"),
             "Расположение сердца", "Расположение количества жизней на экране")
-        builder.addConfigOption(rootOption("low_lifes_red_sky"),
+        builder.addConfigOption(tb.option("low_lifes_red_sky"),
             "Красное небо когда мало жизней", "Когда включено небо будет краснеть при низком количестве жизней")
-        builder.addConfigOption(rootOption("health_rendering"),
+        builder.addConfigOption(tb.option("health_rendering"),
             "Рендеринг здоровья", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
-        builder.addConfigOption(rootOption("death_screen_remaining"),
+        builder.addConfigOption(tb.option("death_screen_remaining"),
             "Оставшиеся жизни на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
-        builder.addConfigEnum(HeartPosition,
+        /// Charged/amethysm
+        tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
+        builder.addConfigOption(tb, "Аметизм/Заряженные предметы")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("enabled"),
+            "Включить", "Включает/выключает полностью эффекты рядом с игроками с заряженными предметами или аметизмом. Удобно когда нужно быстро выключить одной кнопкой.")
+        tb = tb.group("charged")
+        builder.addConfigOption(tb, "Заряженные предметы")
+        builder.addConfigOption(tb.option("self"),
+            "Этот игрок", "Показывать эффект при наличии в инвентаре заряженных предметов.")
+        builder.addConfigOption(tb.option("players"),
+            "Остальные игроки", "Показывать эффект рядом с игроками с заряженными предметами.")
+        tb = tb.group("amethysm")
+        builder.addConfigOption(tb, "Аметизм")
+        builder.addConfigOption(tb.option("players"),
+            "Остальные игроки", "Показывать эффект рядом с игроками с аметизмом.")
+
+        builder.addConfigEnum<HeartPosition>(
             "Снизу слева", "Снизу в центре", "Снизу справа",
             "Сверху слева", "Сверху в центре", "Сверху справа"
         )
-        builder.addConfigEnum(HealthRendering,
+        builder.addConfigEnum<HealthRendering>(
             "Хардкор", "Истинный хардкор", "Ванила"
         )
     }
@@ -277,13 +324,17 @@ private fun FabricLanguageProvider.TranslationBuilder.addAdvancement(name: Strin
 private fun FabricLanguageProvider.TranslationBuilder.addStat(statId: Identifier, translation: String) {
     this.add(statId.toLanguageKey("stat"), translation)
 }
-private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(name: String, nameTranslation: String, descriptionTranslation: String? = null) {
-    this.add(config(name), nameTranslation)
-    descriptionTranslation?.let { this.add(config("$name.description"), descriptionTranslation) }
+private fun FabricLanguageProvider.TranslationBuilder.add(translationKeyBuilder: ConfigTranslationKeyBuilder, translation: String) {
+    this.add(translationKeyBuilder.build(), translation)
 }
-private fun FabricLanguageProvider.TranslationBuilder.addConfigEnum(enum: TranslatableConfigEnumProvider, vararg translations: String) {
-    enum.names.zip(translations).forEach { (key, translation) ->
-        this.add(key, translation)
+private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(translation: ConfigTranslationKeyBuilder, nameTranslation: String, descriptionTranslation: String? = null) {
+    this.add(ConfigTranslationKeyBuilder.default().update(translation).build(), nameTranslation)
+    descriptionTranslation?.let { this.add(ConfigTranslationKeyBuilder.default().update(translation).description().build(), descriptionTranslation) }
+}
+private inline fun <reified T : Enum<T>> FabricLanguageProvider.TranslationBuilder.addConfigEnum(vararg translations: String) {
+    enumEntries<T>().zip(translations).forEach { (entry, translation) ->
+        val tb = ConfigTranslationKeyBuilder.default().additional("enum.${T::class.jvmName}.${entry.name}")
+        this.add(tb.build(), translation)
     }
 }
 

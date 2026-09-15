@@ -27,6 +27,8 @@
 
 ### New features
 
+- Ability to disable the effects near players with charged items or amethysm. (bleudev [#148](https://github.com/bleudev/nine_lifes/pull/148))
+
 #### Wandering armor stand
 
 - You can now hang armor, elytras, heads etc. like with normal armor stands!!! (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))

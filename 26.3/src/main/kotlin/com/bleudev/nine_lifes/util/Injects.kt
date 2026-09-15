@@ -42,6 +42,7 @@ fun <T> T?.requireNotNullOr(action: () -> Unit): T? {
 
 fun Float.lerp(start: Float = 0f, end: Float = 1f): Float = start + coerceIn(0f, 1f) * (end - start)
 fun Float.reverseDelta(max: Float = 1f): Float = max - this
+fun Float.onlyIf(condition: Boolean, fallback: Float = 0f): Float = if (condition) this else fallback
 
 // Player
 fun ServerPlayer.resetLifes() {this.lifes = MAX_LIFES}

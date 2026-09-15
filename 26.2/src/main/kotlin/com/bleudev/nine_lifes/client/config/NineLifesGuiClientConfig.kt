@@ -22,6 +22,10 @@ private var cachedHeartbeat: Boolean? = null
 private var cachedHeartPosition: HeartPosition? = null
 private var cachedHealthRendering: HealthRendering? = null
 private var cachedDeathScreenRemaining: Boolean? = null
+private var cachedChargedAmethysm: Boolean? = null
+private var cachedChargedSelf: Boolean? = null
+private var cachedChargedPlayers: Boolean? = null
+private var cachedAmethysmPlayers: Boolean? = null
 
 fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_ID) {
     categories.register("general") {
@@ -70,6 +74,59 @@ fun generateGuiConfigScreen(parent: Screen?): Screen = YetAnotherConfigLib(MOD_I
                 fullLocalisedConfigImage("death_screen_remaining") {cachedDeathScreenRemaining ?: deathScreenRemaining}
             }
         }
+        categories.register("charged_amethysm") {
+            rootOptions.register("enabled") {
+                binding(true, ::playerChargedAmethysm)
+                yesNoFormat()
+                cachePending(::cachedChargedAmethysm::set)
+                addListener { option, _ ->
+                    if (thisCategory.isDone) {
+                        thisCategory.get().groups().flatMap { it.options() }.forEach {
+                            if (it.name() != option.name()) {
+                                it.setAvailable(cachedChargedAmethysm ?: playerChargedAmethysm)
+                            }
+                        }
+                    }
+                }
+                descriptionBuilder {
+                    addDefaultText(1)
+                }
+            }
+            groups.register("charged") {
+                options.register("self") {
+                    binding(true, ::playerChargedSelf)
+                    yesNoFormat()
+                    cachePending(::cachedChargedSelf::set)
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                        conditionConfigImage("charged_self") { cachedChargedSelf ?: playerChargedSelf }
+                    }
+                }
+                options.register("players") {
+                    binding(true, ::playerChargedPlayers)
+                    yesNoFormat()
+                    cachePending(::cachedChargedPlayers::set)
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                        conditionConfigImage("charged_players") { cachedChargedPlayers ?: playerChargedPlayers }
+                    }
+                }
+            }
+            groups.register("amethysm") {
+                options.register("players") {
+                    binding(true, ::playerAmethysmPlayers)
+                    yesNoFormat()
+                    cachePending(::cachedAmethysmPlayers::set)
+                    available(playerChargedAmethysm)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                        conditionConfigImage("amethysm_players") { cachedAmethysmPlayers ?: playerAmethysmPlayers }
+                    }
+                }
+            }
+        }
     }
 }.generateScreen(parent)
 
@@ -77,6 +134,15 @@ private fun OptionDsl<Boolean>.yesNoFormat() = controller { BooleanControllerBui
 private inline fun <reified T : Enum<T>> OptionDsl<T>.enumFormat() = controller { EnumControllerBuilder.create(it).enumClass(T::class.java) }
 private fun <T : Any> OptionDsl<T>.binding(default: T, property: KMutableProperty<T>) = binding(default, {property.getter.call()}, {property.setter.call(it)})
 private fun <T : Any> OptionDsl<T>.cachePending(cacher: (T) -> Unit) = addListener { option, event -> if (event == OptionEventListener.Event.STATE_CHANGE) cacher(option.pendingValue()) }
+private fun OptionDescription.Builder.conditionConfigImage(name: String, condition: () -> Boolean) = customImage(object : MethodBasedImageRenderer() {
+    override fun getImagePath(): Identifier {
+        var p = "textures/config/description/$name"
+        if (!condition()) {
+            p += "_disabled"
+        }
+        return createIdentifier("$p.png")
+    }
+})
 private fun OptionDescription.Builder.localisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, false, condition))
 private fun OptionDescription.Builder.fullLocalisedConfigImage(name: String, condition: () -> Boolean = {true}) = customImage(LocalisedImageRenderer(name, true, condition))
 private fun <T : Enum<T>> OptionDescription.Builder.enumConfigImage(name: String, enumGetter: () -> T) = customImage(EnumImageRenderer(name, enumGetter))
