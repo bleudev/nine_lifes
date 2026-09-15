@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.LOGGER
 import com.bleudev.nine_lifes.client.forceVanillaDeathScreen
 import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
@@ -30,6 +31,19 @@ internal var deathScreenRemaining: Boolean
     get() = configLoad().deathScreenRemaining && !forceVanillaDeathScreen
     set(new) = configSave(configLoad().apply { deathScreenRemaining = new })
 
+internal var playerChargedAmethysm: Boolean
+    get() = configLoad().chargedAmethysm.enabled
+    set(new) = configSave(configLoad().apply { chargedAmethysm.enabled = new })
+internal var playerChargedPlayers: Boolean
+    get() = configLoad().chargedAmethysm.charged.players
+    set(new) = configSave(configLoad().apply { chargedAmethysm.charged.players = new })
+internal var playerChargedSelf: Boolean
+    get() = configLoad().chargedAmethysm.charged.self
+    set(new) = configSave(configLoad().apply { chargedAmethysm.charged.self = new })
+internal var playerAmethysmPlayers: Boolean
+    get() = configLoad().chargedAmethysm.amethysm.players
+    set(new) = configSave(configLoad().apply { chargedAmethysm.amethysm.players = new })
+
 @Serializable
 data class NineLifesClientConfig(
     var joinMessage: Boolean = true,
@@ -37,7 +51,21 @@ data class NineLifesClientConfig(
     var heartPosition: HeartPosition = HeartPosition.BOTTOM_CENTER,
     var healthRendering: HealthRendering = HealthRendering.ALWAYS,
     var deathScreenRemaining: Boolean = true,
-)
+    @SerialName("charged_amethysm")
+    var chargedAmethysm: ChargedAmethysmData = ChargedAmethysmData(),
+) {
+    @Serializable
+    data class ChargedAmethysmData(
+        var enabled: Boolean = true,
+        var charged: ChargedData = ChargedData(),
+        var amethysm: AmethysmData = AmethysmData(),
+    ) {
+        @Serializable
+        data class ChargedData(var self: Boolean = true, var players: Boolean = true)
+        @Serializable
+        data class AmethysmData(var players: Boolean = true)
+    }
+}
 
 interface TranslatableConfigEnumProvider {
     val names: List<String>

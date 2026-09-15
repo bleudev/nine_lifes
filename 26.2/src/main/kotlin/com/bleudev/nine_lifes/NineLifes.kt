@@ -154,7 +154,7 @@ class NineLifes : ModInitializer {
                 var charged = hasCharged.toList().minOfOrNull { it.distanceTo(player) } ?: 999f
                 if (amethysm == 0f) amethysm = 999f
                 if (charged == 0f) charged = 4f
-                player.sendPacket(DistanceUpdate(amethysm, charged))
+                player.sendPacket(DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged))
             }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
