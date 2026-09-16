@@ -1,5 +1,7 @@
 # 7.0
 
+![Minecraft 26 3](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/26_3.png)
+
 ## Targets
 
 | Minecraft Version | Fabric |
