@@ -44,5 +44,6 @@
 ### Fixes
 
 - Amethyst stick use cause server freeze forever in some situations (bleudev [#143](https://github.com/bleudev/nine_lifes/pull/143))
+- Sunset is visible when always day (bleudev [#154](https://github.com/bleudev/nine_lifes/pull/154))
 - Containers, bundles etc. weren't considered in players with charged items finder (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
 - Deleted arms from wandering armor stand by default (without code modification) (bleudev [#142](https://github.com/bleudev/nine_lifes/pull/142))
