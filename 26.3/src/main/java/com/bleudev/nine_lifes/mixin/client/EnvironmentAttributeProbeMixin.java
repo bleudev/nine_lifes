@@ -30,19 +30,22 @@ public class EnvironmentAttributeProbeMixin {
         // Always day
         if (getForceAlwaysDay()) {
             if (attribute.equals(EnvironmentAttributes.SKY_LIGHT_FACTOR)) {
-                cir.setReturnValue((Value) Float.valueOf(1f));
+                cir.setReturnValue((Value) (Float) 1f);
             }
             if (attribute.equals(EnvironmentAttributes.SKY_LIGHT_COLOR)) {
                 cir.setReturnValue((Value) new Vector3f(1f, 1f, 1f));
             }
+            if (attribute.equals(EnvironmentAttributes.SUNRISE_SUNSET_COLOR)) {
+                cir.setReturnValue((Value) new Vector4f(0f, 0f, 0f, 0f));
+            }
             if (attribute.equals(EnvironmentAttributes.SUN_ANGLE)) {
-                cir.setReturnValue((Value) Float.valueOf(0f));
+                cir.setReturnValue((Value) (Float) 0f);
             }
             if (attribute.equals(EnvironmentAttributes.MOON_ANGLE)) {
-                cir.setReturnValue((Value) Float.valueOf(180f));
+                cir.setReturnValue((Value) (Float) 180f);
             }
             if (attribute.equals(EnvironmentAttributes.STAR_BRIGHTNESS)) {
-                cir.setReturnValue((Value) Float.valueOf(0f));
+                cir.setReturnValue((Value) (Float) 0f);
             }
             if (attribute.equals(EnvironmentAttributes.CLOUD_COLOR)) {
                 cir.setReturnValue((Value) new Vector4f(0.8f, 1f, 1f, 1f));

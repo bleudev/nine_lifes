@@ -19,29 +19,32 @@ import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceAlw
 @Mixin(EnvironmentAttributeProbe.class)
 public class EnvironmentAttributeProbeMixin {
     @Inject(method = "getValue", at = @At("RETURN"), cancellable = true)
-    private <Value> void modifySkyColor(EnvironmentAttribute<@NotNull Value> environmentAttribute, float f, CallbackInfoReturnable<Value> cir) {
-        if (environmentAttribute.equals(EnvironmentAttributes.SKY_COLOR)) {
+    private <Value> void modifySkyColor(EnvironmentAttribute<@NotNull Value> attribute, float partialTicks, CallbackInfoReturnable<Value> cir) {
+        if (attribute.equals(EnvironmentAttributes.SKY_COLOR)) {
             int original = (Integer) cir.getReturnValue();
             cir.setReturnValue((Value) ClientEnvironmentSetupEvents.SKY_COLOR.invoker().invoke(original, original));
         }
         // Always day
         if (getForceAlwaysDay()) {
-            if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_FACTOR))
-                cir.setReturnValue((Value) Float.valueOf(1f));
-            if (environmentAttribute.equals(EnvironmentAttributes.SKY_LIGHT_COLOR)) {
-                cir.setReturnValue((Value) Integer.valueOf(-1));
+            if (attribute.equals(EnvironmentAttributes.SKY_LIGHT_FACTOR))
+                cir.setReturnValue((Value) (Float) 1f);
+            if (attribute.equals(EnvironmentAttributes.SKY_LIGHT_COLOR)) {
+                cir.setReturnValue((Value) (Integer) (-1));
             }
-            if (environmentAttribute.equals(EnvironmentAttributes.SUN_ANGLE)) {
-                cir.setReturnValue((Value) Float.valueOf(0f));
+            if (attribute.equals(EnvironmentAttributes.SUNRISE_SUNSET_COLOR)) {
+                cir.setReturnValue((Value) (Integer) 0);
             }
-            if (environmentAttribute.equals(EnvironmentAttributes.MOON_ANGLE)) {
-                cir.setReturnValue((Value) Float.valueOf(180f));
+            if (attribute.equals(EnvironmentAttributes.SUN_ANGLE)) {
+                cir.setReturnValue((Value) (Float) 0f);
             }
-            if (environmentAttribute.equals(EnvironmentAttributes.STAR_BRIGHTNESS)) {
-                cir.setReturnValue((Value) Float.valueOf(0f));
+            if (attribute.equals(EnvironmentAttributes.MOON_ANGLE)) {
+                cir.setReturnValue((Value) (Float) 180f);
             }
-            if (environmentAttribute.equals(EnvironmentAttributes.CLOUD_COLOR)) {
-                cir.setReturnValue((Value) Integer.valueOf(-855638017));
+            if (attribute.equals(EnvironmentAttributes.STAR_BRIGHTNESS)) {
+                cir.setReturnValue((Value) (Float) 0f);
+            }
+            if (attribute.equals(EnvironmentAttributes.CLOUD_COLOR)) {
+                cir.setReturnValue((Value) (Integer) (-855638017));
             }
         }
     }
