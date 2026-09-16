@@ -18,6 +18,7 @@
 ### Dependencies
 
 #### Minecraft
+- 26.3 (bleudev [#152](https://github.com/bleudev/nine_lifes/pull/152))
 - End of support for Minecraft `26.1.2` (bleudev [#144](https://github.com/bleudev/nine_lifes/pull/144))
 
 #### Others
