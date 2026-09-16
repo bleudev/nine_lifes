@@ -4,7 +4,7 @@
 
 [![Downloads](https://img.shields.io/modrinth/dt/nine_lifes)](https://modrinth.com/mod/nine_lifes)
 [![Latest version](https://img.shields.io/badge/Latest_version-7.0-orange)](https://modrinth.com/mod/nine_lifes/versions)
-[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-26.2--26.3--pre--3-green)](https://modrinth.com/mod/nine_lifes)
+[![Supported Minecraft versions](https://img.shields.io/badge/Supported_Minecraft_Versions-26.2--26.3-green)](https://modrinth.com/mod/nine_lifes)
 [![Environment](https://img.shields.io/badge/Environment-Client%2BServer-blue)](https://modrinth.com/mod/nine_lifes)
 [![GitHub contributors](https://img.shields.io/github/contributors/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/bleudev/nine_lifes)](https://github.com/bleudev/nine_lifes/activity)
@@ -18,7 +18,7 @@ the vanilla hardcore. For changes in lifes count - use `/nl` command. Enjoy!)
 ### Supported Minecraft versions and minimal requirements
 | Minecraft version | Max Nine Lifes version | Fabric Language Kotlin    | Fabric API  | YACL                        | Fabric Loader |
 |-------------------|------------------------|:--------------------------|:------------|:----------------------------|---------------|
-| 26.3-pre-3        | ✅ 7.0                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.160.2 | \>= 3.9.6                   | \>= 0.19.5    |
+| 26.3              | ✅ 7.0                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.160.2 | \>= 3.9.6                   | \>= 0.19.5    |
 | 26.2              | ✅ 7.0                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.157.0 | \>= 3.9.6                   | \>= 0.19.5    |
 | 26.1.2            | ❌ 6.3                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.2 | \>= 3.9.6                   | \>= 0.19.2    |
 | 26.1-26.1.1       | ❌ 4.0                 | \>= 1.13.10+kotlin.2.3.20 | \>= 0.144.3 | \>= 3.9.1                   | \>= 0.18.4    |
