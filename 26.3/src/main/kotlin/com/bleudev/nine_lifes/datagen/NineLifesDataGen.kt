@@ -14,6 +14,7 @@ class NineLifesDataGen : DataGeneratorEntrypoint {
         pack.addProvider(::NLDefaultLanguageProvider)
         pack.addProvider(::NLUpsideDownLanguageProvider)
         pack.addProvider(::NLRussianLanguageProvider)
+        pack.addProvider(::NLPreReformRussiandLanguageProvider)
         // Tags
         pack.addProvider(::NineLifesItemTagsProvider)
         pack.addProvider(::NineLifesDamageTypeTagsProvider)

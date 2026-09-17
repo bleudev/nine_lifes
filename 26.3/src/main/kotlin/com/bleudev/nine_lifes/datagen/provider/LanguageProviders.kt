@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HealthRendering
 import com.bleudev.nine_lifes.client.config.HeartPosition
@@ -10,12 +11,19 @@ import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.deathScreenRemaining
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.core.HolderLookup
 import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
 import kotlin.enums.enumEntries
 
 private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider.TranslationBuilder) {
+    // Mod Menu
+    FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent {
+        builder.add("modmenu.nameTranslation.$MOD_ID", it.metadata.name)
+        builder.add("modmenu.descriptionTranslation.$MOD_ID", it.metadata.description)
+    }
+
     // Mob effects
     builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
     builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
@@ -197,6 +205,8 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
 
 class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
     override fun generateTranslations(registryLookup: HolderLookup.Provider, builder: TranslationBuilder) {
+        // Mod Menu
+        builder.add("modmenu.descriptionTranslation.$MOD_ID", "Мод, который даёт в выживании только 9 жизней перед смертью навсегда.")
         // Mob effects
         builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
         builder.add(NineLifesMobEffects.INSOMNIA.value(), "Бессоница")
@@ -333,6 +343,232 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
             "Хардкор", "Истинный хардкор", "Ванила"
         )
     }
+}
+
+class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "rpr", registriesFuture) {
+    override fun generateTranslations(
+        registryLookup: HolderLookup.Provider,
+        builder: TranslationBuilder
+    ) {
+        // Mod Menu
+        builder.add("modmenu.descriptionTranslation.$MOD_ID", "Модъ, дающій въ выживаніи лишь 9 жизней до смерти навѣки.\n")
+        // Mob effects
+        builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизмъ")
+        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Безсоница")
+
+        fun translatePotion(translationsName: String, vararg names: String) {
+            builder.addPotions(
+                names.toList(),
+                "Снадобье $translationsName",
+                "Взрывное снадобье $translationsName",
+                "Туманное снадобье $translationsName",
+                "Стрѣла $translationsName"
+            )
+        }
+        translatePotion("аметизма", "amethysm")
+        translatePotion("безсоницы", "insomnia", "longer_insomnia")
+        // Items
+        builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
+        // Death messages
+        builder.add("death.attack.amethysm", $$"%1$s не ожидалъ, что аметисты убиваютъ")
+        builder.add("death.attack.amethysm.player", $$"%1$s не ожидалъ, что аметисты убиваютъ")
+        builder.add("death.attack.charged_amethyst", $$"%1$s позналъ силу аметиста")
+        builder.add("death.attack.charged_amethyst.player", $$"%1$s позналъ силу аметиста")
+        builder.add("death.attack.unknown", $$"%1$s умеръ по неизвѣстной причинѣ")
+        builder.add("death.attack.unknown.player", $$"%1$s умеръ по неизвѣстной причинѣ")
+        // Enchantments
+        builder.add("enchantment.nine_lifes.charge", "Зарядъ")
+        // Advancements
+        builder.addAdvancement("root", "Девять жизней!", "Начните своё путешествіе")
+        builder.addAdvancement("try_sleep_without_shard", "Бѣсы въ головѣ", "По непонятной причинѣ вы не могли уснуть. Есть ли средство отъ сего?")
+        builder.addAdvancement("slept_with_shard", "Утро вечера мудренѣе.. Опять", "Поспите, съѣвъ осколокъ аметиста")
+        builder.addAdvancement("got_charged_shard", "Освященіе", "Получите заряженный осколокъ аметиста")
+        builder.addAdvancement("got_life_with_shard", "Чудо божіе", "Получите жизнь съ помощью заряженнаго осколка аметиста")
+        builder.addAdvancement("ate_64_charged_shards", "Запретный плодъ", "Съѣшьте 64 заряженныхъ осколка аметиста")
+        builder.addAdvancement("got_amethyst_stick", "Я ЕСМЬ БОГЪ!", "Получите аметистовую палочку")
+        builder.addAdvancement("almost_dead", "На волоскѣ", "Выживите съ половиною сердца и одной жизнію")
+        builder.addAdvancement("hundred_days", "100 дней и ночей", "Проживите 100 дней и ночей")
+        builder.addAdvancement("true_hundred_days", "Истинные 100 дней", "Проживите 100 дней съ одною жизнью")
+        builder.addAdvancement("all_done", "Богатырь", "Выполните всѣ достиженія Nine Lifes")
+        // Tags
+        builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Взрываетъ плавильную печь")
+        builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Взрываетъ печь")
+        builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Взрываетъ коптильню")
+        builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Взрываетъ костёръ")
+        builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Заряжается электричествомъ")
+        builder.add(NineLifesItemTags.Enchantable.CHARGE, "Способно быть заряженнымъ")
+        builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Способно заряжаться въ чародѣйскомъ алтарѣ")
+        builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Даётъ жизнь при смерти")
+        builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Молнія или огонь")
+        // Chat messages
+        builder.add("chat.message.join.lives", $$"Ваши жизни: %1$s.")
+        builder.add("chat.message.join.lives.careful", $$"Ваши жизни: %1$s. Будьте начеку!")
+        builder.add("chat.message.join.beta", "Вниманіе! Вы запустили бета-версію мода. Если вы обнаружите ошибку, то отправьте её по сему адресу:")
+        // Commands
+        builder.add("commands.nl.text.author", $$"Авторъ: %1$s")
+        builder.add("commands.nl.text.version", $$"Версія: %1$s")
+        builder.add("commands.nl.text.links", "Ссылки:")
+        builder.add("commands.nl.reset.success", "Жизни успѣшно сброшены")
+        builder.add("commands.nl.reset.player.success", $$"Жизни %1$s успѣшно сброшены")
+        builder.add(
+            "commands.nl.set.success",
+            $$"Количество жизней успѣшно установлено на %1$s"
+        )
+        builder.add(
+            "commands.nl.set.player.success",
+            $$"Количество жизней %2$s успѣшно установлено на %1$s"
+        )
+        builder.add(
+            "commands.nl.add.success",
+            $$"Количество жизней успѣшно увеличено на %1$s"
+        )
+        builder.add(
+            "commands.nl.add.success.neg",
+            $$"Количество жизней успѣшно уменьшено на %1$s"
+        )
+        builder.add(
+            "commands.nl.add.player.success",
+            $$"Количество жизней %2$s успѣшно увеличено на %1$s"
+        )
+        builder.add(
+            "commands.nl.add.player.success.neg",
+            $$"Количество жизней %2$s успѣшно уменьшено на %1$s"
+        )
+        builder.add("commands.nl.revive.success", "Вы были возрождены")
+        builder.add(
+            "commands.nl.revive.player.success",
+            $$"Игрокъ %1$s былъ возрождёнъ"
+        )
+        builder.add(
+            "commands.nl.get.player.success",
+            $$"Количество жизней %2$s: %1$s"
+        )
+        builder.add("commands.not_a_player", "Приказъ доступенъ только игрокамъ")
+        // Entities
+        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
+        // Stats
+        builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженныхъ вещей")
+        // Game rules
+        builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
+        builder.addGameRule(
+            "take_lifes",
+            "Отнимать жизни",
+            "Отнимать жизни умершихъ игроковъ. Вліяетъ только на отнятіе; заряженныя вещи продолжаютъ добавлять жизни."
+        )
+        builder.addGameRule(
+            "take_lifes_in_overworld",
+            "Отнимать жизни въ обычномъ мірѣ",
+            "Отнимать жизни умершихъ игроковъ въ обычномъ мірѣ. Не имѣетъ значенія, если отнятіе жизней отключено."
+        )
+        builder.addGameRule(
+            "take_lifes_in_nether",
+            "Отнимать жизни въ Нѣдрѣ",
+            "Отнимать жизни умершихъ игроковъ въ Нѣдрѣ. Не имѣетъ значенія, если отнятіе жизней отключено."
+        )
+        builder.addGameRule(
+            "take_lifes_in_end",
+            "Отнимать жизни въ Эндѣ",
+            "Отнимать жизни умершихъ игроковъ въ Эндѣ. Не имѣетъ значенія, если отнятіе жизней отключено."
+        )
+        builder.addGameRule(
+            "max_charged_items_at_a_time",
+            "Наибольшее число заряженныхъ вещей за разъ",
+            "Наибольшее число заряженныхъ вещей, получаемыхъ отъ одного удара молніи. Значеніе -1 означаетъ безконечность (отсутствіе предѣла)."
+        )
+        // Sounds
+        builder.add(
+            NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT,
+            "Бродячая стойка для брони ранена"
+        )
+        builder.add(
+            NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH,
+            "Бродячая стойка для брони пропадаетъ"
+        )
+        // Other
+        builder.add("block.minecraft.bed.insomnia_effect", "Сейчасъ не получитсяъ уснуть")
+        builder.add(deathScreenRemaining(1), "Послѣдній шансъ!")
+        builder.add(deathScreenRemaining(2), "2 жизни осталось")
+        builder.add(deathScreenRemaining(3), "3 жизни осталось")
+        builder.add(deathScreenRemaining(4), "4 жизни осталось")
+        builder.add(deathScreenRemaining(5), "5 жизней осталось")
+        builder.add(deathScreenRemaining(6), "6 жизней осталось")
+        builder.add(deathScreenRemaining(7), "7 жизней осталось")
+        builder.add(deathScreenRemaining(8), "8 жизней осталось")
+        // Config
+        var tb = ConfigTranslationKeyBuilder.default()
+        builder.add(tb.additional("title"), "Конфигъ Nine Lifes")
+        /// General
+        tb = tb.category()
+        builder.add(tb, "Основныя")
+        tb = tb.root()
+        builder.addConfigOption(
+            tb.option("join_message"),
+            "Включить привѣтственное сообщеніе",
+            "Показывать сообщеніе съ количествомъ жизней при входѣ въ салонъ"
+        )
+        builder.addConfigOption(
+            tb.option("heartbeat"),
+            "Включить эффектъ сердцебіенія",
+            "При включеніи сердце будетъ пульсироватьъ"
+        )
+        builder.addConfigOption(
+            tb.option("heart_position"),
+            "Положеніе сердецъ",
+            "Положеніе количества жизней на экранѣ"
+        )
+        builder.addConfigOption(
+            tb.option("low_lifes_red_sky"),
+            "Червонное небо при маломъ числѣ жизней",
+            "При включеніи небо будетъ краснѣть при маломъ числѣ жизней"
+        )
+        builder.addConfigOption(
+            tb.option("health_rendering"),
+            "Отображеніе здоровья",
+            "Управляетъ отображеніемъ здоровья игрока\nХардкоръ — всегда отображать хардкорныя сердца\nИстинный хардкоръ — только при одной жизні\nВаниль — ванильное повѣденіе"
+        )
+        builder.addConfigOption(
+            tb.option("death_screen_remaining"),
+            "Оставшіяся жизни на экранѣ смерти",
+            "На экранѣ смерти будетъ отображаться количество оставшихсяъ жизней вмѣсто надписи «Вы умерли!»"
+        )
+
+        /// Charged items / amethysm
+        tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
+        builder.addConfigOption(tb, "Аметизмъ / Заряженныя вещи")
+        tb = tb.root()
+        builder.addConfigOption(
+            tb.option("enabled"),
+            "Включить",
+            "Полностью включаетъ или отключаетъ эффекты рядомъ съ игроками, у коихъ есть заряженныя вещи или аметизмъ. Удобно, когда нужно быстро отключить ихъ одной кнопкою."
+        )
+        tb = tb.group("charged")
+        builder.addConfigOption(tb, "Заряженныя вещи")
+        builder.addConfigOption(
+            tb.option("self"),
+            "Этотъ игрокъ",
+            "Показывать эффектъ при наличіи въ инвентарѣ заряженныхъ вещей."
+        )
+        builder.addConfigOption(
+            tb.option("players"),
+            "Остальныя игроки",
+            "Показывать эффектъ рядомъ съ игроками, у коихъ есть заряженныя вещи."
+        )
+        tb = tb.group("amethysm")
+        builder.addConfigOption(tb, "Аметизмъ")
+        builder.addConfigOption(
+            tb.option("players"),
+            "Остальныя игроки",
+            "Показывать эффектъ рядомъ съ игроками, у коихъ есть аметизмъ."
+        )
+        builder.addConfigEnum<HeartPosition>(
+            "Внизу слѣва", "Внизу по центру", "Внизу справа",
+            "Вверху слѣва", "Вверху по центру", "Вверху справа"
+        )
+        builder.addConfigEnum<HealthRendering>(
+            "Хардкоръ", "Истинный хардкоръ", "Ваниль"
+        )
+    }
+
 }
 
 private fun FabricLanguageProvider.TranslationBuilder.addPotion(name: String, potionTranslation: String,
