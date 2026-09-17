@@ -10,11 +10,15 @@ import net.minecraft.core.registries.Registries
 class NineLifesDataGen : DataGeneratorEntrypoint {
     override fun onInitializeDataGenerator(gen: FabricDataGenerator) {
         val pack = gen.createPack()
+        // Languages
         pack.addProvider(::NLDefaultLanguageProvider)
+        pack.addProvider(::NLUpsideDownLanguageProvider)
         pack.addProvider(::NLRussianLanguageProvider)
+        // Tags
         pack.addProvider(::NineLifesItemTagsProvider)
-        pack.addProvider(::NineLifesDynamicRegistryProvider)
         pack.addProvider(::NineLifesDamageTypeTagsProvider)
+        // Other
+        pack.addProvider(::NineLifesDynamicRegistryProvider)
         pack.addProvider(::NineLifesAdvancementsProvider)
         pack.addProvider(::NineLifesRecipesProvider)
         pack.addProvider(::NineLifesModelProvider)

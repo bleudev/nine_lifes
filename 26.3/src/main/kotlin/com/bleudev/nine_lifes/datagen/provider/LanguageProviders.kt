@@ -14,149 +14,184 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
 import kotlin.enums.enumEntries
-import kotlin.reflect.jvm.jvmName
+
+private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider.TranslationBuilder) {
+    // Mob effects
+    builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
+    builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
+
+    fun translatePotion(translationsName: String, vararg names: String) {
+        builder.addPotions(names.toList(), "Potion of $translationsName", "Splash Potion of $translationsName", "Lingering Potion of $translationsName", "Arrow of $translationsName")
+    }
+    translatePotion("Amethysm", "amethysm")
+    translatePotion("Insomnia", "insomnia", "longer_insomnia")
+    // Items
+    builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
+    // Death messages
+    builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
+    builder.add("death.attack.amethysm.player", $$"%1$s didn't expect amethysts to kill")
+    builder.add("death.attack.charged_amethyst", $$"%1$s learned the power of amethyst")
+    builder.add("death.attack.charged_amethyst.player", $$"%1$s learned the power of amethyst")
+    builder.add("death.attack.unknown", $$"%1$s died of unknown cause")
+    builder.add("death.attack.unknown.player", $$"%1$s died of unknown cause")
+    // Enchantments
+    builder.add("enchantment.nine_lifes.charge", "Charge")
+    // Advancements
+    builder.addAdvancement("root", "Nine lifes!", "Start your journey")
+    builder.addAdvancement("try_sleep_without_shard", "Huh?", "For some reason, you couldn't sleep. Is there any item that will fix this?")
+    builder.addAdvancement("slept_with_shard", "Sweet Dreams.. Again", "Sleep after eating amethyst shard")
+    builder.addAdvancement("got_charged_shard", "Power of the light", "Get an charged amethyst shard")
+    builder.addAdvancement("got_life_with_shard", "+1", "Get an life with charged amethyst shard")
+    builder.addAdvancement("ate_64_charged_shards", "Is it that delicious?", "Eat 64 charged amethyst shard")
+    builder.addAdvancement("got_amethyst_stick", "NOW I'M A GOD!", "Get an amethyst stick")
+    builder.addAdvancement("almost_dead", "Almost dead", "Survive with one half heart and life")
+    builder.addAdvancement("hundred_days", "100 days", "Survive 100 days")
+    builder.addAdvancement("true_hundred_days", "True 100 days", "Survive 100 days with one life")
+    builder.addAdvancement("all_done", "All done", "Award all Nine Lifes advancements")
+    // Tags
+    builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Cause blast furnace explode")
+    builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Cause furnace explode")
+    builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Cause smoker explode")
+    builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Cause campfires explode")
+    builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Lightning chargeable")
+    builder.add(NineLifesItemTags.Enchantable.CHARGE, "Enchantable with charge")
+    builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Enchantable with charge in enchanting table")
+    builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Gives life on death")
+    builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Lightning or fire")
+    // Chat messages
+    builder.add("chat.message.join.lives", $$"Your lifes: %1$s.")
+    builder.add("chat.message.join.lives.careful", $$"Your lifes: %1$s. Be careful!")
+    builder.add("chat.message.join.beta", "Warning! You're running a beta version of the mod. If you find a bug, please report it to this link:")
+    // Commands
+    builder.add("commands.nl.text.author", $$"Author: %1$s")
+    builder.add("commands.nl.text.version", $$"Version: %1$s")
+    builder.add("commands.nl.text.links", "Links:")
+    builder.add("commands.nl.reset.success", "Lifes were successfully reset")
+    builder.add("commands.nl.reset.player.success", $$"%1$s's lifes have been successfully reset")
+    builder.add("commands.nl.set.success", $$"The number of lifes was successfully set to %1$s")
+    builder.add("commands.nl.set.player.success", $$"%2$s's lifes count was successfully set to %1$s")
+    builder.add("commands.nl.add.success", $$"The number of lifes was successfully increased by %1$s")
+    builder.add("commands.nl.add.success.neg", $$"The number of lifes was successfully decreased by %1$s")
+    builder.add("commands.nl.add.player.success", $$"%2$s's lifes count was successfully increased by %1$s")
+    builder.add("commands.nl.add.player.success.neg", $$"%2$s's lifes count was successfully decreased by %1$s")
+    builder.add("commands.nl.revive.success", "You were revived")
+    builder.add("commands.nl.revive.player.success", $$"%1$s was revived")
+    builder.add("commands.nl.get.player.success", $$"%2$s's lifes count: %1$s")
+
+    builder.add("commands.not_a_player", "The command is available only to players")
+    // Entities
+    builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
+    // Stats
+    builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+    // Gamerules
+    builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
+    builder.addGameRule("take_lifes", "Take lifes",
+        "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
+    builder.addGameRule("take_lifes_in_overworld", "Take lifes in the Overworld",
+        "Take lifes from dead players in the Overworld. Doesn't matter if taking is disabled.")
+    builder.addGameRule("take_lifes_in_nether", "Take lifes in the Nether",
+        "Take lifes from dead players in the Nether. Doesn't matter if taking is disabled.")
+    builder.addGameRule("take_lifes_in_end", "Take lifes in the End",
+        "Take lifes from dead players in the End. Doesn't matter if taking is disabled.")
+    builder.addGameRule("max_charged_items_at_a_time", "Max charged items at a time",
+        "The max number of charged items gained from a single lightning bolt. A value of -1 means infinity (no limit).")
+    // Sounds
+    builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Wandering armor stand hurts")
+    builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Wandering armor stand disappears")
+    // Other
+    builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
+    builder.add(deathScreenRemaining(1), "Last chance!")
+    builder.add(deathScreenRemaining(2), "2 lifes left")
+    builder.add(deathScreenRemaining(3), "3 lifes left")
+    builder.add(deathScreenRemaining(4), "4 lifes left")
+    builder.add(deathScreenRemaining(5), "5 lifes left")
+    builder.add(deathScreenRemaining(6), "6 lifes left")
+    builder.add(deathScreenRemaining(7), "7 lifes left")
+    builder.add(deathScreenRemaining(8), "8 lifes left")
+    // Config
+    var tb = ConfigTranslationKeyBuilder.default()
+
+    builder.add(tb.additional("title"), "Nine lifes config")
+    /// General
+    tb = tb.category()
+    builder.add(tb, "General")
+    tb = tb.root()
+    builder.addConfigOption(tb.option("join_message"),
+        "Enable join message", "Display message with lifes count on join server")
+    builder.addConfigOption(tb.option("heartbeat"),
+        "Enable heartbeat effect", "When true lifes count will beat")
+    builder.addConfigOption(tb.option("heart_position"),
+        "Heart position", "Location of lifes count on the screen")
+    builder.addConfigOption(tb.option("low_lifes_red_sky"),
+        "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
+    builder.addConfigOption(tb.option("health_rendering"),
+        "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
+    builder.addConfigOption(tb.option("death_screen_remaining"),
+        "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
+    /// Charged/Amethysm
+    tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
+    builder.addConfigOption(tb, "Amethysm/Charged Items")
+    tb = tb.root()
+    builder.addConfigOption(tb.option("enabled"),
+        "Enable", "Toggles the effects near players with charged items or Amethysm on or off. Useful for quickly disabling everything with a single button.")
+    tb = tb.group("charged")
+    builder.addConfigOption(tb, "Charged Items")
+    builder.addConfigOption(tb.option("self"),
+        "This Player", "Show the effect when holding charged items in the inventory.")
+    builder.addConfigOption(tb.option("players"),
+        "Other Players", "Show the effect near players with charged items.")
+    tb = tb.group("amethysm")
+    builder.addConfigOption(tb, "Amethysm")
+    builder.addConfigOption(tb.option("players"),
+        "Other Players", "Show the effect near players with Amethysm.")
+
+    builder.addConfigEnum<HeartPosition>(
+        "Bottom left", "Bottom center", "Bottom right",
+        "Top left", "Top center", "Top right"
+    )
+    builder.addConfigEnum<HealthRendering>(
+        "Hardcore", "True hardcore", "Vanilla"
+    )
+}
 
 class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, registriesFuture) {
     override fun generateTranslations(
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
     ) {
-        // Mob effects
-        builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
-        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
+        generateNineLifesDefaultTranslations(builder)
+    }
+}
 
-        fun translatePotion(translationsName: String, vararg names: String) {
-            builder.addPotions(names.toList(), "Potion of $translationsName", "Splash Potion of $translationsName", "Lingering Potion of $translationsName", "Arrow of $translationsName")
+class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "en_ud", registriesFuture) {
+    private val upsideDownMap = mapOf(
+        'a' to 'ɐ', 'b' to 'q', 'c' to 'ɔ', 'd' to 'p', 'e' to 'ǝ', 'f' to 'ɟ', 'g' to 'ƃ', 'h' to 'ɥ',
+        'i' to 'ᴉ', 'j' to 'ɾ', 'k' to 'ʞ', 'l' to 'ן', 'm' to 'ɯ', 'n' to 'u', 'o' to 'o', 'p' to 'd',
+        'q' to 'b', 'r' to 'ɹ', 's' to 's', 't' to 'ʇ', 'u' to 'n', 'v' to 'ʌ', 'w' to 'ʍ', 'x' to 'x',
+        'y' to 'ʎ', 'z' to 'z',
+        'A' to '∀', 'B' to 'B', 'C' to 'Ɔ', 'D' to 'ᗡ', 'E' to 'Ǝ', 'F' to 'Ⅎ', 'G' to '⅁', 'H' to 'H',
+        'I' to 'I', 'J' to 'ſ', 'K' to 'ʞ', 'L' to '˥', 'M' to 'W', 'N' to 'N', 'O' to 'O', 'P' to 'Ԁ',
+        'Q' to 'Ò', 'R' to 'ᴚ', 'S' to 'S', 'T' to '⊥', 'U' to '∩', 'V' to 'Λ', 'W' to 'M', 'X' to 'X',
+        'Y' to '⅄', 'Z' to 'Z',
+        '0' to '0', '1' to 'Ɩ', '2' to 'ᄅ', '3' to 'Ɛ', '4' to 'ㄣ', '5' to 'ϛ', '6' to '9', '7' to 'ㄥ',
+        '8' to '8', '9' to '6',
+        '.' to '˙', ',' to "'", '?' to '¿', '!' to '¡', '"' to '„', '\'' to ',', ';' to '؛',
+        '(' to ')', ')' to '(', '[' to ']', ']' to '[', '{' to '}', '}' to '{', '<' to '>', '>' to '<',
+        '&' to '⅋', '_' to '‾', ' ' to ' '
+    )
+
+    override fun generateTranslations(
+        registryLookup: HolderLookup.Provider,
+        builder: TranslationBuilder
+    ) {
+        generateNineLifesDefaultTranslations { key, tr ->
+            var ans = ""
+            for (i in tr) {
+                ans += upsideDownMap.getOrDefault(i, i)
+            }
+            ans = ans.reversed()
+            builder.add(key, ans)
         }
-        translatePotion("Amethysm", "amethysm")
-        translatePotion("Insomnia", "insomnia", "longer_insomnia")
-        // Items
-        builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
-        // Death messages
-        builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
-        builder.add("death.attack.amethysm.player", $$"%1$s didn't expect amethysts to kill")
-        builder.add("death.attack.charged_amethyst", $$"%1$s learned the power of amethyst")
-        builder.add("death.attack.charged_amethyst.player", $$"%1$s learned the power of amethyst")
-        builder.add("death.attack.unknown", $$"%1$s died of unknown cause")
-        builder.add("death.attack.unknown.player", $$"%1$s died of unknown cause")
-        // Enchantments
-        builder.add("enchantment.nine_lifes.charge", "Charge")
-        // Advancements
-        builder.addAdvancement("root", "Nine lifes!", "Start your journey")
-        builder.addAdvancement("try_sleep_without_shard", "Huh?", "For some reason, you couldn't sleep. Is there any item that will fix this?")
-        builder.addAdvancement("slept_with_shard", "Sweet Dreams.. Again", "Sleep after eating amethyst shard")
-        builder.addAdvancement("got_charged_shard", "Power of the light", "Get an charged amethyst shard")
-        builder.addAdvancement("got_life_with_shard", "+1", "Get an life with charged amethyst shard")
-        builder.addAdvancement("ate_64_charged_shards", "Is it that delicious?", "Eat 64 charged amethyst shard")
-        builder.addAdvancement("got_amethyst_stick", "NOW I'M A GOD!", "Get an amethyst stick")
-        builder.addAdvancement("almost_dead", "Almost dead", "Survive with one half heart and life")
-        builder.addAdvancement("hundred_days", "100 days", "Survive 100 days")
-        builder.addAdvancement("true_hundred_days", "True 100 days", "Survive 100 days with one life")
-        builder.addAdvancement("all_done", "All done", "Award all Nine Lifes advancements")
-        // Tags
-        builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Cause blast furnace explode")
-        builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Cause furnace explode")
-        builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Cause smoker explode")
-        builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Cause campfires explode")
-        builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Lightning chargeable")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE, "Enchantable with charge")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Enchantable with charge in enchanting table")
-        builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Gives life on death")
-        builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Lightning or fire")
-        // Chat messages
-        builder.add("chat.message.join.lives", $$"Your lifes: %1$s.")
-        builder.add("chat.message.join.lives.careful", $$"Your lifes: %1$s. Be careful!")
-        builder.add("chat.message.join.beta", "Warning! You're running a beta version of the mod. If you find a bug, please report it to this link:")
-        // Commands
-        builder.add("commands.nl.text.author", $$"Author: %1$s")
-        builder.add("commands.nl.text.version", $$"Version: %1$s")
-        builder.add("commands.nl.text.links", "Links:")
-        builder.add("commands.nl.reset.success", "Lifes were successfully reset")
-        builder.add("commands.nl.reset.player.success", $$"%1$s's lifes have been successfully reset")
-        builder.add("commands.nl.set.success", $$"The number of lifes was successfully set to %1$s")
-        builder.add("commands.nl.set.player.success", $$"%2$s's lifes count was successfully set to %1$s")
-        builder.add("commands.nl.add.success", $$"The number of lifes was successfully increased by %1$s")
-        builder.add("commands.nl.add.success.neg", $$"The number of lifes was successfully decreased by %1$s")
-        builder.add("commands.nl.add.player.success", $$"%2$s's lifes count was successfully increased by %1$s")
-        builder.add("commands.nl.add.player.success.neg", $$"%2$s's lifes count was successfully decreased by %1$s")
-        builder.add("commands.nl.revive.success", "You were revived")
-        builder.add("commands.nl.revive.player.success", $$"%1$s was revived")
-        builder.add("commands.nl.get.player.success", $$"%2$s's lifes count: %1$s")
-
-        builder.add("commands.not_a_player", "The command is available only to players")
-        // Entities
-        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
-        // Stats
-        builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
-        // Gamerules
-        builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
-        builder.addGameRule("take_lifes", "Take lifes",
-            "Take lifes from dead players. This only affects taking; charged items continue to add lifes.")
-        builder.addGameRule("take_lifes_in_overworld", "Take lifes in the Overworld",
-            "Take lifes from dead players in the Overworld. Doesn't matter if taking is disabled.")
-        builder.addGameRule("take_lifes_in_nether", "Take lifes in the Nether",
-            "Take lifes from dead players in the Nether. Doesn't matter if taking is disabled.")
-        builder.addGameRule("take_lifes_in_end", "Take lifes in the End",
-            "Take lifes from dead players in the End. Doesn't matter if taking is disabled.")
-        builder.addGameRule("max_charged_items_at_a_time", "Max charged items at a time",
-            "The max number of charged items gained from a single lightning bolt. A value of -1 means infinity (no limit).")
-        // Sounds
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Wandering armor stand hurts")
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Wandering armor stand disappears")
-        // Other
-        builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
-        builder.add(deathScreenRemaining(1), "Last chance!")
-        builder.add(deathScreenRemaining(2), "2 lifes left")
-        builder.add(deathScreenRemaining(3), "3 lifes left")
-        builder.add(deathScreenRemaining(4), "4 lifes left")
-        builder.add(deathScreenRemaining(5), "5 lifes left")
-        builder.add(deathScreenRemaining(6), "6 lifes left")
-        builder.add(deathScreenRemaining(7), "7 lifes left")
-        builder.add(deathScreenRemaining(8), "8 lifes left")
-        // Config
-        var tb = ConfigTranslationKeyBuilder.default()
-
-        builder.add(tb.additional("title"), "Nine lifes config")
-        /// General
-        tb = tb.category()
-        builder.add(tb, "General")
-        tb = tb.root()
-        builder.addConfigOption(tb.option("join_message"),
-            "Enable join message", "Display message with lifes count on join server")
-        builder.addConfigOption(tb.option("heartbeat"),
-            "Enable heartbeat effect", "When true lifes count will beat")
-        builder.addConfigOption(tb.option("heart_position"),
-            "Heart position", "Location of lifes count on the screen")
-        builder.addConfigOption(tb.option("low_lifes_red_sky"),
-            "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
-        builder.addConfigOption(tb.option("health_rendering"),
-            "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
-        builder.addConfigOption(tb.option("death_screen_remaining"),
-            "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
-        /// Charged/Amethysm
-        tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
-        builder.addConfigOption(tb, "Amethysm/Charged Items")
-        tb = tb.root()
-        builder.addConfigOption(tb.option("enabled"),
-            "Enable", "Toggles the effects near players with charged items or Amethysm on or off. Useful for quickly disabling everything with a single button.")
-        tb = tb.group("charged")
-        builder.addConfigOption(tb, "Charged Items")
-        builder.addConfigOption(tb.option("self"),
-            "This Player", "Show the effect when holding charged items in the inventory.")
-        builder.addConfigOption(tb.option("players"),
-            "Other Players", "Show the effect near players with charged items.")
-        tb = tb.group("amethysm")
-        builder.addConfigOption(tb, "Amethysm")
-        builder.addConfigOption(tb.option("players"),
-            "Other Players", "Show the effect near players with Amethysm.")
-
-        builder.addConfigEnum<HeartPosition>(
-            "Bottom left", "Bottom center", "Bottom right",
-            "Top left", "Top center", "Top right"
-        )
-        builder.addConfigEnum<HealthRendering>(
-            "Hardcore", "True hardcore", "Vanilla"
-        )
     }
 }
 
@@ -333,7 +368,7 @@ private fun FabricLanguageProvider.TranslationBuilder.addConfigOption(translatio
 }
 private inline fun <reified T : Enum<T>> FabricLanguageProvider.TranslationBuilder.addConfigEnum(vararg translations: String) {
     enumEntries<T>().zip(translations).forEach { (entry, translation) ->
-        val tb = ConfigTranslationKeyBuilder.default().additional("enum.${T::class.jvmName}.${entry.name}")
+        val tb = ConfigTranslationKeyBuilder.default().additional("enum.${T::class.java.name.split(".").last()}.${entry.name}")
         this.add(tb.build(), translation)
     }
 }
