@@ -21,8 +21,8 @@ import net.minecraft.world.item.enchantment.Enchantment
 import java.util.concurrent.CompletableFuture
 
 
-class NineLifesDynamicRegistryProvider(output: FabricPackOutput,
-                                       registriesFuture: CompletableFuture<HolderLookup.Provider>
+class NLDynamicRegistryProvider(output: FabricPackOutput,
+                                registriesFuture: CompletableFuture<HolderLookup.Provider>
 ) : FabricDynamicRegistryProvider(output, registriesFuture) {
     override fun configure(registries: HolderLookup.Provider, entries: Entries) {
         entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT))

@@ -12,12 +12,12 @@ import net.minecraft.world.item.crafting.CookingBookCategory
 import net.minecraft.world.item.crafting.Ingredient
 import java.util.concurrent.CompletableFuture
 
-class NineLifesRecipesProvider(output: FabricPackOutput,
-                              providerFuture: CompletableFuture<HolderLookup.Provider>
+class NLRecipesProvider(output: FabricPackOutput,
+                        providerFuture: CompletableFuture<HolderLookup.Provider>
 ) : FabricRecipeProvider(output, providerFuture) {
     override fun createRecipeProvider(registries: HolderLookup.Provider, output: RecipeOutput): RecipeProvider = NineLifesRecipeProviderImpl(registries, output)
 
-    override fun getName(): String = "NineLifesRecipesProvider"
+    override fun getName(): String = "NLRecipesProvider"
 
     private class NineLifesRecipeProviderImpl(registries: HolderLookup.Provider, output: RecipeOutput) : RecipeProvider(registries, output) {
         override fun buildRecipes() {

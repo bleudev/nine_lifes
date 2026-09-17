@@ -21,8 +21,8 @@ import net.minecraft.world.item.enchantment.Enchantment
 import java.util.concurrent.CompletableFuture
 
 
-class NineLifesDynamicRegistryProvider(output: FabricPackOutput,
-                                       registriesFuture: CompletableFuture<HolderLookup.Provider>
+class NLDynamicRegistryProvider(output: FabricPackOutput,
+                                registriesFuture: CompletableFuture<HolderLookup.Provider>
 ) : FabricDynamicRegistryProvider(output, registriesFuture) {
     override fun configure(registries: HolderLookup.Provider, entries: Entries) {
         entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT))
@@ -34,7 +34,7 @@ class NineLifesDynamicRegistryProvider(output: FabricPackOutput,
     companion object {
         private fun Enchantment.EnchantmentDefinition.register(context: BootstrapContext<Enchantment>, key: ResourceKey<Enchantment>, componentTransformer: MutableComponent.() -> MutableComponent, exclusiveSet: HolderSet<Enchantment> = HolderSet.empty()) {
             context.register(key, Enchantment(
-                Component.translatable("enchantment.nine_lifes.${key.identifier().path}").componentTransformer(),
+                Component.translatable("enchantment.$MOD_ID.${key.identifier().path}").componentTransformer(),
                 this,
                 exclusiveSet,
                 DataComponentMap.builder().build()

@@ -16,18 +16,18 @@ class NineLifesDataGen : DataGeneratorEntrypoint {
         pack.addProvider(::NLRussianLanguageProvider)
         pack.addProvider(::NLPreReformRussiandLanguageProvider)
         // Tags
-        pack.addProvider(::NineLifesItemTagsProvider)
-        pack.addProvider(::NineLifesDamageTypeTagsProvider)
+        pack.addProvider(::NLItemTagsProvider)
+        pack.addProvider(::NLDamageTypeTagsProvider)
         // Other
-        pack.addProvider(::NineLifesDynamicRegistryProvider)
-        pack.addProvider(::NineLifesAdvancementsProvider)
-        pack.addProvider(::NineLifesRecipesProvider)
-        pack.addProvider(::NineLifesModelProvider)
-        pack.addProvider(::NineLifesSoundsProvider)
+        pack.addProvider(::NLDynamicRegistryProvider)
+        pack.addProvider(::NLAdvancementsProvider)
+        pack.addProvider(::NLRecipesProvider)
+        pack.addProvider(::NLModelProvider)
+        pack.addProvider(::NLSoundsProvider)
     }
 
     override fun buildRegistry(registryBuilder: RegistrySetBuilder) {
-        registryBuilder.add(Registries.ENCHANTMENT, NineLifesDynamicRegistryProvider::bootstrapEnchantments)
-        registryBuilder.add(Registries.DAMAGE_TYPE, NineLifesDynamicRegistryProvider::bootstrapDamageTypes)
+        registryBuilder.add(Registries.ENCHANTMENT, NLDynamicRegistryProvider::bootstrapEnchantments)
+        registryBuilder.add(Registries.DAMAGE_TYPE, NLDynamicRegistryProvider::bootstrapDamageTypes)
     }
 }
