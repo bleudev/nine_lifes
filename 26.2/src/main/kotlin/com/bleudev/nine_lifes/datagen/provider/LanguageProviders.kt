@@ -181,7 +181,7 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         'I' to 'I', 'J' to 'ſ', 'K' to 'ʞ', 'L' to '˥', 'M' to 'W', 'N' to 'N', 'O' to 'O', 'P' to 'Ԁ',
         'Q' to 'Ò', 'R' to 'ᴚ', 'S' to 'S', 'T' to '⊥', 'U' to '∩', 'V' to 'Λ', 'W' to 'M', 'X' to 'X',
         'Y' to '⅄', 'Z' to 'Z',
-        '0' to '0', '1' to 'Ɩ', '2' to 'ᄅ', '3' to 'Ɛ', '4' to 'ㄣ', '5' to 'ϛ', '6' to '9', '7' to 'ㄥ',
+        '0' to '0', '1' to 'Ɩ', '2' to 'ᘔ', '3' to 'Ɛ', '4' to '߈', '5' to 'ϛ', '6' to '9', '7' to 'ㄥ',
         '8' to '8', '9' to '6',
         '.' to '˙', ',' to "'", '?' to '¿', '!' to '¡', '"' to '„', '\'' to ',', ';' to '؛',
         '(' to ')', ')' to '(', '[' to ']', ']' to '[', '{' to '}', '}' to '{', '<' to '>', '>' to '<',
@@ -198,8 +198,24 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
                 ans += upsideDownMap.getOrDefault(i, i)
             }
             ans = ans.reversed()
+
+            var i = 1
+            var s = $$"%$$i$s"
+            while (upsided(s) in ans) {
+                ans = ans.replace(upsided(s), s)
+                i++
+                s = $$"%$$i$s"
+            }
             builder.add(key, ans)
         }
+    }
+
+    private fun upsided(t: String): String {
+        var ans = ""
+        for (i in t) {
+            ans += upsideDownMap.getOrDefault(i, i)
+        }
+        return ans.reversed()
     }
 }
 
