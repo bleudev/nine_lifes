@@ -20,8 +20,8 @@ import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.Recipe
 import java.util.concurrent.CompletableFuture
 
-class NineLifesRecipesProvider(output: FabricPackOutput,
-                              providerFuture: CompletableFuture<HolderLookup.Provider>
+class NLRecipesProvider(output: FabricPackOutput,
+                        providerFuture: CompletableFuture<HolderLookup.Provider>
 ) : FabricRecipeProvider(output, providerFuture) {
     override fun createRecipeProvider(
         registries: HolderLookup.Provider,

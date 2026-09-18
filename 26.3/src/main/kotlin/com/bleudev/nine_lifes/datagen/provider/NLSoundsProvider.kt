@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup
 import net.minecraft.data.PackOutput
 import java.util.concurrent.CompletableFuture
 
-class NineLifesSoundsProvider(output: PackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricSoundsProvider(output, registriesFuture) {
+class NLSoundsProvider(output: PackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricSoundsProvider(output, registriesFuture) {
     override fun configure(
         registryLookup: HolderLookup.Provider,
         exporter: SoundExporter

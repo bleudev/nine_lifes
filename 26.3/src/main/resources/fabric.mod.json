@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "nine_lifes",
   "version": "${version}",
-  "name": "Nine lifes",
+  "name": "Nine Lifes",
   "description": "A mod for Minecraft which gives you in survival only 9 lifes before death forever.",
   "authors": ["bleudev"],
   "contact": {

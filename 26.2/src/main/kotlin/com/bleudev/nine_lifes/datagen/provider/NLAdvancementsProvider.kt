@@ -33,8 +33,8 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
 
-class NineLifesAdvancementsProvider(output: FabricPackOutput,
-                                    registryLookup: CompletableFuture<HolderLookup.Provider>
+class NLAdvancementsProvider(output: FabricPackOutput,
+                             registryLookup: CompletableFuture<HolderLookup.Provider>
 ) : FabricAdvancementProvider(output, registryLookup) {
     override fun generateAdvancement(
         registryLookup: HolderLookup.Provider,
