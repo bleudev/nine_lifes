@@ -190,7 +190,7 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         builder: TranslationBuilder
     ) {
         generateNineLifesDefaultTranslations { key, tr ->
-            var ans = tr.reversed().mapString { upsideDownMap.getOrDefault(it.toString(), it.toString()) }
+            var ans = upsided(tr)
 
             var i = 1
             var s = $$"%$$i$s"
@@ -203,13 +203,9 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         }
     }
 
-    private fun upsided(t: String): String {
-        var ans = ""
-        for (i in t) {
-            ans += upsideDownMap.getOrDefault(i.toString(), i.toString())
-        }
-        return ans.reversed()
-    }
+    private fun upsided(t: String): String = t
+        .reversed()
+        .mapString { upsideDownMap.getOrDefault(it.toString(), it.toString()) }
 }
 
 class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "ru_ru", registriesFuture) {
