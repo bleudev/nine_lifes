@@ -5,10 +5,7 @@ import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.HealthRendering
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.util.ConfigTranslationKeyBuilder
-import com.bleudev.nine_lifes.util.advancement
-import com.bleudev.nine_lifes.util.advancementDescription
-import com.bleudev.nine_lifes.util.deathScreenRemaining
+import com.bleudev.nine_lifes.util.*
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.fabricmc.loader.api.FabricLoader
@@ -173,19 +170,19 @@ class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
 
 class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: CompletableFuture<HolderLookup.Provider>) : FabricLanguageProvider(output, "en_ud", registriesFuture) {
     private val upsideDownMap = mapOf(
-        'a' to 'ɐ', 'b' to 'q', 'c' to 'ɔ', 'd' to 'p', 'e' to 'ǝ', 'f' to 'ɟ', 'g' to 'ƃ', 'h' to 'ɥ',
-        'i' to 'ᴉ', 'j' to 'ɾ', 'k' to 'ʞ', 'l' to 'ן', 'm' to 'ɯ', 'n' to 'u', 'o' to 'o', 'p' to 'd',
-        'q' to 'b', 'r' to 'ɹ', 's' to 's', 't' to 'ʇ', 'u' to 'n', 'v' to 'ʌ', 'w' to 'ʍ', 'x' to 'x',
-        'y' to 'ʎ', 'z' to 'z',
-        'A' to '∀', 'B' to 'B', 'C' to 'Ɔ', 'D' to 'ᗡ', 'E' to 'Ǝ', 'F' to 'Ⅎ', 'G' to '⅁', 'H' to 'H',
-        'I' to 'I', 'J' to 'ſ', 'K' to 'ʞ', 'L' to '˥', 'M' to 'W', 'N' to 'N', 'O' to 'O', 'P' to 'Ԁ',
-        'Q' to 'Ò', 'R' to 'ᴚ', 'S' to 'S', 'T' to '⊥', 'U' to '∩', 'V' to 'Λ', 'W' to 'M', 'X' to 'X',
-        'Y' to '⅄', 'Z' to 'Z',
-        '0' to '0', '1' to 'Ɩ', '2' to 'ᘔ', '3' to 'Ɛ', '4' to '߈', '5' to 'ϛ', '6' to '9', '7' to 'ㄥ',
-        '8' to '8', '9' to '6',
-        '.' to '˙', ',' to "'", '?' to '¿', '!' to '¡', '"' to '„', '\'' to ',', ';' to '؛',
-        '(' to ')', ')' to '(', '[' to ']', ']' to '[', '{' to '}', '}' to '{', '<' to '>', '>' to '<',
-        '&' to '⅋', '_' to '‾', ' ' to ' '
+        "a" to "ɐ", "b" to "q", "c" to "ɔ", "d" to "p", "e" to "ǝ", "f" to "ɟ", "g" to "ᵷ", "h" to "ɥ",
+        "i" to "ᴉ", "j" to "ɾ", "k" to "ʞ", "l" to "ꞁ", "m" to "ɯ", "n" to "u", "o" to "o", "p" to "d",
+        "q" to "b", "r" to "ɹ", "s" to "s", "t" to "ʇ", "u" to "n", "v" to "ʌ", "w" to "ʍ", "x" to "x",
+        "y" to "ʎ", "z" to "z",
+        "A" to "Ɐ", "B" to "ᗺ", "C" to "Ɔ", "D" to "ᗡ", "E" to "Ǝ", "F" to "Ⅎ", "G" to "⅁", "H" to "H",
+        "I" to "I", "J" to "Ր", "K" to "Ʞ", "L" to "Ꞁ", "M" to "W", "N" to "N", "O" to "O", "P" to "Ԁ",
+        "Q" to "Ꝺ", "R" to "ᴚ", "S" to "S", "T" to "⟘", "U" to "∩", "V" to "Ʌ", "W" to "M", "X" to "X",
+        "Y" to "⅄", "Z" to "Z",
+        "0" to "0", "1" to "Ɩ", "2" to "ᘔ", "3" to "Ɛ", "4" to "߈", "5" to "ϛ", "6" to "9", "7" to "ㄥ",
+        "8" to "8", "9" to "6",
+        "." to "˙", "," to "‘", "?" to "¿", "!" to "¡", "\"" to "„", "'" to ",", ";" to "⸵",
+        "(" to ")", ")" to "(", "[" to "]", "]" to "[", "{" to "}", "}" to "{", "<" to ">", ">" to "<",
+        "&" to "⅋", "_" to "‾", " " to " "
     )
 
     override fun generateTranslations(
@@ -193,11 +190,7 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         builder: TranslationBuilder
     ) {
         generateNineLifesDefaultTranslations { key, tr ->
-            var ans = ""
-            for (i in tr) {
-                ans += upsideDownMap.getOrDefault(i, i)
-            }
-            ans = ans.reversed()
+            var ans = tr.reversed().mapString { upsideDownMap.getOrDefault(it.toString(), it.toString()) }
 
             var i = 1
             var s = $$"%$$i$s"
@@ -213,7 +206,7 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
     private fun upsided(t: String): String {
         var ans = ""
         for (i in t) {
-            ans += upsideDownMap.getOrDefault(i, i)
+            ans += upsideDownMap.getOrDefault(i.toString(), i.toString())
         }
         return ans.reversed()
     }
