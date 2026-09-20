@@ -12,6 +12,7 @@
 ## Version updates
 
 - [DEV] Fabric Loom `1.18.2` (bleudev)
+- [DEV] Minotaur `2.10.0` (bleudev)
 
 ## New features
 

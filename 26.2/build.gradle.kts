@@ -120,6 +120,7 @@ modrinth {
         "26.2",
     )
     loaders.add("fabric")
+    environment = "client_and_server"
     dependencies {
         required.version("fabric-api", project.property("fabric_version") as String)
         required.version("yacl", project.property("yacl_version") as String)
