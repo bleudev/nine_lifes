@@ -9,6 +9,10 @@
 
 ## Changes
 
+## Version updates
+
+- [DEV] Fabric Loom `1.18.2` (bleudev)
+
 ## New features
 
 - Pre-reform Russian localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
