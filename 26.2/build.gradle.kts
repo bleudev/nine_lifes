@@ -6,6 +6,7 @@ plugins {
     kotlin("plugin.serialization")
     id("net.fabricmc.fabric-loom")
     id("com.modrinth.minotaur")
+    id("me.modmuss50.mod-publish-plugin")
     id("maven-publish")
 }
 
@@ -115,7 +116,9 @@ modrinth {
     }
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
-    gameVersions.addAll("26.2")
+    gameVersions.addAll(
+        "26.2",
+    )
     loaders.add("fabric")
     dependencies {
         required.version("fabric-api", project.property("fabric_version") as String)
@@ -126,6 +129,49 @@ modrinth {
 }
 tasks.named("modrinth") {
     dependsOn("modrinthSyncBody")
+}
+
+publishMods {
+    file = tasks.jar.get().archiveFile
+    changelog = "Hello!"
+    type = STABLE
+    modLoaders.add("fabric")
+    version.set("${project.version}")
+
+    curseforge {
+        accessToken.set(System.getenv("CURSEFORGE_TOKEN"))
+        projectId.set("1704102")
+        projectSlug.set("nine-lifes")
+        minecraftVersions.addAll(
+            "26.2",
+        )
+        announcementTitle.set("Download from CurseForge")
+        javaVersions.add(JavaVersion.VERSION_25)
+        client.set(true)
+        server.set(true)
+
+        requires("fabric-api", "yacl", "fabric-language-kotlin")
+        optional("modmenu")
+
+        changelog.set(project.property("changelog") as String)
+        changelogType.set("markdown")
+        additionalFile(tasks.kotlinSourcesJar) {
+            name.set("${project.version} (Sources)")
+        }
+        additionalFile(tasks.named("javadocJar")) {
+            name.set("${project.version} (Javadoc)")
+        }
+    }
+
+    github {
+        accessToken.set(System.getenv("GITHUB_TOKEN"))
+        repository.set("bleudev/nine_lifes")
+        commitish.set("main")
+        tagName.set("${project.version}")
+        announcementTitle.set("Download from GitHub")
+
+        allowEmptyFiles.set(true)
+    }
 }
 
 // configure the maven publication

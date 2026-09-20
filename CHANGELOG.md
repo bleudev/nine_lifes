@@ -13,6 +13,8 @@
 
 - Pre-reform Russian localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
 - Upside down English localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
+- [DEV] CurseForge publishing (bleudev)
+- [DEV] GitHub publishing (bleudev)
 
 ## Fixes
 
