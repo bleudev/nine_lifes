@@ -4,6 +4,8 @@ import com.bleudev.nine_lifes.config.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
@@ -14,13 +16,16 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.permissions.Permissions
 import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
 import net.minecraft.util.Mth
@@ -218,7 +223,18 @@ class NineLifes : ModInitializer {
             if (entity is ServerPlayer)
                 NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
         }
+
+        registerReceiver(GameConfigSave) { payload, ctx ->
+            if (ctx.player().permissions().hasPermission(Permissions.COMMANDS_ADMIN)) {
+                NLGameConfigManager.getInstance().save(payload.config)
+                ctx.player().sendSystemMessage(Component.literal("Config was saved!"))
+            }
+        }
     }
+
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ServerPlayNetworking.Context) -> Unit) =
+        ServerPlayNetworking.registerGlobalReceiver(payloadCompanion.id) {p, c -> handler(p, c)}
+
 
     private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN

@@ -1,6 +1,8 @@
 package com.bleudev.nine_lifes.custom
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.config.NLGameConfigManager
+import com.bleudev.nine_lifes.custom.packet.payload.GameConfigEditScreen
 import com.bleudev.nine_lifes.util.*
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
@@ -163,6 +165,16 @@ object NineLifesCommands {
         return 1
     }
 
+    fun nlConfig(ctx: CommandContext<CommandSourceStack>): Int {
+        val pl = ctx.source.player
+        if (pl == null) {
+            ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
+            return -1
+        }
+        pl.sendPacket(GameConfigEditScreen(NLGameConfigManager.getInstance().load()))
+        return 1
+    }
+
     fun initialize() {
         CommandRegistrationCallback.EVENT.register { d, _, _ ->
             d.register(Commands.literal("nl")
@@ -198,6 +210,9 @@ object NineLifesCommands {
                     .requiresAdmin()
                     .then(playersArgument
                         .executes(::nlGetPlayers)))
+                .then(Commands.literal("config")
+                    .requiresAdmin()
+                    .executes(::nlConfig))
             )
         }
     }

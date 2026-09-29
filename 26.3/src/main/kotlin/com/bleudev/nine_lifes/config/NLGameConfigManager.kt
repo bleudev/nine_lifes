@@ -30,7 +30,7 @@ class NLGameConfigManager {
             save(c)
         }
     }
-    private fun save(c: NLGameConfig, noCheck: Boolean = false) {
+    private fun save(c: NLGameConfig, noCheck: Boolean) {
         Files.createDirectories(path.parent)
 
         val checkError = c.check()
@@ -41,6 +41,9 @@ class NLGameConfigManager {
 
         val d = json.encodeToString(NLGameConfig.serializer(), c)
         Files.writeString(path, d)
+    }
+    fun save(config: NLGameConfig) {
+        save(config, false)
     }
 
     fun load(): NLGameConfig {
