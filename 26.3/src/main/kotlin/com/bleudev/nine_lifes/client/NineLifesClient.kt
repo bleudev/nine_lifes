@@ -181,6 +181,9 @@ class NineLifesClient : ClientModInitializer {
             playerChargedDistance = payload.toCharged
             selfCharged = payload.hasCharged
         }
+        registerReceiver(GameConfigSync) { payload ->
+            dataSyncedGameConfig = payload.config
+        }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }
         registerReceiver(UpdateForceVanillaDeathScreenState) { forceVanillaDeathScreen = it.state }

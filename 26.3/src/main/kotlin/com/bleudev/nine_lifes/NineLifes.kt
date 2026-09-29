@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.config.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
@@ -152,13 +153,16 @@ class NineLifes : ModInitializer {
             for (player in players) {
                 val amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 val charged = hasCharged.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
-                player.sendPacket(DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged))
+                player.sendPackets(
+                    DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged),
+                    GameConfigSync(NLGameConfigManager.getInstance().load())
+                )
             }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
             if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
             if (entity.type == EntityTypes.ARMOR_STAND) {
-                if (level.getRandom().nextFloat() < WSTAND_SPAWN_CHANCE) {
+                if (level.getRandom().nextFloat() < NLGameConfigManager.getInstance().load().wStandSpawnChance.toFloat() / 100) {
                     val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
                     if (newEntity != null) {
                         newEntity.copyPosition(entity)

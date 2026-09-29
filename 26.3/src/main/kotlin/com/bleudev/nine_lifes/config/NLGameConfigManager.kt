@@ -2,9 +2,11 @@ package com.bleudev.nine_lifes.config
 
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.FriendlyStreamCodec
+import com.bleudev.nine_lifes.client.dataSyncedGameConfig
+import io.github.xn32.json5k.Json5
+import io.github.xn32.json5k.SerialComment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
@@ -13,14 +15,10 @@ import java.nio.file.Files
 class NLGameConfigManager {
     private constructor()
 
-    private val path = FabricLoader.getInstance().configDir.resolve(MOD_ID).resolve("server.json")
-    private val json = Json {
+    private val path = FabricLoader.getInstance().configDir.resolve(MOD_ID).resolve("server.json5")
+    private val json = Json5 {
         prettyPrint = true
         encodeDefaults = true
-        allowComments = true
-        allowTrailingComma = true
-        ignoreUnknownKeys = true
-        isLenient = true
     }
     init {
         init()
@@ -41,13 +39,13 @@ class NLGameConfigManager {
             throw IllegalArgumentException(checkError.second)
         }
 
-        val d = json.encodeToString(c)
+        val d = json.encodeToString(NLGameConfig.serializer(), c)
         Files.writeString(path, d)
     }
 
     fun load(): NLGameConfig {
         val s = Files.readString(path)
-        return json.decodeFromString<NLGameConfig>(s)
+        return json.decodeFromString(NLGameConfig.serializer(), s)
     }
 
     operator fun invoke(transform: NLGameConfig.() -> Unit) {
@@ -59,6 +57,11 @@ class NLGameConfigManager {
 
     @Serializable
     data class NLGameConfig(
+        @SerialComment("""
+            Wandering stand spawn chance (in percents)
+            
+            Default: 20
+        """)
         @SerialName("wstand_spawn_chance")
         var wStandSpawnChance: Int = 20,
     ) {
@@ -86,16 +89,15 @@ class NLGameConfigManager {
     companion object {
         private var instance: NLGameConfigManager? = null
 
-        fun getInstance(client: Boolean = false): NLGameConfigManager {
-            if (!client) {
-                if (instance == null) {
-                    instance = NLGameConfigManager()
-                }
-                return instance!!
-            } else {
-                // TODO: Client getting
-                return NLGameConfigManager()
+        fun getInstance(): NLGameConfigManager {
+            if (instance == null) {
+                instance = NLGameConfigManager()
             }
+            return instance!!
+        }
+
+        fun getClientConfig(): NLGameConfig {
+            return dataSyncedGameConfig
         }
     }
 }

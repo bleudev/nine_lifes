@@ -3,6 +3,7 @@ package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.client.config.*
+import com.bleudev.nine_lifes.config.NLGameConfigManager
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.onlyIf
 import com.bleudev.nine_lifes.util.reverseDelta
@@ -238,3 +239,5 @@ class ChargeEffectInfo {
         return 0f
     }
 }
+
+internal var dataSyncedGameConfig: NLGameConfigManager.NLGameConfig = NLGameConfigManager.NLGameConfig()
