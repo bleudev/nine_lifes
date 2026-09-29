@@ -150,10 +150,8 @@ class NineLifes : ModInitializer {
             }
 
             for (player in players) {
-                var amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player) } ?: 999f
-                var charged = hasCharged.toList().minOfOrNull { it.distanceTo(player) } ?: 999f
-                if (amethysm == 0f) amethysm = 999f
-                if (charged == 0f) charged = 4f
+                val amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
+                val charged = hasCharged.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 player.sendPacket(DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged))
             }
         }

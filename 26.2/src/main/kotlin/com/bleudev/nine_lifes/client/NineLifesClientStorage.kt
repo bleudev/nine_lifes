@@ -105,16 +105,15 @@ var stick_purpleness: Float = 0f
     get() = max(field, ((stickUsedTicks - STICK_USED_EFFECT_TICKS + STICK_USED_EFFECT_SHAKE_TICKS).toFloat() / STICK_USED_EFFECT_SHAKE_TICKS).coerceIn(0f, 1f))
 var stick_purpleness_ticks: Int = 0
 // Player amethysm effect
-var playerAmethysmDistance: Float = 999f
+var playerAmethysmDistance: Float = FALLBACK_DISTANCE
 var selfAmethysm: Boolean = false
 val playerAmethysmStrength: Float get() = ((playerAmethysmDistance / PLAYER_AMETHYSM_RADIUS).coerceIn(0f, 1f).reverseDelta() * .1f).onlyIf(playerChargedAmethysm && playerAmethysmPlayers && !selfAmethysm)
 // Player charged effect
-var playerChargedDistance: Float = 999f
+var playerChargedDistance: Float = FALLBACK_DISTANCE
 var selfCharged: Boolean = false
-val playerChargedStrength: Float get() = max(
-    ((playerChargedDistance / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(playerChargedAmethysm && playerChargedPlayers && !selfCharged),
-    ((4f / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(playerChargedAmethysm && playerChargedSelf && selfCharged)
-)
+val playerChargedStrength: Float get() =
+    if (playerChargedAmethysm && playerChargedSelf && selfCharged) .15f
+    else ((playerChargedDistance / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(playerChargedAmethysm && playerChargedPlayers)
 var amethysm_effect_info = AmethysmEffectInfo()
 var charge_effect_info = ChargeEffectInfo()
 var center_heart_info = CenterHeartInfo()
