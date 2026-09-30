@@ -11,6 +11,7 @@ import io.github.xn32.json5k.SerialComment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.contents.TranslatableContents
@@ -197,6 +198,25 @@ private fun configSave(data: NLClientConfig) {
 }
 
 private object ClientConfigMigrator {
+    // From v1 to v2
+    fun migrateOld(config: String): NLClientConfig {
+        val obj = json.parseToJsonElement(config)
+        if (obj is JsonObject) {
+            val new = JsonObject(obj.toMap().mapKeys { (key, _) ->
+                if (key == "joinMessage") return@mapKeys "join_message"
+                if (key == "heartPosition") return@mapKeys "heart_position"
+                if (key == "healthRendering") return@mapKeys "health_rendering"
+                if (key == "deathScreenRemaining") return@mapKeys "death_screen_remaining"
+                return@mapKeys key
+            }).toString()
+            val v1 = json5.decodeFromString(NLClientConfig.serializer(), new)
+            return migrate(json5.encodeToString(NLClientConfig.serializer(), v1))
+        } else {
+            return NLClientConfig()
+        }
+    }
+
+    // From v2 to ...
     fun migrate(config: String): NLClientConfig {
         // No migration now
         return json5.decodeFromString(NLClientConfig.serializer(), config)
@@ -209,7 +229,7 @@ internal fun configInit() {
         if (!Files.exists(configPath)) {
             if (Files.exists(oldConfigPath)) {
                 val old = Files.readString(oldConfigPath)
-                configSave(ClientConfigMigrator.migrate(old))
+                configSave(ClientConfigMigrator.migrateOld(old))
             } else {
                 configSave(NLClientConfig())
             }
