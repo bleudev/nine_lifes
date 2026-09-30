@@ -55,7 +55,7 @@ dependencies {
 
     implementation("org.quiltmc.parsers:gson:0.3.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
-    implementation("io.github.xn32:json5k:0.3.0")
+    include(implementation("io.github.xn32:json5k:0.3.0")!!)
 }
 
 tasks.processResources {
