@@ -4,16 +4,18 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.client.config.HeartPosition
-import com.bleudev.nine_lifes.client.config.configInit
-import com.bleudev.nine_lifes.client.config.heartPosition
-import com.bleudev.nine_lifes.client.config.joinMessageEnabled
+import com.bleudev.nine_lifes.client.config.client.HeartPosition
+import com.bleudev.nine_lifes.client.config.client.configInit
+import com.bleudev.nine_lifes.client.config.client.heartPosition
+import com.bleudev.nine_lifes.client.config.client.joinMessageEnabled
+import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
@@ -176,6 +178,14 @@ class NineLifesClient : ClientModInitializer {
             selfAmethysm = payload.hasAmethysm
             playerChargedDistance = payload.toCharged
             selfCharged = payload.hasCharged
+        }
+        registerReceiver(OpenGameConfigEditScreen) { payload, ctx ->
+            ctx.client().gui.setScreen(NLGameConfigEditScreen.generate(payload.config, ctx.client().gui.screen()) { r ->
+                ctx.responseSender().sendPacket(GameConfigSave(r))
+            })
+        }
+        registerReceiver(GameConfigSync) { payload ->
+            dataSyncedGameConfig = payload.config
         }
         registerReceiver(UpdateStickUsedTicks) { stickUsedTicks = it.ticks }
         registerReceiver(StickGiveHeartScreenEffect) { stick_purpleness_ticks = STICK_PURPLENESS_GIVE_HEART_TICKS }

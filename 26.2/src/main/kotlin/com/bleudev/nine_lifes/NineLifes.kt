@@ -1,8 +1,12 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.config.game.GameConfigCheckException
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
+import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
+import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
 import com.bleudev.nine_lifes.custom.packet.payload.unit.AfterPlayerRespawn
 import com.bleudev.nine_lifes.custom.packet.payload.unit.BetaModeMessage
 import com.bleudev.nine_lifes.custom.packet.payload.unit.StickGiveHeartScreenEffect
@@ -13,13 +17,17 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.ChatFormatting
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.permissions.Permissions
 import net.minecraft.stats.StatFormatter
 import net.minecraft.stats.Stats
 import net.minecraft.util.Mth
@@ -149,21 +157,41 @@ class NineLifes : ModInitializer {
                 }
             }
 
+            if (NLGameConfigManager.getInstance().load().disableWStands) {
+                for (level in server.allLevels) {
+                    for (stand in level.getEntities(WANDERING_ARMOR_STAND) { true }) {
+                        stand.discard()
+                    }
+                }
+            }
+
+            // Syncing
             for (player in players) {
                 val amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 val charged = hasCharged.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
-                player.sendPacket(DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged))
+                player.sendPackets(
+                    DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged),
+                    GameConfigSync(NLGameConfigManager.getInstance().load())
+                )
             }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
-            if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
-            if (entity.type == EntityTypes.ARMOR_STAND) {
-                if (level.getRandom().nextFloat() < WSTAND_SPAWN_CHANCE) {
-                    val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
-                    if (newEntity != null) {
-                        newEntity.copyPosition(entity)
-                        level.addFreshEntity(newEntity)
-                        return@register false
+            // Wandering armor stand discarding
+            if (NLGameConfigManager.getInstance().load().disableWStands) {
+                return@register entity.type != WANDERING_ARMOR_STAND
+            } else {
+                // Wandering armor stand spawning
+                if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
+                if (entity.type == EntityTypes.ARMOR_STAND) {
+                    if (level.getRandom().nextFloat() < NLGameConfigManager.getInstance()
+                            .load().wStandSpawnChance.toFloat() / 100
+                    ) {
+                        val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
+                        if (newEntity != null) {
+                            newEntity.copyPosition(entity)
+                            level.addFreshEntity(newEntity)
+                            return@register false
+                        }
                     }
                 }
             }
@@ -214,7 +242,24 @@ class NineLifes : ModInitializer {
             if (entity is ServerPlayer)
                 NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
         }
+
+        registerReceiver(GameConfigSave) { payload, ctx ->
+            // Admin requirement (prevent exploit with client mods)
+            if (ctx.player().permissions().hasPermission(Permissions.COMMANDS_ADMIN)) {
+                try {
+                    NLGameConfigManager.getInstance().save(payload.config) // Can throw check exception
+                    // If not
+                    ctx.player().sendSystemMessage(Component.translatable("commands.nl.config.save.success").withStyle(ChatFormatting.GREEN))
+                } catch (e: GameConfigCheckException) {
+                    // If yes
+                    ctx.player().sendSystemMessage(e.component)
+                }
+            }
+        }
     }
+
+    private fun <T : CustomPacketPayload> registerReceiver(payloadCompanion: PacketPayloadCompanion<T>, handler: (payload: T, ctx: ServerPlayNetworking.Context) -> Unit) =
+        ServerPlayNetworking.registerGlobalReceiver(payloadCompanion.id) { p, c -> handler(p, c)}
 
     private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN

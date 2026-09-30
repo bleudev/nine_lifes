@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.client.config
+package com.bleudev.nine_lifes.client.config.client
 
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.util.createIdentifier

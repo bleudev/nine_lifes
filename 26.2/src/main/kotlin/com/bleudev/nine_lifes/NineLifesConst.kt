@@ -6,12 +6,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 const val MOD_ID = "nine_lifes"
+const val GAME_CONFIG_YACL_ID = "${MOD_ID}_game_config"
 val NAME = PlatformHelper.getModName(MOD_ID)
 val AUTHOR = PlatformHelper.getModAuthorsNames(MOD_ID).getOrNull(0) ?: "Unknown"
 val VERSION = PlatformHelper.getModVersion(MOD_ID, "+")
 const val GITHUB_LINK = "https://github.com/bleudev/nine_lifes"
 const val ISSUES_LINK = "https://github.com/bleudev/nine_lifes/issues"
 const val MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes"
+
+const val CLIENT_CONFIG_VERSION = 2
+const val GAME_CONFIG_VERSION = 1
 
 const val MAX_LIFES: Int = 9
 const val WSTAND_SPAWN_CHANCE = 0.5f

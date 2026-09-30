@@ -2,7 +2,8 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.*
-import com.bleudev.nine_lifes.client.config.*
+import com.bleudev.nine_lifes.client.config.client.*
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.util.lerp
 import com.bleudev.nine_lifes.util.onlyIf
 import com.bleudev.nine_lifes.util.reverseDelta
@@ -107,13 +108,16 @@ var stick_purpleness_ticks: Int = 0
 // Player amethysm effect
 var playerAmethysmDistance: Float = FALLBACK_DISTANCE
 var selfAmethysm: Boolean = false
-val playerAmethysmStrength: Float get() = ((playerAmethysmDistance / PLAYER_AMETHYSM_RADIUS).coerceIn(0f, 1f).reverseDelta() * .1f).onlyIf(playerChargedAmethysm && playerAmethysmPlayers && !selfAmethysm)
+val playerAmethysmStrength: Float get() = ((playerAmethysmDistance / PLAYER_AMETHYSM_RADIUS).coerceIn(0f, 1f).reverseDelta() * .1f).onlyIf(
+    playerChargedAmethysm && playerAmethysmPlayers && !selfAmethysm)
 // Player charged effect
 var playerChargedDistance: Float = FALLBACK_DISTANCE
 var selfCharged: Boolean = false
 val playerChargedStrength: Float get() =
     if (playerChargedAmethysm && playerChargedSelf && selfCharged) .15f
-    else ((playerChargedDistance / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(playerChargedAmethysm && playerChargedPlayers)
+    else ((playerChargedDistance / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(
+        playerChargedAmethysm && playerChargedPlayers
+    )
 var amethysm_effect_info = AmethysmEffectInfo()
 var charge_effect_info = ChargeEffectInfo()
 var center_heart_info = CenterHeartInfo()
@@ -238,3 +242,5 @@ class ChargeEffectInfo {
         return 0f
     }
 }
+
+internal var dataSyncedGameConfig: NLGameConfigManager.NLGameConfig = NLGameConfigManager.NLGameConfig()
