@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.config.GameConfigCheckException
 import com.bleudev.nine_lifes.config.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
@@ -17,6 +18,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.ChatFormatting
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
@@ -240,9 +242,16 @@ class NineLifes : ModInitializer {
         }
 
         registerReceiver(GameConfigSave) { payload, ctx ->
+            // Admin requirement (prevent exploit with client mods)
             if (ctx.player().permissions().hasPermission(Permissions.COMMANDS_ADMIN)) {
-                NLGameConfigManager.getInstance().save(payload.config)
-                ctx.player().sendSystemMessage(Component.literal("Config was saved!"))
+                try {
+                    NLGameConfigManager.getInstance().save(payload.config) // Can throw check exception
+                    // If not
+                    ctx.player().sendSystemMessage(Component.translatable("commands.nl.config.save.success").withStyle(ChatFormatting.GREEN))
+                } catch (e: GameConfigCheckException) {
+                    // If yes
+                    ctx.player().sendSystemMessage(e.component)
+                }
             }
         }
     }

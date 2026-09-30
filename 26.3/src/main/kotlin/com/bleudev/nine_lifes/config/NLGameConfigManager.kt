@@ -9,6 +9,7 @@ import io.github.xn32.json5k.SerialComment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.network.chat.Component
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import java.nio.file.Files
@@ -37,7 +38,7 @@ class NLGameConfigManager {
         val checkError = c.check()
         if (!noCheck && checkError != null) {
             save(checkError.first, true)
-            throw IllegalArgumentException(checkError.second)
+            throw checkError.second
         }
 
         val d = json.encodeToString(NLGameConfig.serializer(), c)
@@ -68,7 +69,7 @@ class NLGameConfigManager {
         val version: Int = GAME_CONFIG_VERSION,
         @SerialComment("""
             Disable wandering armor stands entirely
-            This means that all wandering armor stand will kill after turning off this property and will not be longer available to spawn.
+            This means that all wandering armor stand will kill after turning on this property and will not be longer available to spawn.
             Default: false
         """)
         var disableWStands: Boolean = false,
@@ -89,14 +90,22 @@ class NLGameConfigManager {
             wStandSpawnChance ?: this.wStandSpawnChance,
         )
 
-        fun check(): Pair<NLGameConfig, String>? {
-            if (version !in 0..GAME_CONFIG_VERSION) {
-                return with(version = GAME_CONFIG_VERSION) to "Game config version must be in 0..$GAME_CONFIG_VERSION range. Reset to default value"
+        fun check(): Pair<NLGameConfig, GameConfigCheckException>? {
+            var bl = false
+            var exc = GameConfigCheckException.empty()
+            var res = with() // Copy
+
+            if (version !in 1..GAME_CONFIG_VERSION) {
+                bl = true
+                exc = exc.chain(GameConfigCheckException.of(Component.translatable("config.game.check.exception.version", version)))
+                res = res.with(version = GAME_CONFIG_VERSION)
             }
             if (wStandSpawnChance !in 0..100) {
-                return with(wStandSpawnChance = 20) to "WStand spawn chance must be in 0..100 range. Reset to default value"
+                bl = true
+                exc = exc.chain(GameConfigCheckException.of(Component.translatable("config.game.check.exception.wstand_spawn_chance", wStandSpawnChance)))
+                res = res.with(wStandSpawnChance = 20)
             }
-            return null
+            return if (bl) res to exc else null
         }
 
         companion object {
