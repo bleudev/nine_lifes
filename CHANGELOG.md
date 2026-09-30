@@ -11,7 +11,7 @@
 
 ## Version updates
 
-- YACL `3.9.7`
+- YACL `3.9.7` (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
 - [DEV] Fabric Loom `1.18.2` (bleudev)
 - [DEV] Minotaur `2.10.0` (bleudev)
 
