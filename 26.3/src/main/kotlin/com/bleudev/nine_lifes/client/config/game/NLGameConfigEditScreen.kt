@@ -27,6 +27,9 @@ object NLGameConfigEditScreen {
                 rootOptions.register("wstand_spawn_chance") {
                     controller { IntegerSliderControllerBuilder.create(it).range(0, 100).step(1).formatValue { i -> Component.literal("$i%") } }
                     binding(d.wStandSpawnChance, c::wStandSpawnChance, c::wStandSpawnChance::set)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                    }
                 }
             }
         }.generateScreen(parent)

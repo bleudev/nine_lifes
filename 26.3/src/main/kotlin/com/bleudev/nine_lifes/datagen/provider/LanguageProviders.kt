@@ -289,7 +289,7 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.add("commands.nl.revive.success", "Вы были возрождены")
         builder.add("commands.nl.revive.player.success", $$"Игрок %1$s был возрождён")
         builder.add("commands.nl.get.player.success", $$"Количество жизней %2$s: %1$s")
-        builder.add("commands.nl.config.save.success", "Конфиг был успешно сохранен!") // FIXME: rpr
+        builder.add("commands.nl.config.save.success", "Конфиг был успешно сохранен!")
 
         builder.add("commands.not_a_player", "Команда доступна только для игроков")
         // Entities
@@ -321,8 +321,8 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.add(deathScreenRemaining(6), "6 жизней осталось")
         builder.add(deathScreenRemaining(7), "7 жизней осталось")
         builder.add(deathScreenRemaining(8), "8 жизней осталось")
-        builder.add("config.game.check.exception.version", $$"Версия конфига (%1$s) не в интервале 1..$$GAME_CONFIG_VERSION. Значение было сброшено.") // FIXME: rpr
-        builder.add("config.game.check.exception.wstand_spawn_chance", $$"Шанс спавна ходячей стойки для брони (%1$s) не в интервале 0..100. Значение было сброшено.") // FIXME: rpr
+        builder.add("config.game.check.exception.version", $$"Версия конфига (%1$s) не в интервале 1..$$GAME_CONFIG_VERSION. Значение было сброшено.")
+        builder.add("config.game.check.exception.wstand_spawn_chance", $$"Шанс спавна ходячей стойки для брони (%1$s) не в интервале 0..100. Значение было сброшено.")
         // Config
         var tb = ConfigTranslationKeyBuilder.default()
         builder.add(tb.additional("title"), "Конфиг Nine lifes")
@@ -480,6 +480,8 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
             "commands.nl.get.player.success",
             $$"Количество жизней %2$s: %1$s"
         )
+        builder.add("commands.nl.config.save.success", "Настройки успѣшно сохранены!")
+
         builder.add("commands.not_a_player", "Приказъ доступенъ только игрокамъ")
         // Entities
         builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
@@ -531,6 +533,8 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         builder.add(deathScreenRemaining(6), "6 жизней осталось")
         builder.add(deathScreenRemaining(7), "7 жизней осталось")
         builder.add(deathScreenRemaining(8), "8 жизней осталось")
+        builder.add("config.game.check.exception.version", $$"Версія настроекъ (%1$s) не въ интервалѣ 1..$$GAME_CONFIG_VERSION. Значеніе было сброшено.")
+        builder.add("config.game.check.exception.wstand_spawn_chance", $$"Шансъ появленія ходячей стойки для брони (%1$s) не въ интервалѣ 0..100. Значеніе было сброшено.")
         // Config
         var tb = ConfigTranslationKeyBuilder.default()
         builder.add(tb.additional("title"), "Конфигъ Nine Lifes")
@@ -603,6 +607,19 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         )
         builder.addConfigEnum<HealthRendering>(
             "Хардкоръ", "Истинный хардкоръ", "Ваниль"
+        )
+
+        // Game config edit screen
+        tb = ConfigTranslationKeyBuilder.of(GAME_CONFIG_YACL_ID)
+        builder.add(tb.additional("title"), "Игровыя настройки NL")
+        tb = tb.category()
+        builder.add(tb, "Основныя")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("disable_wstands"),
+            "Отключить ходячія стойки", "Полностью отключить ходячія стойки для брони.\nЭто означаетъ, что всѣ ходячія стойки для брони будутъ уничтожены послѣ включенія этой настройки и болѣе не будутъ доступны для призыва."
+        )
+        builder.addConfigOption(tb.option("wstand_spawn_chance"),
+            "Шансъ появленія ходячей стойки", "Шансъ появленія ходячей стойки (въ процентахъ)."
         )
     }
 
