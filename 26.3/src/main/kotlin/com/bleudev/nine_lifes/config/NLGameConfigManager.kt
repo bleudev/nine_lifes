@@ -67,8 +67,13 @@ class NLGameConfigManager {
         """)
         val version: Int = GAME_CONFIG_VERSION,
         @SerialComment("""
-            Wandering stand spawn chance (in percents)
-            
+            Disable wandering armor stands entirely
+            This means that all wandering armor stand will kill after turning off this property and will not be longer available to spawn.
+            Default: false
+        """)
+        var disableWStands: Boolean = false,
+        @SerialComment("""
+            Wandering stand spawn chance (in percents).
             Default: 20
         """)
         @SerialName("wstand_spawn_chance")
@@ -76,9 +81,11 @@ class NLGameConfigManager {
     ) {
         fun with(
             version: Int? = null,
-            wStandSpawnChance: Int? = null
+            disableWStands: Boolean? = null,
+            wStandSpawnChance: Int? = null,
         ): NLGameConfig = NLGameConfig(
             version ?: this.version,
+            disableWStands ?: this.disableWStands,
             wStandSpawnChance ?: this.wStandSpawnChance,
         )
 
@@ -95,6 +102,7 @@ class NLGameConfigManager {
         companion object {
             val STREAM_CODEC: FriendlyStreamCodec<NLGameConfig> = StreamCodec.composite(
                 ByteBufCodecs.INT, NLGameConfig::version,
+                ByteBufCodecs.BOOL, NLGameConfig::disableWStands,
                 ByteBufCodecs.INT, NLGameConfig::wStandSpawnChance,
                 ::NLGameConfig
             )

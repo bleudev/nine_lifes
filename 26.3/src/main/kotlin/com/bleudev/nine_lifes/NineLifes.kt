@@ -155,6 +155,15 @@ class NineLifes : ModInitializer {
                 }
             }
 
+            if (NLGameConfigManager.getInstance().load().disableWStands) {
+                for (level in server.allLevels) {
+                    for (stand in level.getEntities(WANDERING_ARMOR_STAND) { true }) {
+                        stand.discard()
+                    }
+                }
+            }
+
+            // Syncing
             for (player in players) {
                 val amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 val charged = hasCharged.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
@@ -165,14 +174,20 @@ class NineLifes : ModInitializer {
             }
         }
         ServerEntityEvents.ALLOW_LOAD.register { entity, level, reason, isLoadedFromDisk ->
-            if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
-            if (entity.type == EntityTypes.ARMOR_STAND) {
-                if (level.getRandom().nextFloat() < NLGameConfigManager.getInstance().load().wStandSpawnChance.toFloat() / 100) {
-                    val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
-                    if (newEntity != null) {
-                        newEntity.copyPosition(entity)
-                        level.addFreshEntity(newEntity)
-                        return@register false
+            // Wandering armor stand discarding
+            if (NLGameConfigManager.getInstance().load().disableWStands) {
+                return@register entity.type != WANDERING_ARMOR_STAND
+            } else {
+                // Wandering armor stand spawning
+                if (isLoadedFromDisk || reason != EntitySpawnReason.SPAWN_ITEM_USE) return@register true
+                if (entity.type == EntityTypes.ARMOR_STAND) {
+                    if (level.getRandom().nextFloat() < NLGameConfigManager.getInstance().load().wStandSpawnChance.toFloat() / 100) {
+                        val newEntity = WANDERING_ARMOR_STAND.create(level, EntitySpawnReason.SPAWN_ITEM_USE)
+                        if (newEntity != null) {
+                            newEntity.copyPosition(entity)
+                            level.addFreshEntity(newEntity)
+                            return@register false
+                        }
                     }
                 }
             }
