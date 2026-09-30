@@ -1,9 +1,11 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
+import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesStats
-import com.bleudev.nine_lifes.client.config.HealthRendering
-import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.client.HealthRendering
+import com.bleudev.nine_lifes.client.config.client.HeartPosition
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
@@ -82,6 +84,7 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     builder.add("commands.nl.revive.success", "You were revived")
     builder.add("commands.nl.revive.player.success", $$"%1$s was revived")
     builder.add("commands.nl.get.player.success", $$"%2$s's lifes count: %1$s")
+    builder.add("commands.nl.config.save.success", "Config was successfully saved!")
 
     builder.add("commands.not_a_player", "The command is available only to players")
     // Entities
@@ -113,10 +116,12 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     builder.add(deathScreenRemaining(6), "6 lifes left")
     builder.add(deathScreenRemaining(7), "7 lifes left")
     builder.add(deathScreenRemaining(8), "8 lifes left")
+    builder.add("config.game.check.exception.version", $$"Config version (%1$s) is not within the range 1..$$GAME_CONFIG_VERSION. The value has been reset.")
+    builder.add("config.game.check.exception.wstand_spawn_chance", $$"The wandering armor stand spawn chance (%1$s) is not within the 0..100 range. The value has been reset.")
     // Config
     var tb = ConfigTranslationKeyBuilder.default()
 
-    builder.add(tb.additional("title"), "Nine lifes config")
+    builder.add(tb.additional("title"), "Nine Lifes config")
     /// General
     tb = tb.category()
     builder.add(tb, "General")
@@ -127,8 +132,6 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
         "Enable heartbeat effect", "When true lifes count will beat")
     builder.addConfigOption(tb.option("heart_position"),
         "Heart position", "Location of lifes count on the screen")
-    builder.addConfigOption(tb.option("low_lifes_red_sky"),
-        "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
     builder.addConfigOption(tb.option("health_rendering"),
         "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
     builder.addConfigOption(tb.option("death_screen_remaining"),
@@ -156,6 +159,19 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     )
     builder.addConfigEnum<HealthRendering>(
         "Hardcore", "True hardcore", "Vanilla"
+    )
+
+    // Game config edit screen
+    tb = ConfigTranslationKeyBuilder.of(GAME_CONFIG_YACL_ID)
+    builder.add(tb.additional("title"), "NL Game Config")
+    tb = tb.category()
+    builder.add(tb, "General")
+    tb = tb.root()
+    builder.addConfigOption(tb.option("disable_wstands"),
+        "Disable wandering armor stands", "Disable wandering armor stands entirely\nThis means that all wandering armor stand will kill after turning on this property and will not be longer available to spawn."
+    )
+    builder.addConfigOption(tb.option("wstand_spawn_chance"),
+        "Wandering armor stand spawn chance", "Wandering stand spawn chance (in percents)."
     )
 }
 
@@ -273,10 +289,11 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.add("commands.nl.revive.success", "Вы были возрождены")
         builder.add("commands.nl.revive.player.success", $$"Игрок %1$s был возрождён")
         builder.add("commands.nl.get.player.success", $$"Количество жизней %2$s: %1$s")
+        builder.add("commands.nl.config.save.success", "Конфиг был успешно сохранен!")
 
         builder.add("commands.not_a_player", "Команда доступна только для игроков")
         // Entities
-        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
+        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
         // Gamerules
@@ -292,8 +309,8 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.addGameRule("max_charged_items_at_a_time", "Максимум заряженных предметов за раз",
             "Максимальное количество заряженных предметов, получаемых от одного удара молнии. Значение -1 означает бесконечность (отсутствие ограничения).")
         // Sounds
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Бродячая стойка для брони ранена")
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Бродячая стойка для брони пропадает")
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Ходячая стойка для брони ранена")
+        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Ходячая стойка для брони пропадает")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")
@@ -304,6 +321,8 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.add(deathScreenRemaining(6), "6 жизней осталось")
         builder.add(deathScreenRemaining(7), "7 жизней осталось")
         builder.add(deathScreenRemaining(8), "8 жизней осталось")
+        builder.add("config.game.check.exception.version", $$"Версия конфига (%1$s) не в интервале 1..$$GAME_CONFIG_VERSION. Значение было сброшено.")
+        builder.add("config.game.check.exception.wstand_spawn_chance", $$"Шанс спавна ходячей стойки для брони (%1$s) не в интервале 0..100. Значение было сброшено.")
         // Config
         var tb = ConfigTranslationKeyBuilder.default()
         builder.add(tb.additional("title"), "Конфиг Nine lifes")
@@ -346,6 +365,19 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         )
         builder.addConfigEnum<HealthRendering>(
             "Хардкор", "Истинный хардкор", "Ванила"
+        )
+
+        // Game config edit screen
+        tb = ConfigTranslationKeyBuilder.of(GAME_CONFIG_YACL_ID)
+        builder.add(tb.additional("title"), "Игровой конфиг NL")
+        tb = tb.category()
+        builder.add(tb, "Основные")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("disable_wstands"),
+            "Отключить ходячие стойки", "Отключить ходячие стойки для брони полностью.\nЭто означает, что все ходячие стойки для брони будут убиты после включения данной настройки и больше не будут доступны для призыва."
+        )
+        builder.addConfigOption(tb.option("wstand_spawn_chance"),
+            "Шанс спавна ходячей стойки", "Шанс спавна ходячей стойки (в процентах)."
         )
     }
 }
@@ -448,9 +480,11 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
             "commands.nl.get.player.success",
             $$"Количество жизней %2$s: %1$s"
         )
+        builder.add("commands.nl.config.save.success", "Настройки успѣшно сохранены!")
+
         builder.add("commands.not_a_player", "Приказъ доступенъ только игрокамъ")
         // Entities
-        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Бродячая стойка для брони")
+        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
         builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженныхъ вещей")
         // Game rules
@@ -483,11 +517,11 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         // Sounds
         builder.add(
             NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT,
-            "Бродячая стойка для брони ранена"
+            "Ходячая стойка для брони ранена"
         )
         builder.add(
             NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH,
-            "Бродячая стойка для брони пропадаетъ"
+            "Ходячая стойка для брони пропадаетъ"
         )
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчасъ не получитсяъ уснуть")
@@ -499,6 +533,8 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         builder.add(deathScreenRemaining(6), "6 жизней осталось")
         builder.add(deathScreenRemaining(7), "7 жизней осталось")
         builder.add(deathScreenRemaining(8), "8 жизней осталось")
+        builder.add("config.game.check.exception.version", $$"Версія настроекъ (%1$s) не въ интервалѣ 1..$$GAME_CONFIG_VERSION. Значеніе было сброшено.")
+        builder.add("config.game.check.exception.wstand_spawn_chance", $$"Шансъ появленія ходячей стойки для брони (%1$s) не въ интервалѣ 0..100. Значеніе было сброшено.")
         // Config
         var tb = ConfigTranslationKeyBuilder.default()
         builder.add(tb.additional("title"), "Конфигъ Nine Lifes")
@@ -572,6 +608,19 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         builder.addConfigEnum<HealthRendering>(
             "Хардкоръ", "Истинный хардкоръ", "Ваниль"
         )
+
+        // Game config edit screen
+        tb = ConfigTranslationKeyBuilder.of(GAME_CONFIG_YACL_ID)
+        builder.add(tb.additional("title"), "Игровыя настройки NL")
+        tb = tb.category()
+        builder.add(tb, "Основныя")
+        tb = tb.root()
+        builder.addConfigOption(tb.option("disable_wstands"),
+            "Отключить ходячія стойки", "Полностью отключить ходячія стойки для брони.\nЭто означаетъ, что всѣ ходячія стойки для брони будутъ уничтожены послѣ включенія этой настройки и болѣе не будутъ доступны для призыва."
+        )
+        builder.addConfigOption(tb.option("wstand_spawn_chance"),
+            "Шансъ появленія ходячей стойки", "Шансъ появленія ходячей стойки (въ процентахъ)."
+        )
     }
 
 }
@@ -615,6 +664,6 @@ private inline fun <reified T : Enum<T>> FabricLanguageProvider.TranslationBuild
 }
 
 private fun FabricLanguageProvider.TranslationBuilder.addGameRule(id: String, name: String, description: String) {
-    this.add("gamerule.$MOD_ID.$id", name)
-    this.add("gamerule.$MOD_ID.$id.description", description)
+    this.add("gamerule.nine_lifes.$id", name)
+    this.add("gamerule.nine_lifes.$id.description", description)
 }

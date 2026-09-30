@@ -56,7 +56,7 @@ private fun String.rc(num: Int): McInformation = McInformation.rc(this, num)
 
 prConfigure("26.2", "26.3", d()
     .fabric("0.157.0+26.2")
-    .yacl("3.9.6+26.2-fabric")
+    .yacl("3.9.7+26.2-fabric")
     .modmenu("20.0.1")
 )
 prConfigure("26.3", "26.4", d()
