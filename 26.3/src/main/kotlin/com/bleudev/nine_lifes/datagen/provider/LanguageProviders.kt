@@ -4,8 +4,8 @@ import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
 import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.NineLifesStats
-import com.bleudev.nine_lifes.client.config.HealthRendering
-import com.bleudev.nine_lifes.client.config.HeartPosition
+import com.bleudev.nine_lifes.client.config.client.HealthRendering
+import com.bleudev.nine_lifes.client.config.client.HeartPosition
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.util.*
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput

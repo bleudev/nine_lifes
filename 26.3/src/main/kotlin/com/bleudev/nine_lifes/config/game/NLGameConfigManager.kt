@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.config
+package com.bleudev.nine_lifes.config.game
 
 import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
 import com.bleudev.nine_lifes.MOD_ID

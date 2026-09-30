@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.client.config
+package com.bleudev.nine_lifes.client.config.client
 
 import com.bleudev.nine_lifes.CLIENT_CONFIG_VERSION
 import com.bleudev.nine_lifes.LOGGER
@@ -155,7 +155,7 @@ enum class HeartPosition : NameableEnum {
     override fun getDisplayName(): Component = Component.translatable(enumConfig("HeartPosition", name))
 
     companion object : TranslatableConfigEnumProvider {
-        override val names: List<String> = HeartPosition.entries.map { (it.displayName.contents as TranslatableContents).key }
+        override val names: List<String> = entries.map { (it.displayName.contents as TranslatableContents).key }
     }
 }
 
@@ -166,7 +166,7 @@ enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boole
     operator fun invoke(lifesCount: Int) = forceHardcore(lifesCount)
 
     companion object : TranslatableConfigEnumProvider {
-        override val names: List<String> = HealthRendering.entries.map { (it.displayName.contents as TranslatableContents).key }
+        override val names: List<String> = entries.map { (it.displayName.contents as TranslatableContents).key }
     }
 }
 

@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes
 
-import com.bleudev.nine_lifes.config.GameConfigCheckException
-import com.bleudev.nine_lifes.config.NLGameConfigManager
+import com.bleudev.nine_lifes.config.game.GameConfigCheckException
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
 import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*

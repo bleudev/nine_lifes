@@ -4,11 +4,11 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.client.config.HeartPosition
-import com.bleudev.nine_lifes.client.config.configInit
+import com.bleudev.nine_lifes.client.config.client.HeartPosition
+import com.bleudev.nine_lifes.client.config.client.configInit
+import com.bleudev.nine_lifes.client.config.client.heartPosition
+import com.bleudev.nine_lifes.client.config.client.joinMessageEnabled
 import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
-import com.bleudev.nine_lifes.client.config.heartPosition
-import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor

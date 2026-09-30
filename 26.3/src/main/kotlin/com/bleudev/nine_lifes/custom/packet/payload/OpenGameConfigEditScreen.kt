@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.custom.packet.payload
 
 import com.bleudev.nine_lifes.api.FriendlyStreamCodec
-import com.bleudev.nine_lifes.config.NLGameConfigManager
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.NineLifesPackets
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import net.minecraft.network.codec.StreamCodec

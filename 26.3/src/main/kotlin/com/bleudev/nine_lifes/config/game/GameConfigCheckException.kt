@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.config
+package com.bleudev.nine_lifes.config.game
 
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component

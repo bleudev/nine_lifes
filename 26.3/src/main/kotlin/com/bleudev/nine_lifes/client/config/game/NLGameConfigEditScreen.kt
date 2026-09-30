@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.client.config.game
 
 import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
-import com.bleudev.nine_lifes.config.NLGameConfigManager
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder
 import dev.isxander.yacl3.dsl.YetAnotherConfigLib
