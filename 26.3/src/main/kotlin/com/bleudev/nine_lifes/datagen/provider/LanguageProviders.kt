@@ -127,8 +127,6 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
         "Enable heartbeat effect", "When true lifes count will beat")
     builder.addConfigOption(tb.option("heart_position"),
         "Heart position", "Location of lifes count on the screen")
-    builder.addConfigOption(tb.option("low_lifes_red_sky"),
-        "Red sky when there are few lifes", "When true sky will become red when lifes count is low")
     builder.addConfigOption(tb.option("health_rendering"),
         "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
     builder.addConfigOption(tb.option("death_screen_remaining"),

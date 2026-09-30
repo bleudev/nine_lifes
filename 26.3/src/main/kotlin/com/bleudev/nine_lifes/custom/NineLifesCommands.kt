@@ -2,7 +2,7 @@ package com.bleudev.nine_lifes.custom
 
 import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.config.NLGameConfigManager
-import com.bleudev.nine_lifes.custom.packet.payload.GameConfigEditScreen
+import com.bleudev.nine_lifes.custom.packet.payload.OpenGameConfigEditScreen
 import com.bleudev.nine_lifes.util.*
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
@@ -171,7 +171,7 @@ object NineLifesCommands {
             ctx.getSource().sendFailure(Component.translatable("commands.not_a_player"))
             return -1
         }
-        pl.sendPacket(GameConfigEditScreen(NLGameConfigManager.getInstance().load()))
+        pl.sendPacket(OpenGameConfigEditScreen(NLGameConfigManager.getInstance().load()))
         return 1
     }
 

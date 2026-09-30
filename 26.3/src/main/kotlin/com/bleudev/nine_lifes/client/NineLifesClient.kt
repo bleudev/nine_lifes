@@ -6,7 +6,7 @@ import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
 import com.bleudev.nine_lifes.client.config.HeartPosition
 import com.bleudev.nine_lifes.client.config.configInit
-import com.bleudev.nine_lifes.client.config.game.NLGameConfigScreen
+import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
 import com.bleudev.nine_lifes.client.config.heartPosition
 import com.bleudev.nine_lifes.client.config.joinMessageEnabled
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
@@ -183,8 +183,8 @@ class NineLifesClient : ClientModInitializer {
             playerChargedDistance = payload.toCharged
             selfCharged = payload.hasCharged
         }
-        registerReceiver(GameConfigEditScreen) { payload, ctx ->
-            ctx.client().gui.setScreen(NLGameConfigScreen.generate(payload.config, ctx.client().gui.screen()) { r ->
+        registerReceiver(OpenGameConfigEditScreen) { payload, ctx ->
+            ctx.client().gui.setScreen(NLGameConfigEditScreen.generate(payload.config, ctx.client().gui.screen()) { r ->
                 ctx.responseSender().sendPacket(GameConfigSave(r))
             })
         }

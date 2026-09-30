@@ -13,6 +13,9 @@ const val GITHUB_LINK = "https://github.com/bleudev/nine_lifes"
 const val ISSUES_LINK = "https://github.com/bleudev/nine_lifes/issues"
 const val MODRINTH_LINK = "https://modrinth.com/mod/nine_lifes"
 
+const val CLIENT_CONFIG_VERSION = 2
+const val GAME_CONFIG_VERSION = 1
+
 const val MAX_LIFES: Int = 9
 const val WSTAND_SPAWN_CHANCE = 0.5f
 const val WSTAND_WANDER_TICKS = 5 * TICKS_PER_MINUTE

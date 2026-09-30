@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.*;
-import static com.bleudev.nine_lifes.client.config.NineLifesClientConfigKt.getDeathScreenRemaining;
+import static com.bleudev.nine_lifes.client.config.NLClientConfigKt.getDeathScreenRemaining;
 import static com.bleudev.nine_lifes.util.TranslationUtilsKt.deathScreenRemaining;
 
 @Mixin(DeathScreen.class)

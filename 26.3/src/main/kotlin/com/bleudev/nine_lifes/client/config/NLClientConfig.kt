@@ -1,9 +1,13 @@
 package com.bleudev.nine_lifes.client.config
 
+import com.bleudev.nine_lifes.CLIENT_CONFIG_VERSION
 import com.bleudev.nine_lifes.LOGGER
+import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.client.forceVanillaDeathScreen
 import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
+import io.github.xn32.json5k.Json5
+import io.github.xn32.json5k.SerialComment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -45,25 +49,98 @@ internal var playerAmethysmPlayers: Boolean
     set(new) = configSave(configLoad().apply { chargedAmethysm.amethysm.players = new })
 
 @Serializable
-data class NineLifesClientConfig(
+data class NLClientConfig(
+    @SerialComment("""
+        Version of client config.
+        DO NOT change this manually!!
+    """)
+    val version: Int = CLIENT_CONFIG_VERSION,
+
+    @SerialName("join_message")
+    @SerialComment("""
+        Display message with lifes count on join server.
+        Default: true
+    """)
     var joinMessage: Boolean = true,
+
+    @SerialComment("""
+        When true lifes count will beat.
+        Default: true
+    """)
     var heartbeat: Boolean = true,
+
+    @SerialName("heart_position")
+    @SerialComment("""
+        Location of lifes count on the screen.
+        Default: "BOTTOM_CENTER"
+    """)
     var heartPosition: HeartPosition = HeartPosition.BOTTOM_CENTER,
+
+    @SerialName("health_rendering")
+    @SerialComment("""
+        Controls player health rendering.
+
+        ALWAYS - Always render hardcore hearts.
+        TRUE - Only if you have one life.
+        NEVER - Vanilla behavior.
+
+        Default: "ALWAYS"
+    """)
     var healthRendering: HealthRendering = HealthRendering.ALWAYS,
+
+    @SerialName("death_screen_remaining")
+    @SerialComment("""
+        Display the number of lifes remaining instead of the "You Died!" message on the death screen.
+        Default: true
+    """)
     var deathScreenRemaining: Boolean = true,
+
     @SerialName("charged_amethysm")
+    @SerialComment("""
+        Amethysm/Charged Items
+    """)
     var chargedAmethysm: ChargedAmethysmData = ChargedAmethysmData(),
 ) {
     @Serializable
     data class ChargedAmethysmData(
+        @SerialComment("""
+            Toggles the effects near players with charged items or Amethysm on or off.
+            Useful for quickly disabling everything with a single button.
+            Default: true
+        """)
         var enabled: Boolean = true,
+
+        @SerialComment("""
+            Charged Items
+        """)
         var charged: ChargedData = ChargedData(),
+
+        @SerialComment("""
+            Amethysm
+        """)
         var amethysm: AmethysmData = AmethysmData(),
     ) {
         @Serializable
-        data class ChargedData(var self: Boolean = true, var players: Boolean = true)
+        data class ChargedData(
+            @SerialComment("""
+                Show the effect when holding charged items in the inventory.
+                Default: true
+            """)
+            var self: Boolean = true,
+            @SerialComment("""
+                Show the effect near players with charged items.
+                Default: true
+            """)
+            var players: Boolean = true
+        )
         @Serializable
-        data class AmethysmData(var players: Boolean = true)
+        data class AmethysmData(
+            @SerialComment("""
+                Show the effect near players with Amethysm.
+                Default: true
+            """)
+            var players: Boolean = true
+        )
     }
 }
 
@@ -92,36 +169,54 @@ enum class HealthRendering(private val forceHardcore: (lifesCount: Int) -> Boole
     }
 }
 
-private val configPath: Path
+private val oldConfigPath: Path
     get() = FabricLoader.getInstance().configDir.resolve("nine_lifes.client.config.json")
+private val configPath: Path
+    get() = FabricLoader.getInstance().configDir.resolve(MOD_ID).resolve("client.json5")
 
-private val jsonInstance: Json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
+private val json5 = Json5 { prettyPrint = true; encodeDefaults = true }
 
-private fun configLoad(): NineLifesClientConfig {
+private fun configLoad(): NLClientConfig {
     try {
-        return jsonInstance.decodeFromString<NineLifesClientConfig>(Files.readString(configPath))
+        return json5.decodeFromString(NLClientConfig.serializer(), Files.readString(configPath))
     }
     catch (e: Throwable) {
         LOGGER.error("Error while loading config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
     }
-    return NineLifesClientConfig()
+    return NLClientConfig()
 }
 
-private fun configSave(data: NineLifesClientConfig) {
+private fun configSave(data: NLClientConfig) {
     try {
-        Files.writeString(configPath, jsonInstance.encodeToString(data))
+        Files.writeString(configPath, json5.encodeToString(NLClientConfig.serializer(), data))
     }
     catch (e: Throwable) {
         LOGGER.error("Error while saving config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
     }
 }
 
+private object ClientConfigMigrator {
+    fun migrate(config: String): NLClientConfig {
+        // No migration now
+        return json5.decodeFromString(NLClientConfig.serializer(), config)
+    }
+}
+
 internal fun configInit() {
     try {
-        if (!Files.exists(configPath)) Files.writeString(configPath, "{}")
+        Files.createDirectories(configPath.parent)
+        if (!Files.exists(configPath)) {
+            if (Files.exists(oldConfigPath)) {
+                val old = Files.readString(oldConfigPath)
+                configSave(ClientConfigMigrator.migrate(old))
+            } else {
+                configSave(NLClientConfig())
+            }
+
+        }
     } catch (e: Throwable) {
         LOGGER.error("Error while initializing config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
     }
-    configSave(configLoad())
 }
 

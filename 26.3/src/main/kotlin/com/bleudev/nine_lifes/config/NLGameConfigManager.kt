@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes.config
 
+import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.FriendlyStreamCodec
 import com.bleudev.nine_lifes.client.dataSyncedGameConfig
@@ -61,6 +62,11 @@ class NLGameConfigManager {
     @Serializable
     data class NLGameConfig(
         @SerialComment("""
+            Version of game config.
+            DO NOT change this manually!!
+        """)
+        val version: Int = GAME_CONFIG_VERSION,
+        @SerialComment("""
             Wandering stand spawn chance (in percents)
             
             Default: 20
@@ -69,20 +75,26 @@ class NLGameConfigManager {
         var wStandSpawnChance: Int = 20,
     ) {
         fun with(
+            version: Int? = null,
             wStandSpawnChance: Int? = null
         ): NLGameConfig = NLGameConfig(
+            version ?: this.version,
             wStandSpawnChance ?: this.wStandSpawnChance,
         )
 
         fun check(): Pair<NLGameConfig, String>? {
+            if (version !in 0..GAME_CONFIG_VERSION) {
+                return with(version = GAME_CONFIG_VERSION) to "Game config version must be in 0..$GAME_CONFIG_VERSION range. Reset to default value"
+            }
             if (wStandSpawnChance !in 0..100) {
-                return with(20) to "WStand spawn chance must be in 0..100 range. Reset to default value"
+                return with(wStandSpawnChance = 20) to "WStand spawn chance must be in 0..100 range. Reset to default value"
             }
             return null
         }
 
         companion object {
             val STREAM_CODEC: FriendlyStreamCodec<NLGameConfig> = StreamCodec.composite(
+                ByteBufCodecs.INT, NLGameConfig::version,
                 ByteBufCodecs.INT, NLGameConfig::wStandSpawnChance,
                 ::NLGameConfig
             )
