@@ -11,6 +11,7 @@
 
 ## Version updates
 
+- YACL `3.9.7`
 - [DEV] Fabric Loom `1.18.2` (bleudev)
 - [DEV] Minotaur `2.10.0` (bleudev)
 
