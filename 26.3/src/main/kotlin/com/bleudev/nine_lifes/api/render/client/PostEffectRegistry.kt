@@ -183,7 +183,7 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
 
     override fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder {
         postEffects[identifier] = renderPredicate
-        return BuilderImpl(identifier)
+        return UniformBuilderImpl(identifier)
     }
 
     fun visit(renderer: (Identifier) -> Unit) {
@@ -193,18 +193,18 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
             }
         }
     }
+}
 
-    private class BuilderImpl(val postEffectIdentifier: Identifier) : Builder {
-        override fun uniform(
-            name: String,
-            transformer: Builder.UniformBuilder.() -> Unit
-        ): Builder {
-            UniformRegistryImpl.register(
-                UniformRegistryImpl.PostEffectContext(name, postEffectIdentifier),
-                transformer
-            )
-            return this
-        }
+internal class UniformBuilderImpl(val postEffectIdentifier: Identifier) : Builder {
+    override fun uniform(
+        name: String,
+        transformer: Builder.UniformBuilder.() -> Unit
+    ): Builder {
+        UniformRegistryImpl.register(
+            UniformRegistryImpl.PostEffectContext(name, postEffectIdentifier),
+            transformer
+        )
+        return this
     }
 }
 

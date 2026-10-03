@@ -20,6 +20,7 @@
 - Game config (`/nl config` command) (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
   - Disable wandering armor stand
   - Wandering armor stand spawn chance
+- Wandering armor stand spectating effect (bleudev [#168](https://github.com/bleudev/nine_lifes/pull/168))
 - Move config to JSON5 (with migration) (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
 - Pre-reform Russian localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
 - Upside down English localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))

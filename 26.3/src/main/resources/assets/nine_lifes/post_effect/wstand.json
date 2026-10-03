@@ -1,0 +1,94 @@
+{
+    "targets": {
+        "swap": {}
+    },
+    "passes": [
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "nine_lifes:post/cconvolve",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "minecraft:main"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "ColorConfig": [
+                    {
+                        "name": "RedMatrix",
+                        "type": "vec3",
+                        "value": [ 0.3, 0.59, 0.11 ]
+                    },
+                    {
+                        "name": "GreenMatrix",
+                        "type": "vec3",
+                        "value": [ 0.0, 0.0, 0.0 ]
+                    },
+                    {
+                        "name": "BlueMatrix",
+                        "type": "vec3",
+                        "value": [ 0.3, 0.59, 0.11 ]
+                    }
+                ],
+                "CustomConvolveConfig": [
+                    {
+                        "name": "Strength",
+                        "type": "float",
+                        "value": 0.5
+                    },
+                    {
+                        "name": "Saturation",
+                        "type": "float",
+                        "value": 2.4
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "nine_lifes:post/anaglyph",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "swap",
+            "uniforms": {
+                "AnaglyphConfig": [
+                    {
+                        "name": "Delta",
+                        "type": "vec2",
+                        "value": [ 0.0, 0.0 ]
+                    }
+                ]
+            }
+        },
+        {
+            "vertex_shader": "minecraft:core/screenquad",
+            "fragment_shader": "minecraft:post/bits",
+            "inputs": [
+                {
+                    "sampler_name": "In",
+                    "target": "swap"
+                }
+            ],
+            "output": "minecraft:main",
+            "uniforms": {
+                "BitsConfig": [
+                    {
+                        "name": "Resolution",
+                        "type": "float",
+                        "value": 16.0
+                    },
+                    {
+                        "name": "MosaicSize",
+                        "type": "float",
+                        "value": 4.0
+                    }
+                ]
+            }
+        }
+    ]
+}

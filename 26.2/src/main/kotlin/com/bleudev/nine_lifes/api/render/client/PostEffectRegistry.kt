@@ -182,7 +182,7 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
 
     override fun register(identifier: Identifier, renderPredicate: EmptyPredicate): Builder {
         postEffects[identifier] = renderPredicate
-        return BuilderImpl(identifier)
+        return UniformBuilderImpl(identifier)
     }
 
     fun execute(renderer: (Identifier) -> Unit) {
@@ -192,18 +192,18 @@ private class PostEffectRegistryImpl : PostEffectRegistry {
             }
         }
     }
+}
 
-    private class BuilderImpl(val postEffectIdentifier: Identifier) : Builder {
-        override fun uniform(
-            name: String,
-            transformer: Builder.UniformBuilder.() -> Unit
-        ): Builder {
-            UniformRegistryImpl.register(
-                UniformRegistryImpl.PostEffectContext(name, postEffectIdentifier),
-                transformer
-            )
-            return this
-        }
+internal class UniformBuilderImpl(val postEffectIdentifier: Identifier) : Builder {
+    override fun uniform(
+        name: String,
+        transformer: Builder.UniformBuilder.() -> Unit
+    ): Builder {
+        UniformRegistryImpl.register(
+            UniformRegistryImpl.PostEffectContext(name, postEffectIdentifier),
+            transformer
+        )
+        return this
     }
 }
 
@@ -224,29 +224,29 @@ private object UniformRegistryImpl {
 
     fun initBuffers() {
         BUFFERS.clear()
-        for (entry in BUFFER_QUERY) {
-            BUFFERS[entry.key] = entry.value()
+        for ((key, value) in BUFFER_QUERY) {
+            BUFFERS[key] = value()
         }
     }
 
     fun updateBuffers() {
-        for (entry in BUFFERS) {
-            if (entry.value.currentBuffer().isClosed) {
+        for ((key, value) in BUFFERS) {
+            if (value.currentBuffer().isClosed) {
                 initBuffers()
                 return
             }
-            entry.value.currentBuffer().map(false, true).use { view ->
+            value.currentBuffer().map(false, true).use { view ->
                 view.data().position(0)
-                TRANSFORMERS[entry.key]!!(Builder.UniformBuilder(view.data()))
+                TRANSFORMERS[key]!!(Builder.UniformBuilder(view.data()))
             }
         }
     }
 
     fun newUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> {
-        for (entry in BUFFERS) {
-            if (shaderId != entry.key.postEffect) continue
-            if (current.containsKey(entry.key.uniform))
-                current[entry.key.uniform] = entry.value.currentBuffer()
+        for ((key, value) in BUFFERS) {
+            if (shaderId != key.postEffect) continue
+            if (current.containsKey(key.uniform))
+                current[key.uniform] = value.currentBuffer()
         }
         return current
     }
