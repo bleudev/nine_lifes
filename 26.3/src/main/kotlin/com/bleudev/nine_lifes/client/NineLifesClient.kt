@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
+import com.bleudev.nine_lifes.api.render.client.SpectatePostEffectRegistry
 import com.bleudev.nine_lifes.client.config.client.HeartPosition
 import com.bleudev.nine_lifes.client.config.client.configInit
 import com.bleudev.nine_lifes.client.config.client.heartPosition
@@ -13,6 +14,7 @@ import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
+import com.bleudev.nine_lifes.custom.NineLifesEntities
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
@@ -40,6 +42,7 @@ import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
 import org.joml.Vector3f
 import org.joml.Vector4f
+import kotlin.random.Random
 
 class NineLifesClient : ClientModInitializer {
     object Layers {
@@ -126,6 +129,15 @@ class NineLifesClient : ClientModInitializer {
         PostEffectRegistry.registerNineLifes("player_charged")
             .uniform("CustomConvolveConfig") {
                 putFloat(playerChargedStrength).putFloat(10f)
+            }
+
+        SpectatePostEffectRegistry.register(NineLifesEntities.WANDERING_ARMOR_STAND, createIdentifier("wstand"))
+            .uniform("AnaglyphConfig") {
+                if (Random.nextFloat() <= .0025f) {
+                    putVec2(Random.nextDouble(0.02, 0.05).toFloat(), Random.nextDouble(0.005, 0.01).toFloat())
+                } else {
+                    putVec2(0.001f, 0.0005f)
+                }
             }
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
