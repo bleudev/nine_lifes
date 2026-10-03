@@ -114,7 +114,8 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
             if (player.isSpectator) {
                 return InteractionResult.SUCCESS
             } else if (player.level().isClientSide) {
-                return InteractionResult.SUCCESS_SERVER
+                return if (itemStack.`is`(Items.AMETHYST_SHARD) && feed(player, hand)) InteractionResult.SUCCESS
+                    else InteractionResult.SUCCESS_SERVER
             } else {
                 val itemInHandSlot = this.getEquipmentSlotForItem(itemStack)
                 if (itemStack.isEmpty) {

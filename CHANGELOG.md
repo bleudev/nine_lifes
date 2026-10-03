@@ -29,5 +29,6 @@
 
 ## Fixes
 
+- Heart particles doesn't appear when feeding wandering armor stand (bleudev [#???]())
 - Enum fields in config are untranslated (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
 - Issues with charged visual effect when self charged is disabled in config (bleudev [#163](https://github.com/bleudev/nine_lifes/pull/163))
