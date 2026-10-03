@@ -3,9 +3,6 @@ package com.bleudev.nine_lifes.custom.entity
 import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.NineLifesSounds
-import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandLookAtPlayerGoal
-import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandRandomLookAroundGoal
-import com.bleudev.nine_lifes.custom.entity.ai.goal.WanderingArmorStandWaterAvoidingRandomStrollGoal
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
@@ -28,7 +25,10 @@ import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal
 import net.minecraft.world.entity.ai.goal.TemptGoal
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -37,6 +37,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.phys.Vec3
+import java.util.*
 
 class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level) {
     init { this.health = 1f }
@@ -62,10 +63,10 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     }
     override fun registerGoals() {
         super.registerGoals()
-        this.goalSelector.addGoal(1, TemptGoal(this, 0.4, { stack -> stack.`is`(Items.AMETHYST_SHARD) }, false))
-        this.goalSelector.addGoal(2, WanderingArmorStandWaterAvoidingRandomStrollGoal(this))
-        this.goalSelector.addGoal(3, WanderingArmorStandLookAtPlayerGoal(this))
-        this.goalSelector.addGoal(4, WanderingArmorStandRandomLookAroundGoal(this))
+        this.goalSelector.addGoal(1, WStandTemptGoal(this))
+        this.goalSelector.addGoal(2, WStandWaterAvoidingRandomStrollGoal(this))
+        this.goalSelector.addGoal(3, WStandLookAtPlayerGoal(this))
+        this.goalSelector.addGoal(4, WStandRandomLookAroundGoal(this))
     }
     override fun canUsePortal(allowVehicles: Boolean): Boolean = false
     override fun canBeHitByProjectile(): Boolean = false
@@ -74,7 +75,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun isPushable(): Boolean = false
     override fun push(entity: Entity) {}
     override fun doPush(entity: Entity) {}
-    override fun isAffectedByFluids(): Boolean = false
+    override fun isAffectedByFluids(): Boolean = this.canWander || this.isPathFinding
     override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
     private fun kill() {
         for (slot in EquipmentSlot.VALUES) {
@@ -114,7 +115,8 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
             if (player.isSpectator) {
                 return InteractionResult.SUCCESS
             } else if (player.level().isClientSide) {
-                return InteractionResult.SUCCESS_SERVER
+                return if (itemStack.`is`(Items.AMETHYST_SHARD) && feed(player, hand)) InteractionResult.SUCCESS
+                    else InteractionResult.SUCCESS_SERVER
             } else {
                 val itemInHandSlot = this.getEquipmentSlotForItem(itemStack)
                 if (itemStack.isEmpty) {
@@ -207,17 +209,18 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
 
     val canWander: Boolean
         get() = wanderTicks > 0
+
     var wanderTicks: Int
         get() = this.entityData.get(WANDER_TICKS)
-        set(v) = this.entityData.set(WANDER_TICKS, v.coerceIn(0, WSTAND_WANDER_TICKS))
+        set(v) = this.entityData.set(WANDER_TICKS, v.coerceIn(0, WSTAND_WANDER_TICKS), true)
 
     var ticksAfterKick: Int
         get() = this.entityData.get(TICKS_AFTER_KICK)
-        set(v) = this.entityData.set(TICKS_AFTER_KICK, v.coerceIn(0, WSTAND_KICK_TICKS))
+        set(v) = this.entityData.set(TICKS_AFTER_KICK, v.coerceIn(0, WSTAND_KICK_TICKS), true)
 
     var kickTimes: Int
         get() = this.entityData.get(KICK_TIMES)
-        set(v) = this.entityData.set(KICK_TIMES, v.coerceIn(0, WSTAND_KICK_TIMES))
+        set(v) = this.entityData.set(KICK_TIMES, v.coerceIn(0, WSTAND_KICK_TIMES), true)
 
     companion object {
         private val WANDER_TICKS: EntityDataAccessor<Int> = SynchedEntityData
@@ -231,5 +234,45 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
             .add(Attributes.MAX_HEALTH, 1.0)
             .add(Attributes.FOLLOW_RANGE)
             .add(Attributes.TEMPT_RANGE)
+    }
+
+    private class WStandTemptGoal(stand: WanderingArmorStand) : TemptGoal(stand, 0.4, { stack -> stack.`is`(Items.AMETHYST_SHARD) }, false) {
+        init {
+            this.flags = EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP)
+        }
+    }
+
+    private class WStandWaterAvoidingRandomStrollGoal(val stand: WanderingArmorStand) : WaterAvoidingRandomStrollGoal(stand, 0.3) {
+        init {
+            this.flags = EnumSet.of(Flag.MOVE, Flag.JUMP)
+        }
+
+        override fun canUse(): Boolean {
+            return stand.canWander && super.canUse()
+        }
+
+        override fun canContinueToUse(): Boolean {
+            return stand.canWander && super.canContinueToUse()
+        }
+    }
+
+    private class WStandLookAtPlayerGoal(val stand: WanderingArmorStand) : LookAtPlayerGoal(stand, Player::class.java, 6f) {
+        override fun canUse(): Boolean {
+            return stand.canWander && super.canUse()
+        }
+
+        override fun canContinueToUse(): Boolean {
+            return stand.canWander && super.canContinueToUse()
+        }
+    }
+
+    private class WStandRandomLookAroundGoal(val stand: WanderingArmorStand) : RandomLookAroundGoal(stand) {
+        override fun canUse(): Boolean {
+            return stand.canWander && super.canUse()
+        }
+
+        override fun canContinueToUse(): Boolean {
+            return stand.canWander && super.canContinueToUse()
+        }
     }
 }
