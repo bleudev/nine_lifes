@@ -11,6 +11,7 @@
     "ServerPlayerMixin"
   ],
   "client": [
+    "client.AvatarRendererMixin",
     "client.CameraMixin",
     "client.DeathScreenMixin",
     "client.EffectsInInventoryMixin",

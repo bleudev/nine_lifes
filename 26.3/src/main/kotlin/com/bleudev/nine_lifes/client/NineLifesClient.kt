@@ -11,6 +11,7 @@ import com.bleudev.nine_lifes.client.config.client.heartPosition
 import com.bleudev.nine_lifes.client.config.client.joinMessageEnabled
 import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
+import com.bleudev.nine_lifes.client.render.GlowRenderer
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
@@ -51,11 +52,15 @@ class NineLifesClient : ClientModInitializer {
         val LIFES_COUNT = createIdentifier("lifes_count")
     }
 
+    private val ID_GLOW_CHARGED = createIdentifier("glow/charged")
+
     object Sprites {
         val HARDCORE = createIdentifier("textures/hud/sprites/hardcore.png")
     }
 
     override fun onInitializeClient() {
+        GlowRenderer.register()
+
         configInit()
 
         NineLifesEntityRenderers.initialize()
@@ -309,5 +314,10 @@ class NineLifesClient : ClientModInitializer {
                 whiteness = (whiteness_screen_ticks.toFloat() / max_whiteness_screen_ticks).lerp(end = max_whiteness_screen)
             }
         } else whiteness = 0f
+
+        // Glow effect test
+//        Minecraft.getInstance().player?.let {
+//            GlowRenderer.getInstance().glowMap[ID_GLOW_CHARGED] = GlowRenderer.Glow(it.position().add(0.0, 1.0, 0.0))
+//        }
     }
 }
