@@ -21,11 +21,13 @@
   - Disable wandering armor stand
   - Wandering armor stand spawn chance
 - Wandering armor stand spectating effect (bleudev [#168](https://github.com/bleudev/nine_lifes/pull/168))
+- Entities now glows after eating charged amethyst (bleudev [#172](https://github.com/bleudev/nine_lifes/pull/172))
 - Move config to JSON5 (with migration) (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
 - Pre-reform Russian localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
 - Upside down English localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
-- [DEV] CurseForge publishing (bleudev)
-- [DEV] GitHub publishing (bleudev)
+- [DEV] Glow! You can make fancy glow effect with ease with it. (bleudev [#172](https://github.com/bleudev/nine_lifes/pull/172))
+- [DEV] CurseForge auto publishing (bleudev)
+- [DEV] GitHub auto publishing (bleudev)
 
 ## Fixes
 
