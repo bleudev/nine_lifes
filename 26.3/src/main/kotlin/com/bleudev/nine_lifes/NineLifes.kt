@@ -1,5 +1,6 @@
 package com.bleudev.nine_lifes
 
+import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.config.game.GameConfigCheckException
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
@@ -134,6 +135,12 @@ class NineLifes : ModInitializer {
                                 )
                                 entity.killCharged()
                             }
+                        }
+                        if (entity.damageTicks >= 0) {
+                            val int = (entity.damageTicks.toFloat() / CHARGED_EFFECT_DURATION).reverseDelta().onlyIf(entity.damageTicks > 0)
+                            level.getPlayers{true}.forEach { player -> player.sendPacket(
+                                AddOrUpdateEntityGlowEffect(entity.uuid, GlowState(radius = 2f, intensity = int))
+                            ) }
                         }
                         entity.damageTicks -= 1
                     }

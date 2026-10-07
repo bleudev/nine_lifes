@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.mixin.client;
 
 import com.bleudev.nine_lifes.api.render.client.SpectatePostEffectRegistry;
+import com.bleudev.nine_lifes.client.render.GlowRenderer;
 import com.bleudev.nine_lifes.client.render.NineLifesPostRenderer;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -52,5 +53,10 @@ public abstract class GameRendererMixin {
         } else {
             original.call(cameraEntity);
         }
+    }
+
+    @Inject(method = "close", at = @At("RETURN"))
+    private void onClose(CallbackInfo ci) {
+        GlowRenderer.reset();
     }
 }

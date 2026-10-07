@@ -105,6 +105,10 @@ fabricApi {
     }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/nine_lifes.classtweaker")
+}
+
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
     projectId.set("nine_lifes")

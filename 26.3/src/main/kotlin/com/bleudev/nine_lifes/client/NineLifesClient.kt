@@ -11,6 +11,7 @@ import com.bleudev.nine_lifes.client.config.client.heartPosition
 import com.bleudev.nine_lifes.client.config.client.joinMessageEnabled
 import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
 import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
+import com.bleudev.nine_lifes.client.render.GlowRenderer
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
@@ -56,6 +57,8 @@ class NineLifesClient : ClientModInitializer {
     }
 
     override fun onInitializeClient() {
+        GlowRenderer.register()
+
         configInit()
 
         NineLifesEntityRenderers.initialize()
@@ -162,6 +165,13 @@ class NineLifesClient : ClientModInitializer {
         registerReceiver(UpdateLifesCount) { lifes = it.lifes }
         registerReceiver(ArmorStandKillEvent) {
             armor_stand_post_kill_ticks = WSTAND_POST_KILL_TICKS
+        }
+        registerReceiver(AddOrUpdateEntityGlowEffect) { payload ->
+            if (payload.glowState.intensity > 0) {
+                entityGlowEffects[payload.uuid] = payload.glowState
+            } else {
+                entityGlowEffects.remove(payload.uuid)
+            }
         }
         registerReceiver(ArmorStandHitEvent) {
             if (!armor_stand_hit_event_running) {
