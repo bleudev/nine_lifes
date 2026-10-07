@@ -319,10 +319,5 @@ class NineLifesClient : ClientModInitializer {
                 whiteness = (whiteness_screen_ticks.toFloat() / max_whiteness_screen_ticks).lerp(end = max_whiteness_screen)
             }
         } else whiteness = 0f
-
-        // Glow effect test
-//        Minecraft.getInstance().player?.let {
-//            GlowRenderer.getInstance().glowMap[ID_GLOW_CHARGED] = GlowRenderer.Glow(it.position().add(0.0, 1.0, 0.0))
-//        }
     }
 }
