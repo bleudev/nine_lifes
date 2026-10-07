@@ -1,5 +1,10 @@
 # 7.1
 
+![Glow](https://github.com/bleudev/nine_lifes/raw/master/markdown_assets/glow.png)
+
+*This does not mean that all amethyst clusters will glow;
+it is merely a demonstration of the capabilities of the glow system.*
+
 ## Targets
 
 | Minecraft Version | Fabric |
