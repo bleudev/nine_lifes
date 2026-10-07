@@ -7,6 +7,7 @@ import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
 import com.bleudev.nine_lifes.util.hurtUnknown
+import com.bleudev.nine_lifes.util.isSurvival
 import com.bleudev.nine_lifes.util.sendPacket
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.syncher.EntityDataAccessor
@@ -76,15 +77,25 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
     override fun push(entity: Entity) {}
     override fun doPush(entity: Entity) {}
     override fun isAffectedByFluids(): Boolean = this.canWander || this.isPathFinding
-    override fun kill(serverLevel: ServerLevel) { if (!serverLevel.isClientSide) remove(RemovalReason.KILLED) }
-    private fun kill() {
+    private fun dropResourcesAfterDeath(player: ServerPlayer?) {
+        val level = this.level()
+        val pos = this.blockPosition().above()
         for (slot in EquipmentSlot.VALUES) {
             val itemStack = this.equipment.set(slot, ItemStack.EMPTY)
             if (!itemStack.isEmpty && !EnchantmentHelper.has(itemStack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
-                Block.popResource(this.level(), this.blockPosition().above(), itemStack)
+                Block.popResource(level, pos, itemStack)
             }
         }
-        (level() as? ServerLevel)?.let { kill(it) }
+        if (player != null && player.isSurvival) {
+            Block.popResource(level, pos, ItemStack(Items.ARMOR_STAND))
+        }
+    }
+    override fun kill(serverLevel: ServerLevel) = remove(RemovalReason.KILLED)
+    private fun kill(player: ServerPlayer?) {
+        (level() as? ServerLevel)?.let {
+            dropResourcesAfterDeath(player)
+            kill(it)
+        }
     }
     override fun hurtServer(level: ServerLevel, source: DamageSource, damage: Float): Boolean {
         if (!sourceCanHit(source)) return false
@@ -102,7 +113,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
             it.sendPacket(ArmorStandHitEvent(this.position()))
             if (bl) it.sendPacket(ArmorStandKillEvent.INSTANCE)
         }
-        if (bl) kill()
+        if (bl) kill(player)
         else lastHit = level.gameTime
         player?.let { triedKillReact(it) }
 
