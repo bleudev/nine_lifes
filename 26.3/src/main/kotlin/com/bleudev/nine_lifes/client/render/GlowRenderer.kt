@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.client.render
 
 import com.bleudev.nine_lifes.MOD_ID
+import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
@@ -27,7 +28,7 @@ class GlowRenderer {
      *
      * You can freely add/remove/change them from your client-side code.
      */
-    val glowMap = hashMapOf<Identifier, Glow>()
+    val glowStateMap = hashMapOf<Identifier, GlowState>()
 
     companion object {
         private val PIPELINE: RenderPipeline = RenderPipelines.register(
@@ -77,7 +78,7 @@ class GlowRenderer {
     private fun submitAll(context: LevelRenderContext) {
         val camera = context.levelState().cameraRenderState
         val collector = context.submitNodeCollector()
-        for (glow in glowMap.values) {
+        for (glow in glowStateMap.values) {
             submitAt(collector, camera, glow.position, glow)
         }
     }
@@ -86,16 +87,16 @@ class GlowRenderer {
         collector: SubmitNodeCollector,
         camera: CameraRenderState,
         position: Vec3,
-        glow: Glow
+        glowState: GlowState
     ) {
-        if (glow.intensity <= 0f || glow.radius <= 0f) return
+        if (glowState.intensity <= 0f || glowState.radius <= 0f) return
 
         val cameraPos = camera.pos
         val distance = position.distanceTo(cameraPos)
-        if (distance >= glow.fadeEnd) return
+        if (distance >= glowState.fadeEnd) return
 
-        val distanceFade = smoothDistanceFade(distance, glow.fadeStart, glow.fadeEnd)
-        val alpha = glow.intensity.coerceIn(0f, 1f) * distanceFade
+        val distanceFade = smoothDistanceFade(distance, glowState.fadeStart, glowState.fadeEnd)
+        val alpha = glowState.intensity.coerceIn(0f, 1f) * distanceFade
         if (alpha <= 0f) return
 
         submissionPoseStack.pushPose()
@@ -111,9 +112,9 @@ class GlowRenderer {
         camera.orientation.transform(up)
 
         val state = GlowRenderState(
-            glow.radius,
+            glowState.radius,
             right, up,
-            glow.color.x, glow.color.y, glow.color.z, alpha
+            glowState.color.x(), glowState.color.y(), glowState.color.z(), alpha
         )
         collector.submitCustomGeometry(submissionPoseStack, RENDER_TYPE) { pose, buffer -> drawGlow(pose, buffer, state) }
         submissionPoseStack.popPose()
@@ -122,9 +123,9 @@ class GlowRenderer {
     fun submitAt(
         context: LevelRenderContext,
         position: Vec3,
-        glow: Glow
+        glowState: GlowState
     ) {
-        submitAt(context.submitNodeCollector(), context.levelState().cameraRenderState, position, glow)
+        submitAt(context.submitNodeCollector(), context.levelState().cameraRenderState, position, glowState)
     }
 
     private fun drawGlow(
@@ -174,30 +175,6 @@ class GlowRenderer {
         val smooth = t * t * (3f - 2f * t)
         return 1f - smooth
     }
-
-    data class Glow(
-        var position: Vec3,
-        /**
-         * Radius in blocks.
-         */
-        var radius: Float = 2f,
-        /**
-         * Overall intensity.
-         */
-        var intensity: Float = 1f,
-        /**
-         * RGB in 0..1.
-         */
-        var color: Vector3f = Vector3f(1f, 1f, 1f),
-        /**
-         * Distance at which camera fading starts.
-         */
-        var fadeStart: Float = 32f,
-        /**
-         * Distance at which the glow disappears.
-         */
-        var fadeEnd: Float = 64f
-    )
 
     private data class GlowRenderState(
         val radius: Float,

@@ -52,8 +52,6 @@ class NineLifesClient : ClientModInitializer {
         val LIFES_COUNT = createIdentifier("lifes_count")
     }
 
-    private val ID_GLOW_CHARGED = createIdentifier("glow/charged")
-
     object Sprites {
         val HARDCORE = createIdentifier("textures/hud/sprites/hardcore.png")
     }
@@ -167,6 +165,13 @@ class NineLifesClient : ClientModInitializer {
         registerReceiver(UpdateLifesCount) { lifes = it.lifes }
         registerReceiver(ArmorStandKillEvent) {
             armor_stand_post_kill_ticks = WSTAND_POST_KILL_TICKS
+        }
+        registerReceiver(AddOrUpdateEntityGlowEffect) { payload ->
+            if (payload.glowState.intensity > 0) {
+                entityGlowEffects[payload.uuid] = payload.glowState
+            } else {
+                entityGlowEffects.remove(payload.uuid)
+            }
         }
         registerReceiver(ArmorStandHitEvent) {
             if (!armor_stand_hit_event_running) {
