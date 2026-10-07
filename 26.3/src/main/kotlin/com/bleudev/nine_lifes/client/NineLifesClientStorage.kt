@@ -2,6 +2,7 @@
 package com.bleudev.nine_lifes.client
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.client.config.client.*
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.util.lerp
@@ -118,6 +119,9 @@ val playerChargedStrength: Float get() =
     else ((playerChargedDistance / PLAYER_CHARGED_RADIUS).coerceIn(0f, 1f).reverseDelta() * .75f).onlyIf(
         playerChargedAmethysm && playerChargedPlayers
     )
+// Glow effects
+var entityGlowEffects = hashMapOf<UUID, GlowState>()
+
 var amethysm_effect_info = AmethysmEffectInfo()
 var charge_effect_info = ChargeEffectInfo()
 var center_heart_info = CenterHeartInfo()

@@ -19,6 +19,7 @@ object NineLifesPackets {
     val UNIT_BETA_MODE_MESSAGE = createIdentifier("packet/unit/beta_mode_message")
     val UNIT_STICK_GIVE_HEART_SCREEN_EFFECT = createIdentifier("packet/unit/stick_give_heart_screen_effect")
 
+    val ADD_OR_UPDATE_ENTITY_GLOW_EFFECT = createIdentifier("packet/add_or_update_entity_glow_effect")
     val ARMOR_STAND_HIT_EVENT = createIdentifier("packet/armor_stand_hit_event")
     val BED_SLEEPING_PROBLEM_EVENT = createIdentifier("packet/bed_sleeping_problem_event")
     val DISTANCE_UPDATE = createIdentifier("packet/distance_update")
@@ -45,6 +46,7 @@ object NineLifesPackets {
         registerS2CPacket(BetaModeMessage)
         registerS2CPacket(StickGiveHeartScreenEffect)
 
+        registerS2CPacket(AddOrUpdateEntityGlowEffect)
         registerS2CPacket(ArmorStandHitEvent)
         registerS2CPacket(BedSleepingProblemEvent)
         registerS2CPacket(DistanceUpdate)

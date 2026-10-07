@@ -18,6 +18,8 @@
     "client.FogRendererMixin",
     "client.GameRendererMixin",
     "client.HudMixin",
+    "client.LivingEntityRendererMixin",
+    "client.LivingEntityRenderStateMixin",
     "client.LocalPlayerMixin",
     "client.PostPassMixin"
   ],
