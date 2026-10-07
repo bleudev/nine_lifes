@@ -210,6 +210,9 @@ class NineLifesClient : ClientModInitializer {
                 ctx.responseSender().sendPacket(GameConfigSave(r))
             })
         }
+        registerReceiver(PlayersLifesCountSync) { payload ->
+            playersLifesCount = payload.playersLifesCount
+        }
         registerReceiver(GameConfigSync) { payload ->
             dataSyncedGameConfig = payload.config
         }
