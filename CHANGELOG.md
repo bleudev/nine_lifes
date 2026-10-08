@@ -25,9 +25,11 @@ it is merely a demonstration of the capabilities of the glow system.*
 - Game config (`/nl config` command) (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
   - Disable wandering armor stand
   - Wandering armor stand spawn chance
+  - Lifes count in nicknames and tab
 - Wandering armor stand spectating effect (bleudev [#168](https://github.com/bleudev/nine_lifes/pull/168))
 - Entities now glows after eating charged amethyst (bleudev [#172](https://github.com/bleudev/nine_lifes/pull/172))
 - Drop armor stand after wandering armor stand's death (bleudev [#173](https://github.com/bleudev/nine_lifes/pull/173))
+- Lifes count in nicknames and tab (bleudev [#174](https://github.com/bleudev/nine_lifes/pull/174))
 - Move config to JSON5 (with migration) (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
 - Pre-reform Russian localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
 - Upside down English localisation (bleudev [#157](https://github.com/bleudev/nine_lifes/pull/157))
