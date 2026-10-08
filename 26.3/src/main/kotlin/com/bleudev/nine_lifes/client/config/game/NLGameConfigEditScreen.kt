@@ -1,6 +1,11 @@
 package com.bleudev.nine_lifes.client.config.game
 
 import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
+import com.bleudev.nine_lifes.client.config.binding
+import com.bleudev.nine_lifes.client.config.cachePending
+import com.bleudev.nine_lifes.client.config.client.playersLifesCountEnabled
+import com.bleudev.nine_lifes.client.config.conditionConfigImage
+import com.bleudev.nine_lifes.client.config.yesNoFormat
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder
@@ -10,6 +15,8 @@ import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
 object NLGameConfigEditScreen {
+    private var cachedPlayersLifesCountEnabled: Boolean? = null
+
     fun generate(config: NLGameConfigManager.NLGameConfig, parent: Screen?, saveFunc: (NLGameConfigManager.NLGameConfig) -> Unit): Screen {
         val d = NLGameConfigManager.NLGameConfig()
         val c = config.with() // Copy
@@ -29,6 +36,15 @@ object NLGameConfigEditScreen {
                     binding(d.wStandSpawnChance, c::wStandSpawnChance, c::wStandSpawnChance::set)
                     descriptionBuilder {
                         addDefaultText(1)
+                    }
+                }
+                rootOptions.register("players_lifes_count") {
+                    binding(d.playersLifesCount, c::playersLifesCount)
+                    yesNoFormat()
+                    cachePending(::cachedPlayersLifesCountEnabled::set)
+                    descriptionBuilder {
+                        addDefaultText(1)
+                        conditionConfigImage("players_lifes_count") { cachedPlayersLifesCountEnabled ?: playersLifesCountEnabled }
                     }
                 }
             }
