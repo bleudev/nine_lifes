@@ -1,0 +1,34 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "com.bleudev.nine_lifes.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "AbstractBedBlockMixin",
+    "AbstractFurnaceBlockEntityMixin",
+    "CampfireBlockEntityMixin",
+    "LivingEntityMixin",
+    "ServerPlayerMixin"
+  ],
+  "client": [
+    "client.AvatarRendererMixin",
+    "client.CameraMixin",
+    "client.DeathScreenMixin",
+    "client.EffectsInInventoryMixin",
+    "client.EnvironmentAttributeProbeMixin",
+    "client.FogRendererMixin",
+    "client.GameRendererMixin",
+    "client.HudMixin",
+    "client.LivingEntityRendererMixin",
+    "client.LivingEntityRenderStateMixin",
+    "client.LocalPlayerMixin",
+    "client.PlayerTabOverlayMixin",
+    "client.PostPassMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
