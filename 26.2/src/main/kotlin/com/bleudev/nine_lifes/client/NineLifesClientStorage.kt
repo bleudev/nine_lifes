@@ -121,6 +121,8 @@ val playerChargedStrength: Float get() =
     )
 // Glow effects
 var entityGlowEffects = hashMapOf<UUID, GlowState>()
+// Players lifes count
+var playersLifesCount = mapOf<UUID, Int>()
 
 var amethysm_effect_info = AmethysmEffectInfo()
 var charge_effect_info = ChargeEffectInfo()

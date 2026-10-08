@@ -79,15 +79,23 @@ class NLGameConfigManager {
         """)
         @SerialName("wstand_spawn_chance")
         var wStandSpawnChance: Int = 20,
+        @SerialComment("""
+            Display player lifes count in the tab / nicknames.
+            Default: true
+        """)
+        @SerialName("players_lifes_count")
+        var playersLifesCount: Boolean = true,
     ) {
         fun with(
             version: Int? = null,
             disableWStands: Boolean? = null,
             wStandSpawnChance: Int? = null,
+            playersLifesCount: Boolean? = null,
         ): NLGameConfig = NLGameConfig(
             version ?: this.version,
             disableWStands ?: this.disableWStands,
             wStandSpawnChance ?: this.wStandSpawnChance,
+            playersLifesCount ?: this.playersLifesCount,
         )
 
         fun check(): Pair<NLGameConfig, GameConfigCheckException>? {
@@ -113,6 +121,7 @@ class NLGameConfigManager {
                 ByteBufCodecs.INT, NLGameConfig::version,
                 ByteBufCodecs.BOOL, NLGameConfig::disableWStands,
                 ByteBufCodecs.INT, NLGameConfig::wStandSpawnChance,
+                ByteBufCodecs.BOOL, NLGameConfig::playersLifesCount,
                 ::NLGameConfig
             )
         }

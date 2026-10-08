@@ -11,6 +11,7 @@
     "ServerPlayerMixin"
   ],
   "client": [
+    "client.AvatarRendererMixin",
     "client.CameraMixin",
     "client.DeathScreenMixin",
     "client.EffectsInInventoryMixin",
@@ -21,6 +22,7 @@
     "client.LivingEntityRendererMixin",
     "client.LivingEntityRenderStateMixin",
     "client.LocalPlayerMixin",
+    "client.PlayerTabOverlayMixin",
     "client.PostPassMixin"
   ],
   "injectors": {

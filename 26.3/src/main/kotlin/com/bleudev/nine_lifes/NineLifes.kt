@@ -173,12 +173,15 @@ class NineLifes : ModInitializer {
             }
 
             // Syncing
+            val c = NLGameConfigManager.getInstance().load()
+            val playersLifesCount = if (c.playersLifesCount) players.associate { it.gameProfile.id to it.lifes } else mapOf()
             for (player in players) {
                 val amethysm = hasAmethysm.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 val charged = hasCharged.toList().minOfOrNull { it.distanceTo(player).onlyIf(it != player, FALLBACK_DISTANCE) } ?: FALLBACK_DISTANCE
                 player.sendPackets(
                     DistanceUpdate(amethysm, charged, player in hasAmethysm, player in hasCharged),
-                    GameConfigSync(NLGameConfigManager.getInstance().load())
+                    GameConfigSync(c),
+                    PlayersLifesCountSync(playersLifesCount),
                 )
             }
         }

@@ -136,6 +136,9 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
         "Health rendering", "Controls player health rendering\nHardcore - Always render hardcore hearts\nTrue hardcore -  Only if you have one life\nVanilla - Vanilla behavior")
     builder.addConfigOption(tb.option("death_screen_remaining"),
         "Remaining lifes on the death screen", "The death screen will now display the number of lifes remaining instead of the \"You Died!\" message")
+    builder.addConfigOption(tb.option("players_lifes_count"),
+        "Players lifes count", "Display player lifes count in the tab / nicknames. Does not work if disabled on the server."
+    )
     /// Charged/Amethysm
     tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
     builder.addConfigOption(tb, "Amethysm/Charged Items")
@@ -172,6 +175,9 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     )
     builder.addConfigOption(tb.option("wstand_spawn_chance"),
         "Wandering armor stand spawn chance", "Wandering stand spawn chance (in percents)."
+    )
+    builder.addConfigOption(tb.option("players_lifes_count"),
+        "Players lifes count", "Display player lifes count in the tab / nicknames."
     )
 }
 
@@ -341,7 +347,10 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.addConfigOption(tb.option("health_rendering"),
             "Рендеринг здоровья", "Контролирует рендеринг здоровья игрока\nХардкор - всегда рендерить хардкорные сердца\nИстинный хардкор - Только если у вас одна жизнь\nВанила - Ванильное поведение")
         builder.addConfigOption(tb.option("death_screen_remaining"),
-            "Оставшиеся жизни на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
+            "Остаток жизней на экране смерти", "На экране смерти будет отображаться количество оставшихся жизней вместо надписи \"Вы умерли!\"")
+        builder.addConfigOption(tb.option("players_lifes_count"),
+            "Кол-во жизней игроков", "Отображать в табе / никнеймах количество жизней игроков. Не работает если отключено на сервере"
+        )
         /// Charged/amethysm
         tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
         builder.addConfigOption(tb, "Аметизм/Заряженные предметы")
@@ -378,6 +387,9 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         )
         builder.addConfigOption(tb.option("wstand_spawn_chance"),
             "Шанс спавна ходячей стойки", "Шанс спавна ходячей стойки (в процентах)."
+        )
+        builder.addConfigOption(tb.option("players_lifes_count"),
+            "Кол-во жизней игроков", "Отображать в табе / никнеймах количество жизней игроков"
         )
     }
 }
@@ -572,7 +584,9 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
             "Оставшіяся жизни на экранѣ смерти",
             "На экранѣ смерти будетъ отображаться количество оставшихсяъ жизней вмѣсто надписи «Вы умерли!»"
         )
-
+        builder.addConfigOption(tb.option("players_lifes_count"),
+            "Число жизней игроковъ", "Показывать число жизней игроковъ въ спискѣ игроковъ и рядомъ съ ихъ именами"
+        )
         /// Charged items / amethysm
         tb = ConfigTranslationKeyBuilder.default().category("charged_amethysm")
         builder.addConfigOption(tb, "Аметизмъ / Заряженныя вещи")
@@ -620,6 +634,9 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         )
         builder.addConfigOption(tb.option("wstand_spawn_chance"),
             "Шансъ появленія ходячей стойки", "Шансъ появленія ходячей стойки (въ процентахъ)."
+        )
+        builder.addConfigOption(tb.option("players_lifes_count"),
+            "Число жизней игроковъ", "Показывать число жизней игроковъ въ спискѣ игроковъ и рядомъ съ ихъ именами"
         )
     }
 
