@@ -207,22 +207,27 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         "&" to "⅋", "_" to "‾", " " to " "
     )
 
+    @Suppress("NonExtendableApiUsage")
     override fun generateTranslations(
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
     ) {
-        generateNineLifesDefaultTranslations { key, tr ->
-            var ans = upsided(tr)
+        // Cludge, but how another way??
+        generateNineLifesDefaultTranslations(object : TranslationBuilder {
+            override fun has(translationKey: String): Boolean = builder.has(translationKey)
+            override fun overwrite(translationKey: String, value: String): String? {
+                var ans = upsided(value)
 
-            var i = 1
-            var s = $$"%$$i$s"
-            while (upsided(s) in ans) {
-                ans = ans.replace(upsided(s), s)
-                i++
-                s = $$"%$$i$s"
+                var i = 1
+                var s = $$"%$$i$s"
+                while (upsided(s) in ans) {
+                    ans = ans.replace(upsided(s), s)
+                    i++
+                    s = $$"%$$i$s"
+                }
+                return builder.overwrite(translationKey, ans)
             }
-            builder.add(key, ans)
-        }
+        })
     }
 
     private fun upsided(t: String): String = t

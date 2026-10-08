@@ -4,7 +4,7 @@
   },
   "passes": [
     {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {
@@ -32,7 +32,7 @@
       }
     },
     {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {
@@ -59,7 +59,7 @@
         ]
       }
     }, {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {
@@ -87,7 +87,7 @@
       }
     },
     {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {
@@ -115,7 +115,7 @@
       }
     },
     {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {
@@ -143,7 +143,7 @@
       }
     },
     {
-      "vertex_shader": "minecraft:core/screenquad",
+      "vertex_shader": "minecraft:core/screentriangle",
       "fragment_shader": "nine_lifes:post/box_cblur",
       "inputs": [
         {

@@ -36,8 +36,8 @@ internal fun OptionDescription.Builder.framedConfigImage(name: String, duration:
 internal abstract class MethodBasedImageRenderer : ImageRenderer {
     override fun render(graphics: GuiGraphicsExtractor, x: Int, y: Int, renderWidth: Int, tickDelta: Float): Int {
         val id = getImagePath()
-        val t = Minecraft.getInstance().textureManager.getTexture(id)
-        val h = renderWidth * t.texture.getHeight(0) / t.texture.getWidth(0)
+        val t = Minecraft.getInstance().textureManager.getTexture(id).textureView().texture()
+        val h = renderWidth * t.getHeight(0) / t.getWidth(0)
         graphics.blit(RenderPipelines.GUI_TEXTURED, id, x, y, 0f, 0f, renderWidth, h, renderWidth, h)
         return h
     }

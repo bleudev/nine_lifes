@@ -3,13 +3,14 @@ package com.bleudev.nine_lifes.client.render
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.util.createIdentifier
+import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.renderpearl.api.pipeline.BlendFunction
 import com.mojang.renderpearl.api.pipeline.ColorTargetState
+import com.mojang.renderpearl.api.pipeline.DepthStencilState
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
-import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.renderer.RenderPipelines
@@ -20,7 +21,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState
 import net.minecraft.resources.Identifier
 import net.minecraft.world.phys.Vec3
 import org.joml.Vector3f
-import java.util.*
 
 class GlowRenderer {
     /**
@@ -40,7 +40,7 @@ class GlowRenderer {
                 .withPrimitiveTopology(PrimitiveTopology.QUADS)
                 .withCull(false)
                 .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
-                .withDepthStencilState(Optional.empty())
+                .withDepthStencilState(DepthStencilState.OFF)
                 .build()
         )
         private val RENDER_TYPE: RenderType = RenderType.create(
