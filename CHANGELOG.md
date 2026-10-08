@@ -9,6 +9,7 @@ it is merely a demonstration of the capabilities of the glow system.*
 
 | Minecraft Version | Fabric |
 |-------------------|--------|
+| 26.4-snapshot-3   | ✅️     |
 | 26.3              | ✅️     |
 | 26.2              | ✅️     |
 
@@ -16,9 +17,15 @@ it is merely a demonstration of the capabilities of the glow system.*
 
 ## Version updates
 
+- 26.4-snapshot-3 (bleudev [#175](https://github.com/bleudev/nine_lifes/pull/175))
 - YACL `3.9.7` (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
 - [DEV] Fabric Loom `1.18.2` (bleudev)
 - [DEV] Minotaur `2.10.0` (bleudev)
+
+### 26.4
+
+- Fabric API `0.162.2` (bleudev [#175](https://github.com/bleudev/nine_lifes/pull/175))
+- YACL `3.9.9` (bleudev [#175](https://github.com/bleudev/nine_lifes/pull/175))
 
 ## New features
 
