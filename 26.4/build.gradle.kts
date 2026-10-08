@@ -113,7 +113,7 @@ modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
     projectId.set("nine_lifes")
     versionNumber.set(project.version as String)
-    versionType.set("release")
+    versionType.set("alpha")
     uploadFile.set(tasks.jar)
     additionalFiles {
         sourcesJar(tasks.kotlinSourcesJar)
@@ -122,7 +122,7 @@ modrinth {
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
     gameVersions.addAll(
-        "26.3",
+        "26.4-snapshot-3",
     )
     loaders.add("fabric")
     environment = "client_and_server"
@@ -139,8 +139,8 @@ tasks.named("modrinth") {
 
 publishMods {
     file = tasks.jar.get().archiveFile
-    changelog = "Hello!"
-    type = STABLE
+    changelog = project.property("changelog") as String
+    type = ALPHA
     modLoaders.add("fabric")
     version.set("${project.version}")
 
@@ -176,7 +176,7 @@ publishMods {
         tagName.set("${project.version}")
         announcementTitle.set("Download from GitHub")
 
-        project.parent?.project(":26.2")?.tasks?.named("publishGithub")?.let {
+        project.parent?.project(":26.3")?.tasks?.named("publishGithub")?.let {
             parent(it)
         }
 
