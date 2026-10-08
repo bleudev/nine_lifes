@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes.client.config.game
 import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
 import com.bleudev.nine_lifes.client.config.binding
 import com.bleudev.nine_lifes.client.config.cachePending
-import com.bleudev.nine_lifes.client.config.client.playersLifesCountEnabled
 import com.bleudev.nine_lifes.client.config.conditionConfigImage
 import com.bleudev.nine_lifes.client.config.yesNoFormat
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
@@ -44,7 +43,7 @@ object NLGameConfigEditScreen {
                     cachePending(::cachedPlayersLifesCountEnabled::set)
                     descriptionBuilder {
                         addDefaultText(1)
-                        conditionConfigImage("players_lifes_count") { cachedPlayersLifesCountEnabled ?: playersLifesCountEnabled }
+                        conditionConfigImage("players_lifes_count") { cachedPlayersLifesCountEnabled ?: c.playersLifesCount }
                     }
                 }
             }

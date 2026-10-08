@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.CLIENT_CONFIG_VERSION
 import com.bleudev.nine_lifes.LOGGER
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.client.forceVanillaDeathScreen
+import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.util.enumConfig
 import dev.isxander.yacl3.api.NameableEnum
 import io.github.xn32.json5k.Json5
@@ -35,6 +36,9 @@ internal var healthRendering: HealthRendering
 internal var deathScreenRemaining: Boolean
     get() = configLoad().deathScreenRemaining && !forceVanillaDeathScreen
     set(new) = configSave(configLoad().apply { deathScreenRemaining = new })
+internal var playersLifesCountEnabled: Boolean
+    get() = configLoad().playersLifesCount && NLGameConfigManager.getClientConfig().playersLifesCount
+    set(new) = configSave(configLoad().apply { playersLifesCount = new })
 
 internal var playerChargedAmethysm: Boolean
     get() = configLoad().chargedAmethysm.enabled
@@ -95,7 +99,12 @@ data class NLClientConfig(
         Default: true
     """)
     var deathScreenRemaining: Boolean = true,
-
+    @SerialName("players_lifes_count")
+    @SerialComment("""
+        Show players's lifes count in tab overlay and name tags (nicknames)
+        Default: true
+    """)
+    var playersLifesCount: Boolean = true,
     @SerialName("charged_amethysm")
     @SerialComment("""
         Amethysm/Charged Items
