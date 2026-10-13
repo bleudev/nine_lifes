@@ -19,7 +19,7 @@ it is merely a demonstration of the capabilities of the glow system.*
 
 - 26.4-snapshot-4 (bleudev [#175](https://github.com/bleudev/nine_lifes/pull/175))
 - YACL `3.9.7` (bleudev [#162](https://github.com/bleudev/nine_lifes/pull/162))
-- [DEV] Fabric Loom `1.18.2` (bleudev)
+- [DEV] Fabric Loom `1.18.4` (bleudev)
 - [DEV] Minotaur `2.10.0` (bleudev)
 
 ### 26.4
