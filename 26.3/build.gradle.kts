@@ -139,7 +139,7 @@ tasks.named("modrinth") {
 
 publishMods {
     file = tasks.jar.get().archiveFile
-    changelog = "Hello!"
+    changelog = project.property("changelog") as String
     type = STABLE
     modLoaders.add("fabric")
     version.set("${project.version}")
