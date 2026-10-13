@@ -18,7 +18,7 @@ the vanilla hardcore. For changes in lifes count - use `/nl` command. Enjoy!)
 ### Supported Minecraft versions and minimal requirements
 | Minecraft version | Max Nine Lifes version | Fabric Language Kotlin    | Fabric API  | YACL                        | Fabric Loader |
 |-------------------|------------------------|:--------------------------|:------------|:----------------------------|---------------|
-| 26.4-snapshot-3   | ✅ 7.1                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.162.2 | \>= 3.9.9                   | \>= 0.19.5    |
+| 26.4-snapshot-4   | ✅ 7.1                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.162.3 | \>= 3.9.9                   | \>= 0.19.5    |
 | 26.3              | ✅ 7.1                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.160.5 | \>= 3.9.7                   | \>= 0.19.5    |
 | 26.2              | ✅ 7.1                 | \>= 1.14.1+kotlin.2.4.20  | \>= 0.157.0 | \>= 3.9.7                   | \>= 0.19.5    |
 | 26.1.2            | ❌ 6.3                 | \>= 1.13.12+kotlin.2.4.0  | \>= 0.155.2 | \>= 3.9.6                   | \>= 0.19.2    |

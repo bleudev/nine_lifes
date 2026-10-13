@@ -122,7 +122,7 @@ modrinth {
     changelog.set(project.property("changelog") as String)
     syncBodyFrom.set(project.property("readme") as String)
     gameVersions.addAll(
-        "26.4-snapshot-3",
+        "26.4-snapshot-4",
     )
     loaders.add("fabric")
     environment = "client_and_server"
