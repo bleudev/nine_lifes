@@ -14,6 +14,7 @@
 
 - Rewrite `PostEffectRegistry` and delete `SpectatePostEffectRegistry`:
 Use `NLPostEffect` and `SpectateEntityPostEffect` instead. (bleudev [#176](https://github.com/bleudev/nine_lifes/pull/176))
+- Many classes, methods etc. were renamed!!!! If you are developer see [#178](https://github.com/bleudev/nine_lifes/pull/178) for details. (bleudev [#178](https://github.com/bleudev/nine_lifes/pull/178))
 
 ## Version changes
 
@@ -22,3 +23,4 @@ Use `NLPostEffect` and `SpectateEntityPostEffect` instead. (bleudev [#176](https
 ## Fixes
 
 - Resource pack reload freezes the game (bleudev)
+- Wandering armor stand loses their data after rerunning (bleudev [#178](https://github.com/bleudev/nine_lifes/pull/178))

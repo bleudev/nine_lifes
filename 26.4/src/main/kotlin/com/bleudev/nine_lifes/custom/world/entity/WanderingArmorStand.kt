@@ -37,6 +37,8 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.storage.ValueInput
+import net.minecraft.world.level.storage.ValueOutput
 import net.minecraft.world.phys.Vec3
 import java.util.*
 
@@ -54,6 +56,20 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         if (player.random.nextFloat() >= 0.5f) return
         player.hurtUnknown(player.random.nextInt(6))
         player.causeFoodExhaustion(20f)
+    }
+
+    override fun addAdditionalSaveData(output: ValueOutput) {
+        super.addAdditionalSaveData(output)
+        output.putInt("WanderTicks", this.wanderTicks)
+        output.putInt("TicksAfterKick", this.ticksAfterKick)
+        output.putInt("KickTimes", this.kickTimes)
+    }
+
+    override fun readAdditionalSaveData(input: ValueInput) {
+        super.readAdditionalSaveData(input)
+        this.wanderTicks = input.getIntOr("WanderTicks", 0)
+        this.ticksAfterKick = input.getIntOr("TicksAfterKick", WSTAND_KICK_TICKS)
+        this.kickTimes = input.getIntOr("KickTimes", 0)
     }
 
     override fun defineSynchedData(builder: SynchedEntityData.Builder) {
