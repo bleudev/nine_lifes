@@ -22,11 +22,6 @@ import org.joml.Vector3f
 import java.util.*
 
 class GlowRenderer {
-    /**
-     * All persistent world glows.
-     *
-     * You can freely add/remove/change them from your client-side code.
-     */
     val glowStateMap = hashMapOf<Identifier, GlowState>()
 
     companion object {

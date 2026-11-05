@@ -12,6 +12,7 @@ import com.mojang.renderpearl.api.pipeline.DepthStencilState
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
+import net.minecraft.client.renderer.BindGroupLayouts
 import net.minecraft.client.renderer.SubmitNodeCollector
 import net.minecraft.client.renderer.pipeline.RenderPipelines
 import net.minecraft.client.renderer.rendertype.RenderSetup
@@ -22,11 +23,6 @@ import net.minecraft.world.phys.Vec3
 import org.joml.Vector3f
 
 class GlowRenderer {
-    /**
-     * All persistent world glows.
-     *
-     * You can freely add/remove/change them from your client-side code.
-     */
     val glowStateMap = hashMapOf<Identifier, GlowState>()
 
     companion object {
@@ -34,6 +30,8 @@ class GlowRenderer {
             RenderPipelines.finishDynamicPipeline(RenderPipeline
                 .builder(RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(createIdentifier("pipeline/glow"))
+                .withBindGroupLayout(BindGroupLayouts.PROJECTION)
+                .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
                 .withVertexShader(createIdentifier("core/glow"))
                 .withFragmentShader(createIdentifier("core/glow"))
                 .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
