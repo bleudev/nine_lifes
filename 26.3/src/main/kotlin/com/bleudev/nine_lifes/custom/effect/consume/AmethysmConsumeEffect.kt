@@ -1,9 +1,9 @@
 package com.bleudev.nine_lifes.custom.effect.consume
 
 import com.bleudev.nine_lifes.CHARGED_EFFECT_DURATION
-import com.bleudev.nine_lifes.custom.NineLifesConsumeEffects
-import com.bleudev.nine_lifes.custom.NineLifesEnchantments
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.custom.NLConsumeEffects
+import com.bleudev.nine_lifes.custom.NLEnchantments
+import com.bleudev.nine_lifes.custom.NLMobEffects
 import com.bleudev.nine_lifes.custom.packet.payload.StartWhitenessScreen
 import com.bleudev.nine_lifes.util.damageTicks
 import com.bleudev.nine_lifes.util.sendPacket
@@ -24,15 +24,15 @@ class AmethysmConsumeEffect : ConsumeEffect {
         val STREAM_CODEC: StreamCodec<RegistryFriendlyByteBuf, AmethysmConsumeEffect> = StreamCodec.unit(INSTANCE)
     }
 
-    override fun getType(): ConsumeEffect.Type<out ConsumeEffect> = NineLifesConsumeEffects.AMETHYSM
+    override fun getType(): ConsumeEffect.Type<out ConsumeEffect> = NLConsumeEffects.AMETHYSM
 
     override fun apply(level: Level, itemStack: ItemStack, livingEntity: LivingEntity): Boolean {
-        if (itemStack.enchantments.keySet().any { it.`is`(NineLifesEnchantments.CHARGE) }) {
+        if (itemStack.enchantments.keySet().any { it.`is`(NLEnchantments.CHARGE) }) {
             if (livingEntity is ServerPlayer)
                 livingEntity.sendPacket(StartWhitenessScreen(CHARGED_EFFECT_DURATION, 1f))
             livingEntity.damageTicks = CHARGED_EFFECT_DURATION
             return true
         }
-        return livingEntity.addEffect(MobEffectInstance(NineLifesMobEffects.AMETHYSM, 100, 0))
+        return livingEntity.addEffect(MobEffectInstance(NLMobEffects.AMETHYSM, 100, 0))
     }
 }

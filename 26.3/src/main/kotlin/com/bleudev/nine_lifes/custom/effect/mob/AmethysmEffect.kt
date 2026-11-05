@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.custom.effect.mob
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.custom.NLDamageTypes
+import com.bleudev.nine_lifes.custom.NLMobEffects
 import com.bleudev.nine_lifes.custom.packet.payload.StartAmethysmScreen
 import com.bleudev.nine_lifes.util.sendPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket
@@ -25,7 +25,7 @@ class AmethysmEffect : MobEffect(MobEffectCategory.NEUTRAL, 0xff00ff) {
             this.entity = entity
             if (!entity.isSleeping) {
                 if (ticks % 20 == 0)
-                    entity.hurtServer(level, NineLifesDamageTypes.amethysm(level), 1f)
+                    entity.hurtServer(level, NLDamageTypes.amethysm(level), 1f)
                 entity.setDeltaMovement(.0, 0.05, .0)
                 entity.needsSync = true
 
@@ -42,7 +42,7 @@ class AmethysmEffect : MobEffect(MobEffectCategory.NEUTRAL, 0xff00ff) {
         ticks = 0
         this.entity = entity
         if (entity is ServerPlayer)
-            entity.sendPacket(StartAmethysmScreen(entity.getEffect(NineLifesMobEffects.AMETHYSM)?.duration ?: return))
+            entity.sendPacket(StartAmethysmScreen(entity.getEffect(NLMobEffects.AMETHYSM)?.duration ?: return))
     }
 
     override fun removeAttributeModifiers(attributeMap: AttributeMap) {

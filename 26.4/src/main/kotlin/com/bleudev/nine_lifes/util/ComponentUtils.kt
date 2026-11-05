@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.util
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
+import com.bleudev.nine_lifes.custom.NLDamageTypeTags
 import com.bleudev.nine_lifes.custom.effect.consume.AmethysmConsumeEffect
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.component.DataComponents
@@ -24,7 +24,7 @@ internal fun itemEnsureCustomFoods(stack: ItemStack, reg: RegistryAccess): ItemS
     stack.set(DataComponents.USE_COOLDOWN, UseCooldown(5f))
     stack.set(DataComponents.ENCHANTABLE, Enchantable(1))
     stack.set(DataComponents.MAX_STACK_SIZE, 65)
-    stack.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(reg.get(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
+    stack.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(reg.get(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
     stack.set(DataComponents.RARITY, Rarity.UNCOMMON)
     if (stack.get(DataComponents.ENCHANTMENTS) == null) stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY)
     return stack

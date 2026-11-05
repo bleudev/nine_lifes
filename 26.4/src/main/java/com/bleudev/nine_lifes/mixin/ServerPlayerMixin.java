@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.interfaces.mixin.CustomServerPlayer;
+import com.bleudev.nine_lifes.interfaces.mixin.IServerPlayer;
 import com.bleudev.nine_lifes.util.InjectsKt;
 import com.bleudev.nine_lifes.util.MixinInjectsKt;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.bleudev.nine_lifes.NineLifesConstKt.MAX_LIFES;
+import static com.bleudev.nine_lifes.NLConstKt.MAX_LIFES;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin implements CustomServerPlayer {
+public abstract class ServerPlayerMixin implements IServerPlayer {
     @Unique
     protected int lifes;
     @Unique
@@ -63,7 +63,7 @@ public abstract class ServerPlayerMixin implements CustomServerPlayer {
         ServerPlayer player = (ServerPlayer) (Object) this;
         MixinInjectsKt.setLifes(player, MixinInjectsKt.getLifes(oldPlayer));
         for (int i = 0; i < 9; i++) {
-            this.lifesPlayTime[i] = ((CustomServerPlayer) oldPlayer).nl$getLifesPlayTime(i+1);
+            this.lifesPlayTime[i] = ((IServerPlayer) oldPlayer).nl$getLifesPlayTime(i+1);
         }
     }
     @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;awardStat(Lnet/minecraft/resources/Identifier;)V", ordinal = 1, shift = At.Shift.AFTER))

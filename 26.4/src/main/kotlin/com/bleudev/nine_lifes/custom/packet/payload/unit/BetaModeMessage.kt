@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.packet.payload.unit
 
-import com.bleudev.nine_lifes.custom.NineLifesPackets
+import com.bleudev.nine_lifes.custom.NLPackets
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -12,7 +12,7 @@ class BetaModeMessage : CustomPacketPayload {
     companion object : PacketPayloadCompanion<BetaModeMessage> {
         val INSTANCE = BetaModeMessage()
 
-        override val idLocation = NineLifesPackets.UNIT_BETA_MODE_MESSAGE
+        override val idLocation = NLPackets.UNIT_BETA_MODE_MESSAGE
         override val codec: StreamCodec<RegistryFriendlyByteBuf, BetaModeMessage> = StreamCodec.unit(INSTANCE)
     }
 

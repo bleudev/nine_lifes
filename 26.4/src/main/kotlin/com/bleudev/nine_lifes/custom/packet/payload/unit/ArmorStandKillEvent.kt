@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.packet.payload.unit
 
-import com.bleudev.nine_lifes.custom.NineLifesPackets
+import com.bleudev.nine_lifes.custom.NLPackets
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -12,7 +12,7 @@ class ArmorStandKillEvent : CustomPacketPayload {
     companion object : PacketPayloadCompanion<ArmorStandKillEvent> {
         val INSTANCE = ArmorStandKillEvent()
 
-        override val idLocation = NineLifesPackets.UNIT_ARMOR_STAND_KILL_EVENT
+        override val idLocation = NLPackets.UNIT_ARMOR_STAND_KILL_EVENT
         override val codec: StreamCodec<RegistryFriendlyByteBuf, ArmorStandKillEvent> = StreamCodec.unit(INSTANCE)
     }
 

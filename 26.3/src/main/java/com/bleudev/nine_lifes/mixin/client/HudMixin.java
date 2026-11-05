@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceHardcoreHearts;
+import static com.bleudev.nine_lifes.client.NLClientStorageKt.getForceHardcoreHearts;
 
 @Environment(EnvType.CLIENT)
 @Mixin(Hud.class)
