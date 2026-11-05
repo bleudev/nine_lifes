@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.enchantment.Enchantment
 import org.jetbrains.annotations.Contract
 
-object NineLifesEnchantments {
+object NLEnchantments {
     /**
      * [ResourceKey] of `nine_lifes:charge` enchantment
      */

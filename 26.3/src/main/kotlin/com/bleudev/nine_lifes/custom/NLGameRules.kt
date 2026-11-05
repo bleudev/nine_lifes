@@ -6,7 +6,7 @@ import net.minecraft.world.level.gamerules.GameRule
 import net.minecraft.world.level.gamerules.GameRuleCategory
 
 
-object NineLifesGameRules {
+object NLGameRules {
     val CATEGORY: GameRuleCategory = GameRuleCategory
         .register(createIdentifier("general"))
 

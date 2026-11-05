@@ -11,12 +11,12 @@ import com.bleudev.nine_lifes.client.config.client.configInit
 import com.bleudev.nine_lifes.client.config.client.heartPosition
 import com.bleudev.nine_lifes.client.config.client.joinMessageEnabled
 import com.bleudev.nine_lifes.client.config.game.NLGameConfigEditScreen
-import com.bleudev.nine_lifes.client.custom.NineLifesEntityRenderers
+import com.bleudev.nine_lifes.client.custom.NLEntityRenderers
 import com.bleudev.nine_lifes.client.render.GlowRenderer
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
-import com.bleudev.nine_lifes.custom.NineLifesEntities
+import com.bleudev.nine_lifes.custom.NLEntities
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
@@ -40,13 +40,15 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.Level
 import org.joml.Vector3f
 import org.joml.Vector4f
 import kotlin.random.Random
 
-class NineLifesClient : ClientModInitializer {
+class NLClient : ClientModInitializer {
     object Layers {
         val OVERLAY_BEFORE_HOTBAR = createIdentifier("overlay_before_hotbar")
         val OVERLAY = createIdentifier("overlay")
@@ -62,7 +64,7 @@ class NineLifesClient : ClientModInitializer {
 
         configInit()
 
-        NineLifesEntityRenderers.initialize()
+        NLEntityRenderers.initialize()
 
         ClientTickEvents.END_LEVEL_TICK.register { endClientLevelTick() }
         ClientRespawnEvents.RESPAWN.register { _ ->
@@ -114,37 +116,52 @@ class NineLifesClient : ClientModInitializer {
             }
         }
 
-        PostEffectRegistry.register(NLPostEffect.builderNL("redmaj")
+        PostEffectRegistry.register(NLPostEffect
+            .builder(Identifier.fromNamespaceAndPath("foo", "bar"))
+            .condition { Minecraft.getInstance().level?.dimension() == Level.NETHER }
+            .uniform("AnaglyphConfig") {
+                putVec2(0.005f, 0.0025f)
+            }
+            .build()
+        )
+
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("redmaj")
             .uniform("ChmajConfig") {
                 putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
             }
             .build()
         )
-        PostEffectRegistry.register(NLPostEffect.builderNL("anaglyph")
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("anaglyph")
             .uniform("AnaglyphConfig") {
                 putVec2(shaderAnaglyphX, shaderAnaglyphY)
             }
             .build()
         )
-        PostEffectRegistry.register(NLPostEffect.builderNL("cblur")
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("cblur")
             .uniform("BlurPropConfig") {
                 putFloat(shaderCBlurStrength)
             }
             .build()
         )
-        PostEffectRegistry.register(NLPostEffect.builderNL("player_amethysm")
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("player_amethysm")
             .uniform("CustomConvolveConfig") {
                 putFloat(playerAmethysmStrength).putFloat(5f)
             }
             .build()
         )
-        PostEffectRegistry.register(NLPostEffect.builderNL("player_charged")
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("player_charged")
             .uniform("CustomConvolveConfig") {
                 putFloat(playerChargedStrength).putFloat(10f)
             }
             .build()
         )
-        PostEffectRegistry.register(SpectateEntityPostEffect.builderNL("wstand", NineLifesEntities.WANDERING_ARMOR_STAND)
+        PostEffectRegistry.register(SpectateEntityPostEffect
+            .builderNL("wstand", NLEntities.WANDERING_ARMOR_STAND)
             .uniform("AnaglyphConfig") {
                 if (Random.nextFloat() <= .0025f) {
                     putVec2(Random.nextDouble(0.02, 0.05).toFloat(), Random.nextDouble(0.005, 0.01).toFloat())

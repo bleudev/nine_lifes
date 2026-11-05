@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.custom.NLDamageTypes
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
 import com.bleudev.nine_lifes.custom.NineLifesItemTags
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider
@@ -37,12 +37,12 @@ class NLItemTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFutu
 
 class NLDamageTypeTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFuture<HolderLookup.Provider>) : FabricTagsProvider<DamageType>(output, Registries.DAMAGE_TYPE, lookupFuture ) {
     override fun addTags(registries: HolderLookup.Provider) {
-        builder(NineLifesDamageTypeTags.GIVES_LIFE).add(NineLifesDamageTypes.CHARGED_AMETHYST)
+        builder(NineLifesDamageTypeTags.GIVES_LIFE).add(NLDamageTypes.CHARGED_AMETHYST)
         builder(NineLifesDamageTypeTags.CAN_HIT_WSTAND).add(DamageTypes.PLAYER_ATTACK)
         // TODO
 //        builder(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).addTag(DamageTypeTags.IS_LIGHTNING).addTag(DamageTypeTags.IS_FIRE)
 
-        val all = listOf(NineLifesDamageTypes.AMETHYSM, NineLifesDamageTypes.CHARGED_AMETHYST, NineLifesDamageTypes.UNKNOWN)
+        val all = listOf(NLDamageTypes.AMETHYSM, NLDamageTypes.CHARGED_AMETHYST, NLDamageTypes.UNKNOWN)
         builder(DamageTypeTags.BYPASSES_ARMOR).addAll(all)
         builder(DamageTypeTags.BYPASSES_ENCHANTMENTS).addAll(all)
         builder(DamageTypeTags.BYPASSES_INVULNERABILITY).addAll(all)

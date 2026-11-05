@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes;
+import com.bleudev.nine_lifes.custom.NLDamageTypes;
 import com.bleudev.nine_lifes.custom.NineLifesItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -47,7 +47,7 @@ public abstract class CampfireBlockEntityMixin {
             if (stack.isEmpty() || !stack.is(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE)) continue;
             if (self.cookingProgress[slot] == self.cookingTime[slot] - 1) {
                 level.removeBlock(pos, false);
-                explode(level, Vec3.atCenterOf(pos), 4f, NineLifesDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
+                explode(level, Vec3.atCenterOf(pos), 4f, NLDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
                 return;
             }
         }

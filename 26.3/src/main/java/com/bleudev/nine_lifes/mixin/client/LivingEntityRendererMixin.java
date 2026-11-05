@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getEntityGlowEffects;
+import static com.bleudev.nine_lifes.client.NLClientStorageKt.getEntityGlowEffects;
 
 @SuppressWarnings("RedundantCast") // Idk why classtweaker doesn't work
 @Environment(EnvType.CLIENT)

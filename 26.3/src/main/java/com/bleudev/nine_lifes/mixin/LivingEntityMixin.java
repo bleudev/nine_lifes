@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects;
-import com.bleudev.nine_lifes.interfaces.mixin.CustomLivingEntity;
+import com.bleudev.nine_lifes.custom.NLMobEffects;
+import com.bleudev.nine_lifes.interfaces.mixin.ILivingEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin implements CustomLivingEntity {
+public abstract class LivingEntityMixin implements ILivingEntity {
     @Shadow
     public abstract boolean hasEffect(Holder<@NotNull MobEffect> effect);
 
@@ -60,7 +60,7 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo ci) {
-        if (isSleeping() && hasEffect(NineLifesMobEffects.INSOMNIA)) {
+        if (isSleeping() && hasEffect(NLMobEffects.INSOMNIA)) {
             stopSleeping();
         }
 
@@ -89,7 +89,7 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
 
     @Inject(method = "startSleeping", at = @At("HEAD"), cancellable = true)
     private void startSleeping(BlockPos bedPosition, CallbackInfoReturnable<Boolean> cir) {
-        if (hasEffect(NineLifesMobEffects.INSOMNIA)) {
+        if (hasEffect(NLMobEffects.INSOMNIA)) {
             cir.setReturnValue(false);
         }
     }
@@ -125,6 +125,6 @@ public abstract class LivingEntityMixin implements CustomLivingEntity {
 
     @Unique
     private boolean shouldEmitLight() {
-        return hasEffect(NineLifesMobEffects.AMETHYSM) || hasEffect(MobEffects.GLOWING);
+        return hasEffect(NLMobEffects.AMETHYSM) || hasEffect(MobEffects.GLOWING);
     }
 }

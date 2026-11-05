@@ -4,6 +4,6 @@ import com.bleudev.nine_lifes.client.config.client.generateGuiConfigScreen
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 
-class NineLifesModMenuApi : ModMenuApi {
+class NLModMenuApi : ModMenuApi {
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> = { generateGuiConfigScreen(it) }
 }

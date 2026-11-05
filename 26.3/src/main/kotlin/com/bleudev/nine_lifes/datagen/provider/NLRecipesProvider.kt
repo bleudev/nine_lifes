@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.datagen.provider
 
-import com.bleudev.nine_lifes.custom.NineLifesPotions
+import com.bleudev.nine_lifes.custom.NLPotions
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider
 import net.minecraft.advancements.Advancement
@@ -38,9 +38,9 @@ class NLRecipesProvider(output: FabricPackOutput,
             SimpleCookingRecipeBuilder.smoking(Ingredient.of(Items.AMETHYST_SHARD), RecipeCategory.MISC, Items.AMETHYST_SHARD, 0.1f, 100).unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD)).save(output, "smoking_amethyst_shard")
             SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(Items.AMETHYST_SHARD), RecipeCategory.MISC, Items.AMETHYST_SHARD, 0.35f, 400).unlockedBy(getHasName(Items.AMETHYST_SHARD), has(Items.AMETHYST_SHARD)).save(output, "campfire_cooking_amethyst_shard")
 
-            makePotion(Potions.MUNDANE, NineLifesPotions.AMETHYSM, Items.AMETHYST_SHARD)
-            makePotion(Potions.MUNDANE, NineLifesPotions.INSOMNIA, Items.SCULK, Items.SCULK_VEIN, Items.SCULK_SENSOR, Items.SCULK_CATALYST, Items.SCULK_SHRIEKER, Items.CALIBRATED_SCULK_SENSOR)
-            makePotion(NineLifesPotions.INSOMNIA, NineLifesPotions.LONGER_INSOMNIA, Items.REDSTONE)
+            makePotion(Potions.MUNDANE, NLPotions.AMETHYSM, Items.AMETHYST_SHARD)
+            makePotion(Potions.MUNDANE, NLPotions.INSOMNIA, Items.SCULK, Items.SCULK_VEIN, Items.SCULK_SENSOR, Items.SCULK_CATALYST, Items.SCULK_SHRIEKER, Items.CALIBRATED_SCULK_SENSOR)
+            makePotion(NLPotions.INSOMNIA, NLPotions.LONGER_INSOMNIA, Items.REDSTONE)
         }
 
         private fun makePotion(input: Holder<Potion>, output: Holder<Potion>, vararg reagents: Item, ) {

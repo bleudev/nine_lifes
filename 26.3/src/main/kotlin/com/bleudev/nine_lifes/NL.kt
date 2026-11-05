@@ -1,10 +1,10 @@
 package com.bleudev.nine_lifes
 
 import com.bleudev.nine_lifes.api.render.GlowState
-import com.bleudev.nine_lifes.config.game.GameConfigCheckException
+import com.bleudev.nine_lifes.config.game.NLGameConfigCheckException
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.custom.NineLifesEntities.WANDERING_ARMOR_STAND
+import com.bleudev.nine_lifes.custom.NLEntities.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
@@ -20,17 +20,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.ChatFormatting
-import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.Permissions
-import net.minecraft.stats.StatFormatter
-import net.minecraft.stats.Stats
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntitySpawnReason
@@ -53,28 +48,31 @@ import net.minecraft.world.phys.Vec3
 import java.util.*
 import kotlin.math.abs
 
-class NineLifes : ModInitializer {
+class NL : ModInitializer {
     companion object {
         @JvmStatic
         internal val notSafeSleepTicks: HashMap<String, Int> = HashMap()
+
+        internal val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+        private val PROBLEM_INSOMNIA: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.insomnia_effect"))
     }
 
     private val lightningUsed = ArrayList<UUID>()
     private val stickTakenHeartCountPrev: HashMap<String, Int> = HashMap()
 
     override fun onInitialize() {
-        NineLifesPackets.initialize()
-        NineLifesMobEffects.initialize()
-        NineLifesConsumeEffects.initialize()
-        NineLifesEnchantments.initialize()
-        NineLifesPotions.initialize()
-        NineLifesEntities.initialize()
-        NineLifesCommands.initialize()
-        NineLifesCriterions.initialize()
-        NineLifesStats.initialize()
-        NineLifesItems.initialize()
-        NineLifesSounds.initialize()
-        NineLifesGameRules.initialize()
+        NLPackets.initialize()
+        NLMobEffects.initialize()
+        NLConsumeEffects.initialize()
+        NLEnchantments.initialize()
+        NLPotions.initialize()
+        NLEntities.initialize()
+        NLCommands.initialize()
+        NLCriterions.initialize()
+        NLStats.initialize()
+        NLItems.initialize()
+        NLSounds.initialize()
+        NLGameRules.initialize()
         ServerPlayerEvents.JOIN.register { player ->
             if ((!player.isSpectator) && player.lifes == 0) player.resetLifes()
             val lifes = player.lifes
@@ -86,7 +84,7 @@ class NineLifes : ModInitializer {
         }
         ServerTickEvents.END_SERVER_TICK.register { server ->
             server.playerList.players.forEach {
-                NineLifesCriterions.trigger(it)
+                NLCriterions.trigger(it)
                 // Amethyst stick max health modify
                 val addMaxHealth = -Mth.lerpInt(((it.stickUsedTicks + STICK_USED_EFFECT_HEART_GIVE_DELAY).toFloat() / STICK_USED_EFFECT_TICKS).coerceAtMost(1f), 0, STICK_USED_EFFECT_MAX_HEALTH_TAKE)
                 val prev = stickTakenHeartCountPrev[it.gameProfile.name]
@@ -104,10 +102,10 @@ class NineLifes : ModInitializer {
 
                 val lv = it.level()
                 var bl = false
-                if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = true
-                if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = true
-                if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = true
-                if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = true
+                if (!lv.gameRules.get(NLGameRules.TAKE_LIFES)) bl = true
+                if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = true
+                if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_NETHER)) bl = true
+                if (lv.dimension() == Level.END && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_END)) bl = true
                 it.sendPacket(UpdateForceVanillaDeathScreenState(bl))
             }
 
@@ -129,7 +127,7 @@ class NineLifes : ModInitializer {
                                 level.explode(
                                     entity.position(),
                                     7f,
-                                    { NineLifesDamageTypes.chargedAmethyst(it, entity) },
+                                    { NLDamageTypes.chargedAmethyst(it, entity) },
                                     Level.ExplosionInteraction.MOB,
                                     entity
                                 )
@@ -156,7 +154,7 @@ class NineLifes : ModInitializer {
             val hasCharged = arrayListOf<ServerPlayer>()
 
             for (player in players) {
-                if (player.hasEffect(NineLifesMobEffects.AMETHYSM)) {
+                if (player.hasEffect(NLMobEffects.AMETHYSM)) {
                     hasAmethysm.add(player)
                 }
                 if (player.inventory.anyWithContainers { it.isCharged(server) }) {
@@ -211,18 +209,18 @@ class NineLifes : ModInitializer {
                     damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE) &&
                     (damageSource.entity == null || damageSource.entity == entity)
                 ) {
-                    NineLifesCriterions.LIFES_CHANGE.trigger(entity, 1, true)
+                    NLCriterions.LIFES_CHANGE.trigger(entity, 1, true)
                     entity.lifes += 1
-                    entity.awardStat(NineLifesStats.USED_CHARGED)
-                    NineLifesCriterions.USED_CHARGED_TOTAL.trigger(entity)
+                    entity.awardStat(NLStats.USED_CHARGED)
+                    NLCriterions.USED_CHARGED_TOTAL.trigger(entity)
                 }
                 else {
                     val lv = entity.level()
                     var bl = true
-                    if (!lv.gameRules.get(NineLifesGameRules.TAKE_LIFES)) bl = false
-                    if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = false
-                    if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_NETHER)) bl = false
-                    if (lv.dimension() == Level.END && !lv.gameRules.get(NineLifesGameRules.TAKE_LIFES_IN_END)) bl = false
+                    if (!lv.gameRules.get(NLGameRules.TAKE_LIFES)) bl = false
+                    if (lv.dimension() == Level.OVERWORLD && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_OVERWORLD)) bl = false
+                    if (lv.dimension() == Level.NETHER && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_NETHER)) bl = false
+                    if (lv.dimension() == Level.END && !lv.gameRules.get(NLGameRules.TAKE_LIFES_IN_END)) bl = false
                     if (bl) entity.lifes -= 1
                 }
                 if (entity.lifes <= 0) entity.setGameMode(GameType.SPECTATOR)
@@ -230,9 +228,9 @@ class NineLifes : ModInitializer {
         EntitySleepEvents.ALLOW_SLEEPING.register { player, _ ->
             if (player !is ServerPlayer) return@register null
             var problem: Player.BedSleepingProblem? = null
-            if (player.hasEffect(NineLifesMobEffects.INSOMNIA))
+            if (player.hasEffect(NLMobEffects.INSOMNIA))
                 problem = PROBLEM_INSOMNIA
-            if (!player.hasEffect(NineLifesMobEffects.AMETHYSM))
+            if (!player.hasEffect(NLMobEffects.AMETHYSM))
                 when (player.lifes) {
                     in 0..3 -> problem = PROBLEM_NOT_NOW
                     in 4..5 -> {
@@ -242,13 +240,13 @@ class NineLifes : ModInitializer {
                     }
                 }
             if (problem?.message != null) {
-                NineLifesCriterions.BED_SLEEPING_PROBLEM.trigger(player, problem)
+                NLCriterions.BED_SLEEPING_PROBLEM.trigger(player, problem)
             }
             problem
         }
         EntitySleepEvents.START_SLEEPING.register { entity, _ ->
             if (entity is ServerPlayer)
-                NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
+                NLCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.trigger(entity)
         }
 
         registerReceiver(GameConfigSave) { payload, ctx ->
@@ -258,7 +256,7 @@ class NineLifes : ModInitializer {
                     NLGameConfigManager.getInstance().save(payload.config) // Can throw check exception
                     // If not
                     ctx.player().sendSystemMessage(Component.translatable("commands.nl.config.save.success").withStyle(ChatFormatting.GREEN))
-                } catch (e: GameConfigCheckException) {
+                } catch (e: NLGameConfigCheckException) {
                     // If yes
                     ctx.player().sendSystemMessage(e.component)
                 }
@@ -272,11 +270,11 @@ class NineLifes : ModInitializer {
 
     private fun tryChargeItems(level: ServerLevel) {
         val chargeScreenEffectRadiusDiff = CHARGE_SCREEN_EFFECT_RADIUS_MAX - CHARGE_SCREEN_EFFECT_RADIUS_MIN
-        var maxCount = level.gameRules.get(NineLifesGameRules.MAX_CHARGED_ITEMS_AT_A_TIME)
+        var maxCount = level.gameRules.get(NLGameRules.MAX_CHARGED_ITEMS_AT_A_TIME)
         if (maxCount == 0) return
         if (maxCount == -1) maxCount = Int.MAX_VALUE
 
-        val chargeEnchantment = NineLifesEnchantments.Holders.charge(level.registryAccess())
+        val chargeEnchantment = NLEnchantments.Holders.charge(level.registryAccess())
         level.getEntities(EntityTypes.LIGHTNING_BOLT, alwaysTrue()).forEach { lightning ->
             if (lightning.uuid in lightningUsed) return@forEach
             lightningUsed.add(lightning.uuid)
@@ -349,7 +347,7 @@ class NineLifes : ModInitializer {
                         .coerceAtLeast(.0)
                     for ((key, value) in charged) {
                         if (value > 0) {
-                            NineLifesCriterions.CHARGE_ITEM.trigger(player, key, distance)
+                            NLCriterions.CHARGE_ITEM.trigger(player, key, distance)
                         }
                     }
                     val strength = CHARGE_SCREEN_MAX_STRENGTH * (chargeScreenEffectRadiusDiff - distance) / chargeScreenEffectRadiusDiff
@@ -367,7 +365,7 @@ class NineLifes : ModInitializer {
                 if (blockEntity.items.subList(0, 3).stream().noneMatch { potion ->
                     try {
                         for (eff in potion.get(DataComponents.POTION_CONTENTS)?.allEffects ?: listOf())
-                            if (eff.effect == NineLifesMobEffects.AMETHYSM) return@noneMatch true
+                            if (eff.effect == NLMobEffects.AMETHYSM) return@noneMatch true
                         return@noneMatch false
                     } catch (_: NullPointerException) {
                         return@noneMatch false
@@ -375,12 +373,12 @@ class NineLifes : ModInitializer {
                 }) return@forBlocksInBox 0
 
                 level.removeBlock(pos, false)
-                level.explode(Vec3(pos), 3f, NineLifesDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK)
+                level.explode(Vec3(pos), 3f, NLDamageTypes::chargedAmethyst, Level.ExplosionInteraction.BLOCK)
             }
             0
         }
         level.getEntities(EntityTypeTest.forClass(LivingEntity::class.java), entityIn(actionBox)).forEach {
-            it.removeEffect(NineLifesMobEffects.AMETHYSM)
+            it.removeEffect(NLMobEffects.AMETHYSM)
         }
 
         level.players().forEach { player ->
@@ -393,7 +391,7 @@ class NineLifes : ModInitializer {
 
                 val potion: PotionContents?
                 if ((stack.get(DataComponents.POTION_CONTENTS).also { potion = it }) != null)
-                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect == NineLifesMobEffects.AMETHYSM) {
+                    for (effect in potion?.allEffects ?: listOf()) if (effect.effect == NLMobEffects.AMETHYSM) {
                     newStack = ItemStack.EMPTY
                     break
                 }
@@ -407,20 +405,4 @@ class NineLifes : ModInitializer {
             // TODO: Broke sound
         }
     }
-}
-
-val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
-val PROBLEM_INSOMNIA: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.insomnia_effect"))
-
-object NineLifesStats {
-    val USED_CHARGED: Identifier = makeCustomStat("used_charged", StatFormatter.DEFAULT)
-
-    private fun makeCustomStat(id: String, formatter: StatFormatter): Identifier {
-        val location = createIdentifier(id)
-        Registry.register(BuiltInRegistries.CUSTOM_STAT, id, location)
-        Stats.CUSTOM.get(location, formatter)
-        return location
-    }
-
-    internal fun initialize() {}
 }

@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.packet.payload.unit
 
-import com.bleudev.nine_lifes.custom.NineLifesPackets
+import com.bleudev.nine_lifes.custom.NLPackets
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -12,7 +12,7 @@ class AfterPlayerRespawn : CustomPacketPayload {
     companion object : PacketPayloadCompanion<AfterPlayerRespawn> {
         val INSTANCE = AfterPlayerRespawn()
 
-        override val idLocation = NineLifesPackets.UNIT_AFTER_PLAYER_RESPAWN
+        override val idLocation = NLPackets.UNIT_AFTER_PLAYER_RESPAWN
         override val codec: StreamCodec<RegistryFriendlyByteBuf, AfterPlayerRespawn> = StreamCodec.unit(INSTANCE)
     }
 

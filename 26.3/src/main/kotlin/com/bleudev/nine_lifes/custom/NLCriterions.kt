@@ -7,7 +7,7 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.server.level.ServerPlayer
 
-object NineLifesCriterions {
+object NLCriterions {
     val BED_SLEEPING_PROBLEM = create("bed_sleeping_problem", BedSleepingProblemCriterion())
     val SUCCESS_SLEEP_WITH_AMETHYSM = create("success_sleep_with_amethysm", SuccessSleepWithAmethysmCriterion())
     val ALMOST_DEAD = create("almost_dead", AlmostDeadCriterion())

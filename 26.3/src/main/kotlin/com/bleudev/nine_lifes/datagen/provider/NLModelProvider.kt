@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.datagen.provider
 
-import com.bleudev.nine_lifes.custom.NineLifesItems
+import com.bleudev.nine_lifes.custom.NLItems
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.minecraft.client.data.models.BlockModelGenerators
@@ -12,7 +12,7 @@ class NLModelProvider(output: FabricPackOutput) : FabricModelProvider(output) {
     }
 
     override fun generateItemModels(itemModelGenerators: ItemModelGenerators) {
-        itemModelGenerators.generateFlatItem(NineLifesItems.AMETHYST_STICK, ModelTemplates.FLAT_HANDHELD_ITEM)
+        itemModelGenerators.generateFlatItem(NLItems.AMETHYST_STICK, ModelTemplates.FLAT_HANDHELD_ITEM)
     }
 
 }

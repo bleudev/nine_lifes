@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.custom.advancements.criterion
 
-import com.bleudev.nine_lifes.NineLifesStats
+import com.bleudev.nine_lifes.custom.NLStats
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.advancements.triggers.Criterion
@@ -16,7 +16,7 @@ class UsedChargedTotalCriterion : SimpleCriterionTrigger<UsedChargedTotalCriteri
 
     override fun codec(): Codec<TriggerInstance> = TriggerInstance.CODEC
 
-    fun trigger(player: ServerPlayer) = trigger(player) { it.requirementsMet(player.stats.getValue(Stats.CUSTOM, NineLifesStats.USED_CHARGED)) }
+    fun trigger(player: ServerPlayer) = trigger(player) { it.requirementsMet(player.stats.getValue(Stats.CUSTOM, NLStats.USED_CHARGED)) }
 
     fun require(total: Int): Criterion<TriggerInstance> = createCriterion(TriggerInstance(Optional.empty(), total))
 

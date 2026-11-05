@@ -1,4 +1,4 @@
-package com.bleudev.nine_lifes.client.custom.entity.model
+package com.bleudev.nine_lifes.client.custom.model
 
 import net.minecraft.client.model.geom.ModelPart
 import net.minecraft.client.model.`object`.armorstand.ArmorStandModel

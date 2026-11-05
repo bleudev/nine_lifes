@@ -1,8 +1,8 @@
-package com.bleudev.nine_lifes.custom.entity
+package com.bleudev.nine_lifes.custom.world.entity
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NLSounds
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesSounds
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
@@ -37,6 +37,8 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.storage.ValueInput
+import net.minecraft.world.level.storage.ValueOutput
 import net.minecraft.world.phys.Vec3
 import java.util.*
 
@@ -54,6 +56,20 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         if (player.random.nextFloat() >= 0.5f) return
         player.hurtUnknown(player.random.nextInt(6))
         player.causeFoodExhaustion(20f)
+    }
+
+    override fun addAdditionalSaveData(output: ValueOutput) {
+        super.addAdditionalSaveData(output)
+        output.putInt("WanderTicks", this.wanderTicks)
+        output.putInt("TicksAfterKick", this.ticksAfterKick)
+        output.putInt("KickTimes", this.kickTimes)
+    }
+
+    override fun readAdditionalSaveData(input: ValueInput) {
+        super.readAdditionalSaveData(input)
+        this.wanderTicks = input.getIntOr("WanderTicks", 0)
+        this.ticksAfterKick = input.getIntOr("TicksAfterKick", WSTAND_KICK_TICKS)
+        this.kickTimes = input.getIntOr("KickTimes", 0)
     }
 
     override fun defineSynchedData(builder: SynchedEntityData.Builder) {
@@ -104,7 +120,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         this.kickTimes++
         this.ticksAfterKick = 0
         val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || sourceCanInstaKill(source)
-        val snd = if (bl) NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
+        val snd = if (bl) NLSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NLSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
         val pitch = if (bl) 0.8f else 0.95f
         val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
         level().playSound(null, x, y, z, snd, SoundSource.AMBIENT, 1f, pitch)

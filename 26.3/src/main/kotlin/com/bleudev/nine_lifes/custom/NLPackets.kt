@@ -11,7 +11,7 @@ import com.bleudev.nine_lifes.util.createIdentifier
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-object NineLifesPackets {
+object NLPackets {
     val SB_GAME_CONFIG_SAVE = createIdentifier("packet/sb/game_config_save")
 
     val UNIT_AFTER_PLAYER_RESPAWN = createIdentifier("packet/unit/after_player_respawn")
