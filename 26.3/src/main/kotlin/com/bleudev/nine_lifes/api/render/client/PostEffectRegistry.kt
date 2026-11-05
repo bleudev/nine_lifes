@@ -63,7 +63,7 @@ interface PostEffectRegistry {
             register(createIdentifier(path))
 
         internal fun visit(renderer: (Identifier) -> Unit) {
-            UniformRegistryImpl.initBuffers() // Try init
+            UniformRegistryImpl.reload() // Try init
             UniformRegistryImpl.updateBuffers()
             POST_EFFECT_REGISTRY.visit(renderer)
         }
@@ -215,7 +215,6 @@ private object UniformRegistryImpl {
     private val BUFFER_QUERY: HashMap<PostEffectContext, () -> MappableRingBuffer> = HashMap()
     private val BUFFERS: HashMap<PostEffectContext, MappableRingBuffer> = HashMap()
     private val TRANSFORMERS: HashMap<PostEffectContext, UniformBuilderTransformer> = HashMap()
-    private var initialized: Boolean = false
 
     fun register(postEffectContext: PostEffectContext, transformer: UniformBuilderTransformer) {
         val b = Builder.UniformBuilder()
@@ -224,20 +223,17 @@ private object UniformRegistryImpl {
         TRANSFORMERS[postEffectContext] = transformer
     }
 
-    fun initBuffers() {
-        if (!initialized) {
-            initialized = true
-            BUFFERS.clear()
-            for ((ctx, factory) in BUFFER_QUERY) {
-                BUFFERS[ctx] = factory()
-            }
+    fun reload() {
+        BUFFERS.clear()
+        for ((ctx, factory) in BUFFER_QUERY) {
+            BUFFERS[ctx] = factory()
         }
     }
 
     fun updateBuffers() {
         for ((ctx, buffer) in BUFFERS) {
             if (buffer.currentBuffer().isClosed) {
-                initBuffers()
+                reload()
                 return
             }
             buffer.currentBuffer().map(false, true).use { view ->

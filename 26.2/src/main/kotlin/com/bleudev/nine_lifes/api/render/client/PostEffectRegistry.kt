@@ -66,7 +66,7 @@ interface PostEffectRegistry {
             UniformRegistryImpl.updateBuffers()
             POST_EFFECT_REGISTRY.execute(renderer)
         }
-        internal fun initBuffers() = UniformRegistryImpl.initBuffers()
+        internal fun initBuffers() = UniformRegistryImpl.reload()
         internal fun newUniforms(current: MutableMap<String, GpuBuffer>, shaderId: Identifier): MutableMap<String, GpuBuffer> =
             UniformRegistryImpl.newUniforms(current, shaderId)
     }
@@ -222,7 +222,7 @@ private object UniformRegistryImpl {
         TRANSFORMERS[postEffectContext] = transformer
     }
 
-    fun initBuffers() {
+    fun reload() {
         BUFFERS.clear()
         for ((key, value) in BUFFER_QUERY) {
             BUFFERS[key] = value()
@@ -232,7 +232,7 @@ private object UniformRegistryImpl {
     fun updateBuffers() {
         for ((key, value) in BUFFERS) {
             if (value.currentBuffer().isClosed) {
-                initBuffers()
+                reload()
                 return
             }
             value.currentBuffer().map(false, true).use { view ->
