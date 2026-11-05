@@ -19,8 +19,11 @@ Use `NLPostEffect` and `SpectateEntityPostEffect` instead. (bleudev [#176](https
 ## Version changes
 
 - End of support for 26.2 (bleudev [#176](https://github.com/bleudev/nine_lifes/pull/176))
-- Fabric Loader `0.20.0` (bleudev [#179](https://github.com/bleudev/nine_lifes/pull/179))
+- Fabric Loader `0.20.1` (bleudev)
+- Kotlin `2.4.21` (bleudev)
 - Dump dependencies (bleudev [#179](https://github.com/bleudev/nine_lifes/pull/179))
+- [DEV] Fabric Loom `0.19.3` (bleudev)
+- [DEV] Gradle `9.8.2` (bleudev)
 
 ## Fixes
 
