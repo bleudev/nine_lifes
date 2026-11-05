@@ -16,7 +16,7 @@ import com.bleudev.nine_lifes.client.render.GlowRenderer
 import com.bleudev.nine_lifes.client.util.asColorWithAlpha
 import com.bleudev.nine_lifes.client.util.overlayWithColor
 import com.bleudev.nine_lifes.client.util.white
-import com.bleudev.nine_lifes.custom.NLEntities
+import com.bleudev.nine_lifes.custom.NLEntityTypes
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
@@ -161,7 +161,7 @@ class NLClient : ClientModInitializer {
             .build()
         )
         PostEffectRegistry.register(SpectateEntityPostEffect
-            .builderNL("wstand", NLEntities.WANDERING_ARMOR_STAND)
+            .builderNL("wstand", NLEntityTypes.WANDERING_ARMOR_STAND)
             .uniform("AnaglyphConfig") {
                 if (Random.nextFloat() <= .0025f) {
                     putVec2(Random.nextDouble(0.02, 0.05).toFloat(), Random.nextDouble(0.005, 0.01).toFloat())

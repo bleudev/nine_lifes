@@ -55,15 +55,15 @@ private fun generateNLDefaultTranslations(builder: FabricLanguageProvider.Transl
     builder.addAdvancement("true_hundred_days", "True 100 days", "Survive 100 days with one life")
     builder.addAdvancement("all_done", "All done", "Award all Nine Lifes advancements")
     // Tags
-    builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Cause blast furnace explode")
-    builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Cause furnace explode")
-    builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Cause smoker explode")
-    builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Cause campfires explode")
-    builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Lightning chargeable")
-    builder.add(NineLifesItemTags.Enchantable.CHARGE, "Enchantable with charge")
-    builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Enchantable with charge in enchanting table")
-    builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Gives life on death")
-    builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Lightning or fire")
+    builder.add(NLItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Cause blast furnace explode")
+    builder.add(NLItemTags.CAUSE_FURNACE_EXPLODE, "Cause furnace explode")
+    builder.add(NLItemTags.CAUSE_SMOKER_EXPLODE, "Cause smoker explode")
+    builder.add(NLItemTags.CAUSE_CAMPFIRE_EXPLODE, "Cause campfires explode")
+    builder.add(NLItemTags.LIGHTNING_CHARGEABLE, "Lightning chargeable")
+    builder.add(NLItemTags.Enchantable.CHARGE, "Enchantable with charge")
+    builder.add(NLItemTags.Enchantable.CHARGE_IN_TABLE, "Enchantable with charge in enchanting table")
+    builder.add(NLDamageTypeTags.GIVES_LIFE, "Gives life on death")
+    builder.add(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Lightning or fire")
     // Chat messages
     builder.add("chat.message.join.lives", $$"Your lifes: %1$s.")
     builder.add("chat.message.join.lives.careful", $$"Your lifes: %1$s. Be careful!")
@@ -87,7 +87,7 @@ private fun generateNLDefaultTranslations(builder: FabricLanguageProvider.Transl
 
     builder.add("commands.not_a_player", "The command is available only to players")
     // Entities
-    builder.add(NLEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
+    builder.add(NLEntityTypes.WANDERING_ARMOR_STAND, "Wandering armor stand")
     // Stats
     builder.addStat(NLStats.USED_CHARGED, "Used charged items")
     // Gamerules
@@ -271,15 +271,15 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.addAdvancement("true_hundred_days", "Истинные 100 дней", "Проживите 100 дней с одной жизнью")
         builder.addAdvancement("all_done", "Готов", "Выполните все достижения Nine Lifes")
         // Tags
-        builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Взрывает плавильные печи")
-        builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Взрывает печки")
-        builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Взрывает коптильни")
-        builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Взрывает костры")
-        builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Заряжается электричеством")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE, "Способно быть заряженным")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Способно заряжаться в столе зачарований")
-        builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Даёт жизнь при смерти")
-        builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Молния или огонь")
+        builder.add(NLItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Взрывает плавильные печи")
+        builder.add(NLItemTags.CAUSE_FURNACE_EXPLODE, "Взрывает печки")
+        builder.add(NLItemTags.CAUSE_SMOKER_EXPLODE, "Взрывает коптильни")
+        builder.add(NLItemTags.CAUSE_CAMPFIRE_EXPLODE, "Взрывает костры")
+        builder.add(NLItemTags.LIGHTNING_CHARGEABLE, "Заряжается электричеством")
+        builder.add(NLItemTags.Enchantable.CHARGE, "Способно быть заряженным")
+        builder.add(NLItemTags.Enchantable.CHARGE_IN_TABLE, "Способно заряжаться в столе зачарований")
+        builder.add(NLDamageTypeTags.GIVES_LIFE, "Даёт жизнь при смерти")
+        builder.add(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Молния или огонь")
         // Chat messages
         builder.add("chat.message.join.lives", $$"Ваши жизни: %1$s.")
         builder.add("chat.message.join.lives.careful", $$"Ваши жизни: %1$s. Будьте начеку!")
@@ -303,7 +303,7 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
 
         builder.add("commands.not_a_player", "Команда доступна только для игроков")
         // Entities
-        builder.add(NLEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
+        builder.add(NLEntityTypes.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
         builder.addStat(NLStats.USED_CHARGED, "Использовано заряженных предметов")
         // Gamerules
@@ -444,15 +444,15 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         builder.addAdvancement("true_hundred_days", "Истинные 100 дней", "Проживите 100 дней съ одною жизнью")
         builder.addAdvancement("all_done", "Богатырь", "Выполните всѣ достиженія Nine Lifes")
         // Tags
-        builder.add(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Взрываетъ плавильную печь")
-        builder.add(NineLifesItemTags.CAUSE_FURNACE_EXPLODE, "Взрываетъ печь")
-        builder.add(NineLifesItemTags.CAUSE_SMOKER_EXPLODE, "Взрываетъ коптильню")
-        builder.add(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE, "Взрываетъ костёръ")
-        builder.add(NineLifesItemTags.LIGHTNING_CHARGEABLE, "Заряжается электричествомъ")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE, "Способно быть заряженнымъ")
-        builder.add(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE, "Способно заряжаться въ чародѣйскомъ алтарѣ")
-        builder.add(NineLifesDamageTypeTags.GIVES_LIFE, "Даётъ жизнь при смерти")
-        builder.add(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Молнія или огонь")
+        builder.add(NLItemTags.CAUSE_BLAST_FURNACE_EXPLODE, "Взрываетъ плавильную печь")
+        builder.add(NLItemTags.CAUSE_FURNACE_EXPLODE, "Взрываетъ печь")
+        builder.add(NLItemTags.CAUSE_SMOKER_EXPLODE, "Взрываетъ коптильню")
+        builder.add(NLItemTags.CAUSE_CAMPFIRE_EXPLODE, "Взрываетъ костёръ")
+        builder.add(NLItemTags.LIGHTNING_CHARGEABLE, "Заряжается электричествомъ")
+        builder.add(NLItemTags.Enchantable.CHARGE, "Способно быть заряженнымъ")
+        builder.add(NLItemTags.Enchantable.CHARGE_IN_TABLE, "Способно заряжаться въ чародѣйскомъ алтарѣ")
+        builder.add(NLDamageTypeTags.GIVES_LIFE, "Даётъ жизнь при смерти")
+        builder.add(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE, "Молнія или огонь")
         // Chat messages
         builder.add("chat.message.join.lives", $$"Ваши жизни: %1$s.")
         builder.add("chat.message.join.lives.careful", $$"Ваши жизни: %1$s. Будьте начеку!")
@@ -500,7 +500,7 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
 
         builder.add("commands.not_a_player", "Приказъ доступенъ только игрокамъ")
         // Entities
-        builder.add(NLEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
+        builder.add(NLEntityTypes.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
         builder.addStat(NLStats.USED_CHARGED, "Использовано заряженныхъ вещей")
         // Game rules

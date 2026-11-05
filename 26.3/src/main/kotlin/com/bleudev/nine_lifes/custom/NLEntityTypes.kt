@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.`object`.builder.v1.entity.FabricDefaultAttribute
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.MobCategory
 
-object NLEntities {
+object NLEntityTypes {
     val WANDERING_ARMOR_STAND = registerEntity(
         "wandering_armor_stand",
         EntityType.Builder.of(::WanderingArmorStand, MobCategory.MISC).fireImmune().sized(.6f, 1.8f)

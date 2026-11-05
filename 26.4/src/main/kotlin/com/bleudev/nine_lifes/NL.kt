@@ -4,7 +4,7 @@ import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.config.game.NLGameConfigCheckException
 import com.bleudev.nine_lifes.config.game.NLGameConfigManager
 import com.bleudev.nine_lifes.custom.*
-import com.bleudev.nine_lifes.custom.NLEntities.WANDERING_ARMOR_STAND
+import com.bleudev.nine_lifes.custom.NLEntityTypes.WANDERING_ARMOR_STAND
 import com.bleudev.nine_lifes.custom.packet.payload.*
 import com.bleudev.nine_lifes.custom.packet.payload.interfaces.PacketPayloadCompanion
 import com.bleudev.nine_lifes.custom.packet.payload.serverbound.GameConfigSave
@@ -66,7 +66,7 @@ class NL : ModInitializer {
         NLConsumeEffects.initialize()
         NLEnchantments.initialize()
         NLPotions.initialize()
-        NLEntities.initialize()
+        NLEntityTypes.initialize()
         NLCommands.initialize()
         NLCriterions.initialize()
         NLStats.initialize()
@@ -206,7 +206,7 @@ class NL : ModInitializer {
         ServerLivingEntityEvents.AFTER_DEATH.register { entity, damageSource ->
             if (entity is ServerPlayer && entity.gameMode().isSurvival) {
                 if (
-                    damageSource.`is`(NineLifesDamageTypeTags.GIVES_LIFE) &&
+                    damageSource.`is`(NLDamageTypeTags.GIVES_LIFE) &&
                     (damageSource.entity == null || damageSource.entity == entity)
                 ) {
                     NLCriterions.LIFES_CHANGE.trigger(entity, 1, true)
@@ -282,7 +282,7 @@ class NL : ModInitializer {
             val itemEntities = level.getEntities(
                 EntityTypes.ITEM,
                 entityIn<ItemEntity>(lightning.position(), LIGHTNING_CHARGING_RADIUS)
-                .and({ entity -> entity.item.`is`(NineLifesItemTags.LIGHTNING_CHARGEABLE) })
+                .and({ entity -> entity.item.`is`(NLItemTags.LIGHTNING_CHARGEABLE) })
             )
             val original = HashMap<Item, Int>()
             val charged = HashMap<Item, Int>()
@@ -322,7 +322,7 @@ class NL : ModInitializer {
                     val new = EntityTypes.ITEM.create(level, EntitySpawnReason.CONVERSION) ?: break
                     new.copyPosition(lightning)
                     new.item = ItemStack(o.key, cnt)
-                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
+                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
                     level.addFreshEntity(new)
                     vv -= cnt
                 }
@@ -335,7 +335,7 @@ class NL : ModInitializer {
                     new.copyPosition(lightning)
                     new.item = ItemStack(c.key, cnt)
                     new.item.enchant(chargeEnchantment, 1)
-                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
+                    new.item.set(DataComponents.DAMAGE_RESISTANT, DamageResistant(level.registryAccess().get(NLDamageTypeTags.IS_LIGHTNING_OR_FIRE).get()))
                     level.addFreshEntity(new)
                     vv -= cnt
                 }

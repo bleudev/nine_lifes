@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.mixin;
 
 import com.bleudev.nine_lifes.custom.NLDamageTypes;
-import com.bleudev.nine_lifes.custom.NineLifesItemTags;
+import com.bleudev.nine_lifes.custom.NLItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -37,9 +37,9 @@ public class AbstractFurnaceBlockEntityMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(BlockEntityType<?> type, BlockPos worldPosition, BlockState blockState, RecipeType<?> recipeType, CallbackInfo ci) {
         tag = Map.of(
-            RecipeType.SMELTING, NineLifesItemTags.CAUSE_FURNACE_EXPLODE,
-            RecipeType.BLASTING, NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE,
-            RecipeType.SMOKING, NineLifesItemTags.CAUSE_SMOKER_EXPLODE
+            RecipeType.SMELTING, NLItemTags.CAUSE_FURNACE_EXPLODE,
+            RecipeType.BLASTING, NLItemTags.CAUSE_BLAST_FURNACE_EXPLODE,
+            RecipeType.SMOKING, NLItemTags.CAUSE_SMOKER_EXPLODE
         ).get(recipeType);
     }
 

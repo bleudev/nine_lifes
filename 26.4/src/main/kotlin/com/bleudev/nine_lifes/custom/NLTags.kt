@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item
 private fun <T : Any> ofRegistry(registry: ResourceKey<Registry<T>>, name: String): TagKey<T> =
     TagKey.create(registry, createIdentifier(name))
 
-object NineLifesItemTags {
+object NLItemTags {
     @JvmField
     val CAUSE_BLAST_FURNACE_EXPLODE: TagKey<Item> = of("cause_blast_furnace_explode")
     @JvmField
@@ -29,7 +29,7 @@ object NineLifesItemTags {
     private fun of(name: String): TagKey<Item> = ofRegistry(Registries.ITEM, name)
 }
 
-object NineLifesDamageTypeTags {
+object NLDamageTypeTags {
     val GIVES_LIFE: TagKey<DamageType> = of("gives_life")
     val CAN_HIT_WSTAND: TagKey<DamageType> = of("can_hit_wstand")
     val IS_LIGHTNING_OR_FIRE: TagKey<DamageType> = of("is_lightning_or_fire")

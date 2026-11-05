@@ -1,8 +1,8 @@
 package com.bleudev.nine_lifes.datagen.provider
 
+import com.bleudev.nine_lifes.custom.NLDamageTypeTags
 import com.bleudev.nine_lifes.custom.NLDamageTypes
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesItemTags
+import com.bleudev.nine_lifes.custom.NLItemTags
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider
 import net.minecraft.core.HolderLookup
@@ -17,14 +17,14 @@ import java.util.concurrent.CompletableFuture
 
 class NLItemTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFuture<HolderLookup.Provider>) : FabricTagsProvider.ItemTagsProvider(output, lookupFuture) {
     override fun addTags(registries: HolderLookup.Provider) {
-        builder(NineLifesItemTags.CAUSE_BLAST_FURNACE_EXPLODE).add(Items.AMETHYST_SHARD)
-        builder(NineLifesItemTags.CAUSE_FURNACE_EXPLODE).add(Items.AMETHYST_SHARD)
-        builder(NineLifesItemTags.CAUSE_SMOKER_EXPLODE).add(Items.AMETHYST_SHARD)
-        builder(NineLifesItemTags.CAUSE_CAMPFIRE_EXPLODE).add(Items.AMETHYST_SHARD)
-        builder(NineLifesItemTags.LIGHTNING_CHARGEABLE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.CAUSE_BLAST_FURNACE_EXPLODE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.CAUSE_FURNACE_EXPLODE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.CAUSE_SMOKER_EXPLODE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.CAUSE_CAMPFIRE_EXPLODE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.LIGHTNING_CHARGEABLE).add(Items.AMETHYST_SHARD)
 
-        builder(NineLifesItemTags.Enchantable.CHARGE).add(Items.AMETHYST_SHARD)
-        builder(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE)
+        builder(NLItemTags.Enchantable.CHARGE).add(Items.AMETHYST_SHARD)
+        builder(NLItemTags.Enchantable.CHARGE_IN_TABLE)
     }
 
     @Suppress("DEPRECATION")
@@ -37,8 +37,8 @@ class NLItemTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFutu
 
 class NLDamageTypeTagsProvider(output: FabricPackOutput, lookupFuture: CompletableFuture<HolderLookup.Provider>) : FabricTagsProvider<DamageType>(output, Registries.DAMAGE_TYPE, lookupFuture ) {
     override fun addTags(registries: HolderLookup.Provider) {
-        builder(NineLifesDamageTypeTags.GIVES_LIFE).add(NLDamageTypes.CHARGED_AMETHYST)
-        builder(NineLifesDamageTypeTags.CAN_HIT_WSTAND).add(DamageTypes.PLAYER_ATTACK)
+        builder(NLDamageTypeTags.GIVES_LIFE).add(NLDamageTypes.CHARGED_AMETHYST)
+        builder(NLDamageTypeTags.CAN_HIT_WSTAND).add(DamageTypes.PLAYER_ATTACK)
         // TODO
 //        builder(NineLifesDamageTypeTags.IS_LIGHTNING_OR_FIRE).addTag(DamageTypeTags.IS_LIGHTNING).addTag(DamageTypeTags.IS_FIRE)
 

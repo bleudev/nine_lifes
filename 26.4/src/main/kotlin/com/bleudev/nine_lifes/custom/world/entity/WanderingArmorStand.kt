@@ -1,8 +1,8 @@
 package com.bleudev.nine_lifes.custom.world.entity
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NLDamageTypeTags
 import com.bleudev.nine_lifes.custom.NLSounds
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
@@ -49,7 +49,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
 
     private fun sourceCanInstaKill(damageSource: DamageSource) = damageSource.`is`(DamageTypes.GENERIC_KILL)
     private fun sourceCanHit(damageSource: DamageSource) = sourceCanInstaKill(damageSource) ||
-        damageSource.`is`(NineLifesDamageTypeTags.CAN_HIT_WSTAND)
+        damageSource.`is`(NLDamageTypeTags.CAN_HIT_WSTAND)
     private fun playerCanHit(player: ServerPlayer): Boolean = !player.gameMode().isSurvival || player.foodData.foodLevel >= 5f
     private fun triedKillReact(player: ServerPlayer) {
         if (!player.gameMode().isSurvival) return

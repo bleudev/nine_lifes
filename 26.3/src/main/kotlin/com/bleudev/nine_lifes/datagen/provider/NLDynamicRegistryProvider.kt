@@ -3,7 +3,7 @@ package com.bleudev.nine_lifes.datagen.provider
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.custom.NLDamageTypes
 import com.bleudev.nine_lifes.custom.NLEnchantments
-import com.bleudev.nine_lifes.custom.NineLifesItemTags
+import com.bleudev.nine_lifes.custom.NLItemTags
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.minecraft.ChatFormatting
@@ -43,8 +43,8 @@ class NLDynamicRegistryProvider(output: FabricPackOutput,
 
         fun bootstrapEnchantments(context: BootstrapContext<Enchantment>) {
             Enchantment.definition(
-                context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE),
-                context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE),
+                context.lookup(Registries.ITEM).getOrThrow(NLItemTags.Enchantable.CHARGE),
+                context.lookup(Registries.ITEM).getOrThrow(NLItemTags.Enchantable.CHARGE_IN_TABLE),
                 1, 1, Enchantment.dynamicCost(3, 0), Enchantment.dynamicCost(7, 0), 4, EquipmentSlotGroup.HAND
             ).register(context, NLEnchantments.CHARGE, { withStyle(ChatFormatting.WHITE) })
         }
