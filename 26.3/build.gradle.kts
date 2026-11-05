@@ -176,10 +176,6 @@ publishMods {
         tagName.set("${project.version}")
         announcementTitle.set("Download from GitHub")
 
-        project.parent?.project(":26.2")?.tasks?.named("publishGithub")?.let {
-            parent(it)
-        }
-
         allowEmptyFiles.set(true)
     }
 }
