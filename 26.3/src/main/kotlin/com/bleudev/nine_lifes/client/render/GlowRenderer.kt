@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.client.render
 
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
@@ -23,11 +22,6 @@ import org.joml.Vector3f
 import java.util.*
 
 class GlowRenderer {
-    /**
-     * All persistent world glows.
-     *
-     * You can freely add/remove/change them from your client-side code.
-     */
     val glowStateMap = hashMapOf<Identifier, GlowState>()
 
     companion object {
@@ -44,7 +38,7 @@ class GlowRenderer {
                 .build()
         )
         private val RENDER_TYPE: RenderType = RenderType.create(
-            "$MOD_ID:glow",
+            "nl_glow",
             RenderSetup.builder(PIPELINE)
                 .sortOnUpload()
                 .createRenderSetup()
