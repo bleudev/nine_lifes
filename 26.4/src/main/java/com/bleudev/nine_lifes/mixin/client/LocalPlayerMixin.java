@@ -1,8 +1,7 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry;
+import com.bleudev.nine_lifes.api.render.client.impl.PostEffectRegistryImpl;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import kotlin.Unit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.player.LocalPlayer;
@@ -18,11 +17,14 @@ import java.util.List;
 public class LocalPlayerMixin {
     @ModifyReturnValue(method = "getActivePostEffects", at = @At("RETURN"))
     private List<Identifier> addCustomPostEffects(List<Identifier> original) {
-        ArrayList<Identifier> var10001 = new ArrayList<>(original);
-        PostEffectRegistry.Companion.visit$com_bleudev_nine_lifes(var10002 -> {
-            var10001.add(var10002);
-            return Unit.INSTANCE;
-        });
-        return var10001;
+        List<Identifier> added = PostEffectRegistryImpl.extractPostEffects();
+
+        if (added.isEmpty()) {
+            return original;
+        } else {
+            ArrayList<Identifier> result = new ArrayList<>(original);
+            result.addAll(added);
+            return result;
+        }
     }
 }

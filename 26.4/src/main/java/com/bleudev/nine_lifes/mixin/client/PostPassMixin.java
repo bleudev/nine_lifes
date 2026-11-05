@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin.client;
 
-import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry;
+import com.bleudev.nine_lifes.api.render.client.impl.PostEffectRegistryImpl;
 import com.mojang.renderpearl.api.buffers.GpuBuffer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Environment(EnvType.CLIENT)
@@ -28,6 +29,14 @@ public class PostPassMixin {
 
     @Redirect(method = "lambda$addToFrame$1", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/PostPass;customUniforms:Ljava/util/Map;", opcode = Opcodes.GETFIELD))
     private Map<String, GpuBuffer> modifyUniforms(PostPass instance) {
-        return PostEffectRegistry.Companion.newUniforms$com_bleudev_nine_lifes(this.customUniforms, Identifier.parse(this.name.split("/")[0]));
+        Map<String, GpuBuffer> overrides = PostEffectRegistryImpl.extractBuffers(Identifier.parse(this.name.split("/")[0]));
+
+        if (overrides.isEmpty()) {
+            return this.customUniforms;
+        } else {
+            HashMap<String, GpuBuffer> result = new HashMap<>(this.customUniforms);
+            result.putAll(overrides);
+            return result;
+        }
     }
 }

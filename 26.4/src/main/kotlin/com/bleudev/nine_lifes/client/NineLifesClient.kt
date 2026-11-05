@@ -4,7 +4,8 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
-import com.bleudev.nine_lifes.api.render.client.SpectatePostEffectRegistry
+import com.bleudev.nine_lifes.api.render.client.post_effect.NLPostEffect
+import com.bleudev.nine_lifes.api.render.client.post_effect.SpectateEntityPostEffect
 import com.bleudev.nine_lifes.client.config.client.HeartPosition
 import com.bleudev.nine_lifes.client.config.client.configInit
 import com.bleudev.nine_lifes.client.config.client.heartPosition
@@ -39,8 +40,10 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
+import net.minecraft.world.level.Level
 import org.joml.Vector3f
 import org.joml.Vector4f
 import kotlin.random.Random
@@ -113,28 +116,52 @@ class NineLifesClient : ClientModInitializer {
             }
         }
 
-        PostEffectRegistry.registerNineLifes("redmaj")
+        PostEffectRegistry.register(NLPostEffect
+            .builder(Identifier.fromNamespaceAndPath("foo", "bar"))
+            .condition { Minecraft.getInstance().level?.dimension() == Level.NETHER }
+            .uniform("AnaglyphConfig") {
+                putVec2(0.005f, 0.0025f)
+            }
+            .build()
+        )
+
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("redmaj")
             .uniform("ChmajConfig") {
                 putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
             }
-        PostEffectRegistry.registerNineLifes("anaglyph")
+            .build()
+        )
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("anaglyph")
             .uniform("AnaglyphConfig") {
                 putVec2(shaderAnaglyphX, shaderAnaglyphY)
             }
-        PostEffectRegistry.registerNineLifes("cblur")
+            .build()
+        )
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("cblur")
             .uniform("BlurPropConfig") {
                 putFloat(shaderCBlurStrength)
             }
-        PostEffectRegistry.registerNineLifes("player_amethysm")
+            .build()
+        )
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("player_amethysm")
             .uniform("CustomConvolveConfig") {
                 putFloat(playerAmethysmStrength).putFloat(5f)
             }
-        PostEffectRegistry.registerNineLifes("player_charged")
+            .build()
+        )
+        PostEffectRegistry.register(NLPostEffect
+            .builderNL("player_charged")
             .uniform("CustomConvolveConfig") {
                 putFloat(playerChargedStrength).putFloat(10f)
             }
-
-        SpectatePostEffectRegistry.register(NineLifesEntities.WANDERING_ARMOR_STAND, createIdentifier("wstand"))
+            .build()
+        )
+        PostEffectRegistry.register(SpectateEntityPostEffect
+            .builderNL("wstand", NineLifesEntities.WANDERING_ARMOR_STAND)
             .uniform("AnaglyphConfig") {
                 if (Random.nextFloat() <= .0025f) {
                     putVec2(Random.nextDouble(0.02, 0.05).toFloat(), Random.nextDouble(0.005, 0.01).toFloat())
@@ -142,6 +169,8 @@ class NineLifesClient : ClientModInitializer {
                     putVec2(0.001f, 0.0005f)
                 }
             }
+            .build()
+        )
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
         HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
