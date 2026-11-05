@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.client.render
 
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.pipeline.RenderPipeline
@@ -13,8 +12,8 @@ import com.mojang.renderpearl.api.pipeline.DepthStencilState
 import com.mojang.renderpearl.api.pipeline.PrimitiveTopology
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
-import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.renderer.SubmitNodeCollector
+import net.minecraft.client.renderer.pipeline.RenderPipelines
 import net.minecraft.client.renderer.rendertype.RenderSetup
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.client.renderer.state.level.CameraRenderState
@@ -31,8 +30,9 @@ class GlowRenderer {
     val glowStateMap = hashMapOf<Identifier, GlowState>()
 
     companion object {
-        private val PIPELINE: RenderPipeline = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.DEBUG_FILLED_SNIPPET)
+        private val PIPELINE: RenderPipeline = RenderPipelines.dynamicPipeline(null, "nl_glow") {
+            RenderPipelines.finishDynamicPipeline(RenderPipeline
+                .builder(RenderPipelines.GLOBALS_SNIPPET)
                 .withLocation(createIdentifier("pipeline/glow"))
                 .withVertexShader(createIdentifier("core/glow"))
                 .withFragmentShader(createIdentifier("core/glow"))
@@ -40,12 +40,16 @@ class GlowRenderer {
                 .withPrimitiveTopology(PrimitiveTopology.QUADS)
                 .withCull(false)
                 .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
-                .withDepthStencilState(DepthStencilState.OFF)
-                .build()
-        )
+                .withDepthStencilState(DepthStencilState.DEFAULT),
+                "nl_glow",
+                false,
+                null,
+                null,
+            )
+        }
         private val RENDER_TYPE: RenderType = RenderType.create(
-            "$MOD_ID:glow",
-            RenderSetup.builder(PIPELINE)
+            "nl_glow",
+            RenderSetup.nonOitBuilder(PIPELINE)
                 .sortOnUpload()
                 .createRenderSetup()
         )

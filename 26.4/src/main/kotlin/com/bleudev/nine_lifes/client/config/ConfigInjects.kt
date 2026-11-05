@@ -10,7 +10,7 @@ import dev.isxander.yacl3.dsl.OptionDsl
 import dev.isxander.yacl3.gui.image.ImageRenderer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
-import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.gui.GuiPipeline
 import net.minecraft.resources.Identifier
 import kotlin.reflect.KMutableProperty
 
@@ -38,7 +38,7 @@ internal abstract class MethodBasedImageRenderer : ImageRenderer {
         val id = getImagePath()
         val t = Minecraft.getInstance().textureManager.getTexture(id).textureView().texture()
         val h = renderWidth * t.getHeight(0) / t.getWidth(0)
-        graphics.blit(RenderPipelines.GUI_TEXTURED, id, x, y, 0f, 0f, renderWidth, h, renderWidth, h)
+        graphics.blit(GuiPipeline.TEXTURED, id, x, y, 0f, 0f, renderWidth, h, renderWidth, h)
         return h
     }
 
@@ -83,13 +83,13 @@ internal class AnimatedConditionImageRenderer(val name: String, val frameProvide
         if (condition()) {
             time = System.currentTimeMillis() - first
             val height = 9 * renderWidth / 16
-            graphics.blit(RenderPipelines.GUI_TEXTURED, createIdentifier("$base/${frameProvider(time)}.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
+            graphics.blit(GuiPipeline.TEXTURED, createIdentifier("$base/${frameProvider(time)}.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
             return height
         } else {
             time = 0
             first = System.currentTimeMillis()
             val height = 9 * renderWidth / 16
-            graphics.blit(RenderPipelines.GUI_TEXTURED, if (useFirstFrameWhenFalse) createIdentifier("$base/0.png") else createIdentifier("${base}_disabled.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
+            graphics.blit(GuiPipeline.TEXTURED, if (useFirstFrameWhenFalse) createIdentifier("$base/0.png") else createIdentifier("${base}_disabled.png"), x, y, 0f, 0f, renderWidth, height, renderWidth, height)
             return height
         }
     }

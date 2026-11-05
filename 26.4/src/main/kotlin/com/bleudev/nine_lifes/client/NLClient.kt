@@ -37,7 +37,7 @@ import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
-import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.gui.GuiPipeline
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
@@ -172,9 +172,9 @@ class NLClient : ClientModInitializer {
             .build()
         )
 
-        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR) { g, _ -> renderOverlayBeforeHotBar(g) }
-        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT) { g, _ -> renderLifesCount(g) }
-        HudElementRegistry.addLast(Layers.OVERLAY) { g, _ -> renderOverlay(g) }
+        HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Layers.OVERLAY_BEFORE_HOTBAR, ::renderOverlayBeforeHotBar)
+        HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Layers.LIFES_COUNT, ::renderLifesCount)
+        HudElementRegistry.addLast(Layers.OVERLAY, ::renderOverlay)
 
         registerReceiver(AfterPlayerRespawn) { _, ctx ->
             ClientRespawnEvents.RESPAWN.invoker()(ctx.client())
@@ -283,7 +283,7 @@ class NLClient : ClientModInitializer {
         }
         graphics.pose().scale(center_heart_info.scale)
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, Sprites.HARDCORE,
+        graphics.blit(GuiPipeline.TEXTURED, Sprites.HARDCORE,
             0, -5, 0f, 0f, th, th, th, th, color)
         graphics.text(client.font, text, client.font.width(text), 0, -0x1)
 

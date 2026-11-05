@@ -1,6 +1,5 @@
 package com.bleudev.nine_lifes.client.render
 
-import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.render.GlowState
 import com.bleudev.nine_lifes.util.createIdentifier
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
@@ -44,7 +43,7 @@ class GlowRenderer {
                 .build()
         )
         private val RENDER_TYPE: RenderType = RenderType.create(
-            "$MOD_ID:glow",
+            "nl_glow",
             RenderSetup.builder(PIPELINE)
                 .sortOnUpload()
                 .createRenderSetup()

@@ -53,7 +53,7 @@ public class DeathScreenMixin extends Screen {
     }
 
     @Inject(method = "extractRenderState", at = @At("HEAD"))
-    private void renderWhitenessEffect(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+    private void renderWhitenessEffect(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         if (should_death_screen_be_white) {
             ClientInjectsKt.white(graphics);
         }
