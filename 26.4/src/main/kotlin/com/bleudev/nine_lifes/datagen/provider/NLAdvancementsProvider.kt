@@ -1,7 +1,7 @@
 package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.CHARGE_SCREEN_EFFECT_RADIUS_MAX
-import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
+import com.bleudev.nine_lifes.NL.Companion.PROBLEM_NOT_NOW
 import com.bleudev.nine_lifes.custom.NLCriterions
 import com.bleudev.nine_lifes.custom.NLEnchantments
 import com.bleudev.nine_lifes.custom.NLItems

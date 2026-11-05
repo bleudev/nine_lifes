@@ -53,7 +53,7 @@ class NL : ModInitializer {
         @JvmStatic
         internal val notSafeSleepTicks: HashMap<String, Int> = HashMap()
 
-        private val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
+        internal val PROBLEM_NOT_NOW: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.no_sleep"))
         private val PROBLEM_INSOMNIA: Player.BedSleepingProblem = Player.BedSleepingProblem(Component.translatable("block.minecraft.bed.insomnia_effect"))
     }
 
