@@ -1,8 +1,8 @@
 package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.MOD_ID
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
-import com.bleudev.nine_lifes.custom.NineLifesEnchantments
+import com.bleudev.nine_lifes.custom.NLDamageTypes
+import com.bleudev.nine_lifes.custom.NLEnchantments
 import com.bleudev.nine_lifes.custom.NineLifesItemTags
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
@@ -46,13 +46,13 @@ class NLDynamicRegistryProvider(output: FabricPackOutput,
                 context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE),
                 context.lookup(Registries.ITEM).getOrThrow(NineLifesItemTags.Enchantable.CHARGE_IN_TABLE),
                 1, 1, Enchantment.dynamicCost(3, 0), Enchantment.dynamicCost(7, 0), 4, EquipmentSlotGroup.HAND
-            ).register(context, NineLifesEnchantments.CHARGE, { withStyle(ChatFormatting.WHITE) })
+            ).register(context, NLEnchantments.CHARGE, { withStyle(ChatFormatting.WHITE) })
         }
 
         fun bootstrapDamageTypes(context: BootstrapContext<DamageType>) {
-            context.register(NineLifesDamageTypes.AMETHYSM, DamageType("amethysm", 0f))
-            context.register(NineLifesDamageTypes.CHARGED_AMETHYST, DamageType("charged_amethyst", 0f))
-            context.register(NineLifesDamageTypes.UNKNOWN, DamageType("unknown", 0f))
+            context.register(NLDamageTypes.AMETHYSM, DamageType("amethysm", 0f))
+            context.register(NLDamageTypes.CHARGED_AMETHYST, DamageType("charged_amethyst", 0f))
+            context.register(NLDamageTypes.UNKNOWN, DamageType("unknown", 0f))
         }
     }
 }

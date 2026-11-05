@@ -1,7 +1,7 @@
-package com.bleudev.nine_lifes.client.custom.entity.render
+package com.bleudev.nine_lifes.client.custom.renderer.entity
 
-import com.bleudev.nine_lifes.client.custom.entity.model.WanderingArmorStandModel
-import com.bleudev.nine_lifes.custom.entity.WanderingArmorStand
+import com.bleudev.nine_lifes.client.custom.model.WanderingArmorStandModel
+import com.bleudev.nine_lifes.custom.world.entity.WanderingArmorStand
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
 import net.minecraft.client.model.geom.ModelLayers

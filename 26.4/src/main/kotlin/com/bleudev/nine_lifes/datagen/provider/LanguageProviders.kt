@@ -3,7 +3,6 @@ package com.bleudev.nine_lifes.datagen.provider
 import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
 import com.bleudev.nine_lifes.GAME_CONFIG_YACL_ID
 import com.bleudev.nine_lifes.MOD_ID
-import com.bleudev.nine_lifes.NineLifesStats
 import com.bleudev.nine_lifes.client.config.client.HealthRendering
 import com.bleudev.nine_lifes.client.config.client.HeartPosition
 import com.bleudev.nine_lifes.custom.*
@@ -16,7 +15,7 @@ import net.minecraft.resources.Identifier
 import java.util.concurrent.CompletableFuture
 import kotlin.enums.enumEntries
 
-private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider.TranslationBuilder) {
+private fun generateNLDefaultTranslations(builder: FabricLanguageProvider.TranslationBuilder) {
     // Mod Menu
     FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent {
         builder.add("modmenu.nameTranslation.$MOD_ID", it.metadata.name)
@@ -24,8 +23,8 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     }
 
     // Mob effects
-    builder.add(NineLifesMobEffects.AMETHYSM.value(), "Amethysm")
-    builder.add(NineLifesMobEffects.INSOMNIA.value(), "Insomnia")
+    builder.add(NLMobEffects.AMETHYSM.value(), "Amethysm")
+    builder.add(NLMobEffects.INSOMNIA.value(), "Insomnia")
 
     fun translatePotion(translationsName: String, vararg names: String) {
         builder.addPotions(names.toList(), "Potion of $translationsName", "Splash Potion of $translationsName", "Lingering Potion of $translationsName", "Arrow of $translationsName")
@@ -33,7 +32,7 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     translatePotion("Amethysm", "amethysm")
     translatePotion("Insomnia", "insomnia", "longer_insomnia")
     // Items
-    builder.add(NineLifesItems.AMETHYST_STICK, "Amethyst stick")
+    builder.add(NLItems.AMETHYST_STICK, "Amethyst stick")
     // Death messages
     builder.add("death.attack.amethysm", $$"%1$s didn't expect amethysts to kill")
     builder.add("death.attack.amethysm.player", $$"%1$s didn't expect amethysts to kill")
@@ -88,9 +87,9 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
 
     builder.add("commands.not_a_player", "The command is available only to players")
     // Entities
-    builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
+    builder.add(NLEntities.WANDERING_ARMOR_STAND, "Wandering armor stand")
     // Stats
-    builder.addStat(NineLifesStats.USED_CHARGED, "Used charged items")
+    builder.addStat(NLStats.USED_CHARGED, "Used charged items")
     // Gamerules
     builder.add("gamerule.category.nine_lifes.general", "Nine lifes")
     builder.addGameRule("take_lifes", "Take lifes",
@@ -104,8 +103,8 @@ private fun generateNineLifesDefaultTranslations(builder: FabricLanguageProvider
     builder.addGameRule("max_charged_items_at_a_time", "Max charged items at a time",
         "The max number of charged items gained from a single lightning bolt. A value of -1 means infinity (no limit).")
     // Sounds
-    builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Wandering armor stand hurts")
-    builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Wandering armor stand disappears")
+    builder.add(NLSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Wandering armor stand hurts")
+    builder.add(NLSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Wandering armor stand disappears")
     // Other
     builder.add("block.minecraft.bed.insomnia_effect", "You won't be able to sleep now")
     builder.add(deathScreenRemaining(1), "Last chance!")
@@ -186,7 +185,7 @@ class NLDefaultLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         registryLookup: HolderLookup.Provider,
         builder: TranslationBuilder
     ) {
-        generateNineLifesDefaultTranslations(builder)
+        generateNLDefaultTranslations(builder)
     }
 }
 
@@ -213,7 +212,7 @@ class NLUpsideDownLanguageProvider(output: FabricPackOutput, registriesFuture: C
         builder: TranslationBuilder
     ) {
         // Cludge, but how another way??
-        generateNineLifesDefaultTranslations(object : TranslationBuilder {
+        generateNLDefaultTranslations(object : TranslationBuilder {
             override fun has(translationKey: String): Boolean = builder.has(translationKey)
             override fun overwrite(translationKey: String, value: String): String? {
                 var ans = upsided(value)
@@ -240,8 +239,8 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         // Mod Menu
         builder.add("modmenu.descriptionTranslation.$MOD_ID", "Мод, который даёт в выживании только 9 жизней перед смертью навсегда.")
         // Mob effects
-        builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизм")
-        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Бессоница")
+        builder.add(NLMobEffects.AMETHYSM.value(), "Аметизм")
+        builder.add(NLMobEffects.INSOMNIA.value(), "Бессоница")
 
         fun translatePotion(translationsName: String, vararg names: String) {
             builder.addPotions(names.toList(), "Зелье $translationsName", "Взрывное зелье $translationsName", "Туманное зелье $translationsName", "Стрела $translationsName")
@@ -249,7 +248,7 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         translatePotion("аметизма", "amethysm")
         translatePotion("бессоницы", "insomnia", "longer_insomnia")
         // Items
-        builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
+        builder.add(NLItems.AMETHYST_STICK, "Аметистовая палочка")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s не ожидал, что аметисты убивают")
         builder.add("death.attack.amethysm.player", $$"%1$s не ожидал, что аметисты убивают")
@@ -304,9 +303,9 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
 
         builder.add("commands.not_a_player", "Команда доступна только для игроков")
         // Entities
-        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
+        builder.add(NLEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
-        builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженных предметов")
+        builder.addStat(NLStats.USED_CHARGED, "Использовано заряженных предметов")
         // Gamerules
         builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
         builder.addGameRule("take_lifes", "Отнимать жизни",
@@ -320,8 +319,8 @@ class NLRussianLanguageProvider(output: FabricPackOutput, registriesFuture: Comp
         builder.addGameRule("max_charged_items_at_a_time", "Максимум заряженных предметов за раз",
             "Максимальное количество заряженных предметов, получаемых от одного удара молнии. Значение -1 означает бесконечность (отсутствие ограничения).")
         // Sounds
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Ходячая стойка для брони ранена")
-        builder.add(NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Ходячая стойка для брони пропадает")
+        builder.add(NLSounds.ENTITY_WANDERING_ARMOR_STAND_HURT, "Ходячая стойка для брони ранена")
+        builder.add(NLSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH, "Ходячая стойка для брони пропадает")
         // Other
         builder.add("block.minecraft.bed.insomnia_effect", "Сейчас не получится уснуть")
         builder.add(deathScreenRemaining(1), "Последний шанс!")
@@ -407,8 +406,8 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         // Mod Menu
         builder.add("modmenu.descriptionTranslation.$MOD_ID", "Модъ, дающій въ выживаніи лишь 9 жизней до смерти навѣки.\n")
         // Mob effects
-        builder.add(NineLifesMobEffects.AMETHYSM.value(), "Аметизмъ")
-        builder.add(NineLifesMobEffects.INSOMNIA.value(), "Безсоница")
+        builder.add(NLMobEffects.AMETHYSM.value(), "Аметизмъ")
+        builder.add(NLMobEffects.INSOMNIA.value(), "Безсоница")
 
         fun translatePotion(translationsName: String, vararg names: String) {
             builder.addPotions(
@@ -422,7 +421,7 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         translatePotion("аметизма", "amethysm")
         translatePotion("безсоницы", "insomnia", "longer_insomnia")
         // Items
-        builder.add(NineLifesItems.AMETHYST_STICK, "Аметистовая палочка")
+        builder.add(NLItems.AMETHYST_STICK, "Аметистовая палочка")
         // Death messages
         builder.add("death.attack.amethysm", $$"%1$s не ожидалъ, что аметисты убиваютъ")
         builder.add("death.attack.amethysm.player", $$"%1$s не ожидалъ, что аметисты убиваютъ")
@@ -501,9 +500,9 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
 
         builder.add("commands.not_a_player", "Приказъ доступенъ только игрокамъ")
         // Entities
-        builder.add(NineLifesEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
+        builder.add(NLEntities.WANDERING_ARMOR_STAND, "Ходячая стойка для брони")
         // Stats
-        builder.addStat(NineLifesStats.USED_CHARGED, "Использовано заряженныхъ вещей")
+        builder.addStat(NLStats.USED_CHARGED, "Использовано заряженныхъ вещей")
         // Game rules
         builder.add("gamerule.category.nine_lifes.general", "Девять жизней")
         builder.addGameRule(
@@ -533,11 +532,11 @@ class NLPreReformRussiandLanguageProvider(output: FabricPackOutput, registriesFu
         )
         // Sounds
         builder.add(
-            NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT,
+            NLSounds.ENTITY_WANDERING_ARMOR_STAND_HURT,
             "Ходячая стойка для брони ранена"
         )
         builder.add(
-            NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH,
+            NLSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH,
             "Ходячая стойка для брони пропадаетъ"
         )
         // Other

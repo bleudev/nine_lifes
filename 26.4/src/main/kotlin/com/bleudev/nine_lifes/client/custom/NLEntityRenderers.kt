@@ -1,16 +1,16 @@
 package com.bleudev.nine_lifes.client.custom
 
-import com.bleudev.nine_lifes.client.custom.entity.render.WanderingArmorStandRenderer
-import com.bleudev.nine_lifes.custom.NineLifesEntities
+import com.bleudev.nine_lifes.client.custom.renderer.entity.WanderingArmorStandRenderer
+import com.bleudev.nine_lifes.custom.NLEntities
 import net.minecraft.client.core.registries.BuiltInClientRegistries
 import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.entity.EntityRenderers
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 
-object NineLifesEntityRenderers {
+object NLEntityRenderers {
     fun initialize() {
-        register(NineLifesEntities.WANDERING_ARMOR_STAND, ::WanderingArmorStandRenderer)
+        register(NLEntities.WANDERING_ARMOR_STAND, ::WanderingArmorStandRenderer)
     }
 
     private fun <T : Entity> register(type: EntityType<T>, provider: EntityRendererProvider<T>) {

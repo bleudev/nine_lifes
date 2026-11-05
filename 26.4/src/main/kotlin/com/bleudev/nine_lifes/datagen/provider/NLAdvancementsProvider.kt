@@ -2,9 +2,9 @@ package com.bleudev.nine_lifes.datagen.provider
 
 import com.bleudev.nine_lifes.CHARGE_SCREEN_EFFECT_RADIUS_MAX
 import com.bleudev.nine_lifes.PROBLEM_NOT_NOW
-import com.bleudev.nine_lifes.custom.NineLifesCriterions
-import com.bleudev.nine_lifes.custom.NineLifesEnchantments
-import com.bleudev.nine_lifes.custom.NineLifesItems
+import com.bleudev.nine_lifes.custom.NLCriterions
+import com.bleudev.nine_lifes.custom.NLEnchantments
+import com.bleudev.nine_lifes.custom.NLItems
 import com.bleudev.nine_lifes.util.advancement
 import com.bleudev.nine_lifes.util.advancementDescription
 import com.bleudev.nine_lifes.util.createIdentifier
@@ -47,7 +47,7 @@ class NLAdvancementsProvider(output: FabricPackOutput,
             .of(itemLookup, Items.AMETHYST_SHARD)
             .withComponents(DataComponentMatchers.Builder.components()
                 .partial(DataComponentPredicates.ENCHANTMENTS, EnchantmentsPredicate.enchantments(listOf(
-                    EnchantmentPredicate(NineLifesEnchantments.Holders.charge(enchantments), MinMaxBounds.Ints.atLeast(1))
+                    EnchantmentPredicate(NLEnchantments.Holders.charge(enchantments), MinMaxBounds.Ints.atLeast(1))
                 )))
                 .build())
 
@@ -55,44 +55,44 @@ class NLAdvancementsProvider(output: FabricPackOutput,
             addCriterion("joined", PlayerTrigger.TriggerInstance.tick())
         }
         val trySleepWithoutShard = consumer.create("try_sleep_without_shard", true, Items.BED.red, AdvancementType.TASK) {
-            addCriterion("tried_sleep", NineLifesCriterions.BED_SLEEPING_PROBLEM.require(Player.BedSleepingProblem.NOT_SAFE, PROBLEM_NOT_NOW))
+            addCriterion("tried_sleep", NLCriterions.BED_SLEEPING_PROBLEM.require(Player.BedSleepingProblem.NOT_SAFE, PROBLEM_NOT_NOW))
             parent(root)
         }
         val sleptWithShard = consumer.create("slept_with_shard", true, Items.BED.red, AdvancementType.TASK) {
-            addCriterion("slept_with_shard", NineLifesCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.require(true))
+            addCriterion("slept_with_shard", NLCriterions.SUCCESS_SLEEP_WITH_AMETHYSM.require(true))
             parent(trySleepWithoutShard)
         }
         val gotChargedShard = consumer.create("got_charged_shard", true, Items.AMETHYST_SHARD, AdvancementType.GOAL) {
             requirements(AdvancementRequirements.Strategy.OR)
-            addCriterion("got_charged_shard_with_lightning", NineLifesCriterions.CHARGE_ITEM.require(Items.AMETHYST_SHARD, CHARGE_SCREEN_EFFECT_RADIUS_MAX.toDouble()))
+            addCriterion("got_charged_shard_with_lightning", NLCriterions.CHARGE_ITEM.require(Items.AMETHYST_SHARD, CHARGE_SCREEN_EFFECT_RADIUS_MAX.toDouble()))
             addCriterion("got_charged_shard", InventoryChangeTrigger.TriggerInstance.hasItems(chargedAmethystShardPredicate))
             parent(trySleepWithoutShard)
         }
         val gotLifeWithShard = consumer.create("got_life_with_shard", true, Items.AMETHYST_SHARD, AdvancementType.TASK) {
-            addCriterion("got_life_with_shard", NineLifesCriterions.LIFES_CHANGE.require(1, true))
+            addCriterion("got_life_with_shard", NLCriterions.LIFES_CHANGE.require(1, true))
             parent(gotChargedShard)
         }
         val ate64ChargedShards = consumer.create("ate_64_charged_shards", false, Items.SKELETON_SKULL, AdvancementType.CHALLENGE) {
             for (i in 1..64) {
-                addCriterion("ate_${i}_charged_shards", NineLifesCriterions.USED_CHARGED_TOTAL.require(i))
+                addCriterion("ate_${i}_charged_shards", NLCriterions.USED_CHARGED_TOTAL.require(i))
             }
 
             parent(gotLifeWithShard)
         }
-        val gotAmethystStick = consumer.create("got_amethyst_stick", true, NineLifesItems.AMETHYST_STICK, AdvancementType.CHALLENGE) {
-            addCriterion("got_amethyst_stick", InventoryChangeTrigger.TriggerInstance.hasItems(NineLifesItems.AMETHYST_STICK))
+        val gotAmethystStick = consumer.create("got_amethyst_stick", true, NLItems.AMETHYST_STICK, AdvancementType.CHALLENGE) {
+            addCriterion("got_amethyst_stick", InventoryChangeTrigger.TriggerInstance.hasItems(NLItems.AMETHYST_STICK))
             parent(ate64ChargedShards)
         }
         val almostDead = consumer.create("almost_dead", true, Items.IRON_SWORD, AdvancementType.CHALLENGE) {
-            addCriterion("almost_dead", NineLifesCriterions.ALMOST_DEAD.require(1, 1f))
+            addCriterion("almost_dead", NLCriterions.ALMOST_DEAD.require(1, 1f))
             parent(root)
         }
         val hundredDays = consumer.create("hundred_days", false, Items.SKELETON_SKULL, AdvancementType.GOAL) {
-            addCriterion("hundred_days_played", NineLifesCriterions.PLAY_TIME.require(2400000))
+            addCriterion("hundred_days_played", NLCriterions.PLAY_TIME.require(2400000))
             parent(root)
         }
         val trueHundredDays = consumer.create("true_hundred_days", true, Items.WITHER_SKELETON_SKULL, AdvancementType.CHALLENGE) {
-            addCriterion("hundred_days_played_with_one_life", NineLifesCriterions.LIFES_PLAY_TIME.require(1, 2400000))
+            addCriterion("hundred_days_played_with_one_life", NLCriterions.LIFES_PLAY_TIME.require(1, 2400000))
             parent(hundredDays)
         }
 
@@ -129,5 +129,5 @@ class NLAdvancementsProvider(output: FabricPackOutput,
         ).applier().save(this, createIdentifier(name))
 
     private fun Advancement.Builder.requireAdvancement(holder: AdvancementHolder) =
-        addCriterion("require_${holder.id.namespace}_${holder.id.path}", NineLifesCriterions.ADVANCEMENT.require(holder))
+        addCriterion("require_${holder.id.namespace}_${holder.id.path}", NLCriterions.ADVANCEMENT.require(holder))
 }

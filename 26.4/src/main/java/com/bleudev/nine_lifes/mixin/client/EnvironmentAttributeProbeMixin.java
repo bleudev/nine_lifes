@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.bleudev.nine_lifes.client.NineLifesClientStorageKt.getForceAlwaysDay;
+import static com.bleudev.nine_lifes.client.NLClientStorageKt.getForceAlwaysDay;
 
 @SuppressWarnings("unchecked")
 @Environment(EnvType.CLIENT)

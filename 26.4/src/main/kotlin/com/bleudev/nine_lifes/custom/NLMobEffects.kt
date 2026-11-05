@@ -4,7 +4,7 @@ import com.bleudev.nine_lifes.custom.effect.mob.AmethysmEffect
 import com.bleudev.nine_lifes.custom.effect.mob.InsomniaEffect
 import com.bleudev.nine_lifes.util.registerMobEffect
 
-object NineLifesMobEffects {
+object NLMobEffects {
     @JvmField
     val AMETHYSM = registerMobEffect("amethysm", AmethysmEffect())
     @JvmField

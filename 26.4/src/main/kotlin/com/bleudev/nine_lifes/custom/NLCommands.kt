@@ -18,7 +18,7 @@ import net.minecraft.network.chat.MutableComponent
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.level.GameType
 
-object NineLifesCommands {
+object NLCommands {
     private val links: List<Pair<String, LinkData>> = listOf(
         "Github" to LinkData(GITHUB_LINK, ChatFormatting.GRAY),
         "Modrinth" to LinkData(MODRINTH_LINK, ChatFormatting.GREEN),

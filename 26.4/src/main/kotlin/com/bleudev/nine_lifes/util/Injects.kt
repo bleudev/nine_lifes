@@ -1,9 +1,9 @@
 package com.bleudev.nine_lifes.util
 
 import com.bleudev.nine_lifes.MAX_LIFES
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes
-import com.bleudev.nine_lifes.custom.NineLifesEnchantments
-import com.bleudev.nine_lifes.custom.NineLifesMobEffects
+import com.bleudev.nine_lifes.custom.NLDamageTypes
+import com.bleudev.nine_lifes.custom.NLEnchantments
+import com.bleudev.nine_lifes.custom.NLMobEffects
 import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -51,7 +51,7 @@ fun ServerPlayer.resetLifes() {this.lifes = MAX_LIFES}
 fun ServerPlayer.revive() {
     resetLifes()
     if (isSpectator) setGameMode(GameType.SURVIVAL)
-    addEffect(MobEffectInstance(NineLifesMobEffects.AMETHYSM, 100, 0))
+    addEffect(MobEffectInstance(NLMobEffects.AMETHYSM, 100, 0))
 }
 val ServerPlayer.isSurvival: Boolean get() = gameMode().isSurvival
 
@@ -81,11 +81,11 @@ fun LivingEntity.hurtServer(damageSourceSupplier: (Level) -> DamageSource, amoun
         if (amount <= 0) return@let false
         hurtServer(it, damageSourceSupplier(it), amount)
     } == true
-fun LivingEntity.hurtCharged(amount: Float) = hurtServer(NineLifesDamageTypes::chargedAmethyst, amount)
-fun LivingEntity.hurtUnknown(amount: Float) = hurtServer(NineLifesDamageTypes::unknown, amount)
+fun LivingEntity.hurtCharged(amount: Float) = hurtServer(NLDamageTypes::chargedAmethyst, amount)
+fun LivingEntity.hurtUnknown(amount: Float) = hurtServer(NLDamageTypes::unknown, amount)
 fun LivingEntity.hurtUnknown(amount: Int) = hurtUnknown(amount.toFloat())
 fun LivingEntity.kill(damageSourceSupplier: (Level) -> DamageSource) = hurtServer(damageSourceSupplier, Float.MAX_VALUE)
-fun LivingEntity.killCharged() = kill(NineLifesDamageTypes::chargedAmethyst)
+fun LivingEntity.killCharged() = kill(NLDamageTypes::chargedAmethyst)
 
 /**
  * Returns if there is at least one [ItemStack] in inventory (including items in containers, bundles, etc.) matching given `predicate`
@@ -121,7 +121,7 @@ private fun ItemStack.anyWithContainers(predicate: (ItemStack) -> Boolean): Bool
  *
  * An [ItemStack] is charged when it's enchanted with `nine_lifes:charge` enchantment with level bigger that zero.
  */
-fun <T : HolderGetter<Enchantment>> ItemStack.isCharged(getter: T): Boolean = this.enchantments.getLevel(NineLifesEnchantments.Holders.charge(getter)) > 0
+fun <T : HolderGetter<Enchantment>> ItemStack.isCharged(getter: T): Boolean = this.enchantments.getLevel(NLEnchantments.Holders.charge(getter)) > 0
 /**
  * Returns if this [ItemStack] is charged.
  *

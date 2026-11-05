@@ -1,8 +1,8 @@
-package com.bleudev.nine_lifes.custom.entity
+package com.bleudev.nine_lifes.custom.world.entity
 
 import com.bleudev.nine_lifes.*
+import com.bleudev.nine_lifes.custom.NLSounds
 import com.bleudev.nine_lifes.custom.NineLifesDamageTypeTags
-import com.bleudev.nine_lifes.custom.NineLifesSounds
 import com.bleudev.nine_lifes.custom.packet.payload.ArmorStandHitEvent
 import com.bleudev.nine_lifes.custom.packet.payload.unit.ArmorStandKillEvent
 import com.bleudev.nine_lifes.util.consumeOneItemInHand
@@ -104,7 +104,7 @@ class WanderingArmorStand(entityType: EntityType<out PathfinderMob>, level: Leve
         this.kickTimes++
         this.ticksAfterKick = 0
         val bl = this.kickTimes == WSTAND_KICK_TIMES || (player?.isCreative ?: false) || sourceCanInstaKill(source)
-        val snd = if (bl) NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NineLifesSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
+        val snd = if (bl) NLSounds.ENTITY_WANDERING_ARMOR_STAND_DEATH else NLSounds.ENTITY_WANDERING_ARMOR_STAND_HURT
         val pitch = if (bl) 0.8f else 0.95f
         val rad = if (bl) WSTAND_KILL_EVENT_RADIUS else WSTAND_KICK_EVENT_RADIUS
         level().playSound(null, x, y, z, snd, SoundSource.AMBIENT, 1f, pitch)

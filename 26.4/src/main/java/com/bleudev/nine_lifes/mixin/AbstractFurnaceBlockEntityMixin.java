@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.custom.NineLifesDamageTypes;
+import com.bleudev.nine_lifes.custom.NLDamageTypes;
 import com.bleudev.nine_lifes.custom.NineLifesItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -54,7 +54,7 @@ public class AbstractFurnaceBlockEntityMixin {
         if (!output.isEmpty() && output.is(mixin.tag)) {
             inv.set(2, ItemStack.EMPTY);
             level.removeBlock(pos, false);
-            explode(level, Vec3.atCenterOf(pos), 4f, NineLifesDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
+            explode(level, Vec3.atCenterOf(pos), 4f, NLDamageTypes::amethysm, Level.ExplosionInteraction.BLOCK, null);
         }
     }
 }

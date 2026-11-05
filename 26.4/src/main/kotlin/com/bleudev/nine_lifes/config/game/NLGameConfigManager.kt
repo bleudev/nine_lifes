@@ -14,9 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import java.nio.file.Files
 
-class NLGameConfigManager {
-    private constructor()
-
+class NLGameConfigManager private constructor() {
     private val path = FabricLoader.getInstance().configDir.resolve(MOD_ID).resolve("server.json5")
     private val json = Json5 {
         prettyPrint = true
@@ -98,19 +96,19 @@ class NLGameConfigManager {
             playersLifesCount ?: this.playersLifesCount,
         )
 
-        fun check(): Pair<NLGameConfig, GameConfigCheckException>? {
+        fun check(): Pair<NLGameConfig, NLGameConfigCheckException>? {
             var bl = false
-            var exc = GameConfigCheckException.empty()
+            var exc = NLGameConfigCheckException.empty()
             var res = with() // Copy
 
             if (version !in 1..GAME_CONFIG_VERSION) {
                 bl = true
-                exc = exc.chain(GameConfigCheckException.of(Component.translatable("config.game.check.exception.version", version)))
+                exc = exc.chain(NLGameConfigCheckException.of(Component.translatable("config.game.check.exception.version", version)))
                 res = res.with(version = GAME_CONFIG_VERSION)
             }
             if (wStandSpawnChance !in 0..100) {
                 bl = true
-                exc = exc.chain(GameConfigCheckException.of(Component.translatable("config.game.check.exception.wstand_spawn_chance", wStandSpawnChance)))
+                exc = exc.chain(NLGameConfigCheckException.of(Component.translatable("config.game.check.exception.wstand_spawn_chance", wStandSpawnChance)))
                 res = res.with(wStandSpawnChance = 20)
             }
             return if (bl) res to exc else null

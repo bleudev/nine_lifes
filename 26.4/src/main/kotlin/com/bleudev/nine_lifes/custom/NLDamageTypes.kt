@@ -8,7 +8,7 @@ import net.minecraft.world.damagesource.DamageType
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.level.Level
 
-object NineLifesDamageTypes {
+object NLDamageTypes {
     private fun key(name: String): ResourceKey<DamageType> =
         ResourceKey.create(Registries.DAMAGE_TYPE, createIdentifier(name))
 

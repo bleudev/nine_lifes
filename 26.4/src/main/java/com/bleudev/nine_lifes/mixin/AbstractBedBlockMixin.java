@@ -1,6 +1,6 @@
 package com.bleudev.nine_lifes.mixin;
 
-import com.bleudev.nine_lifes.NineLifes;
+import com.bleudev.nine_lifes.NL;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ public class AbstractBedBlockMixin {
     private void cancelUseIfAnaglyph(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (level.isClientSide()) return;
         String name = player.getGameProfile().name();
-        HashMap<String, Integer> map = NineLifes.getNotSafeSleepTicks$com_bleudev_nine_lifes();
+        HashMap<String, Integer> map = NL.getNotSafeSleepTicks$com_bleudev_nine_lifes();
         if (map.containsKey(name)) {
             if (map.get(name) > 0) cir.setReturnValue(InteractionResult.PASS);
         }

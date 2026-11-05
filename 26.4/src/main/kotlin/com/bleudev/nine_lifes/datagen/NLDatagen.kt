@@ -7,7 +7,7 @@ import net.minecraft.core.RegistrySetBuilder
 import net.minecraft.core.registries.Registries
 
 
-class NineLifesDataGen : DataGeneratorEntrypoint {
+class NLDatagen : DataGeneratorEntrypoint {
     override fun onInitializeDataGenerator(gen: FabricDataGenerator) {
         val pack = gen.createPack()
         // Languages

@@ -3,7 +3,7 @@ package com.bleudev.nine_lifes.interfaces.mixin;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-public interface CustomServerPlayer {
+public interface IServerPlayer {
     /**
      * Get player lifes
      *
