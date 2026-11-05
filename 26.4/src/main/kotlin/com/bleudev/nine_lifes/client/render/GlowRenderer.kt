@@ -62,7 +62,7 @@ class GlowRenderer {
         }
 
         @JvmStatic
-        fun reset() {
+        fun close() {
             instance = null
         }
 
