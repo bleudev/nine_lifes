@@ -54,6 +54,7 @@ internal object PostEffectRegistryImpl : PostEffectRegistry {
             if (!postEffect.shouldRender()) {
                 // Ensure post effect isn't in cache
                 this.bufCache.remove(postEffect.id)
+                continue
             }
 
             val bufs = this.buffers[postEffect.id]
