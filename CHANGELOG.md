@@ -14,6 +14,7 @@ which is why this fix has been released as a matter of urgency.*
 
 ## Fixes
 
+- 26.4-snapshot-7 crashes (EffectsInInventory mixin error) (bleudev)
 - Many aspects of Nine Lifes were optimized. (bleudev [#182](https://github.com/bleudev/nine_lifes/pull/182))
   - Post effect system
   - Config system
