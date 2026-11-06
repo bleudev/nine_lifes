@@ -139,7 +139,7 @@ class NLClient : ClientModInitializer {
             .builderNL("cblur")
             .condition { shaderCBlurStrength > 0f }
             .uniform("BlurPropConfig") {
-                putFloat(shaderCBlurStrength)
+                putFloat(shaderCBlurStrength * 2)
             }
             .build()
         )
