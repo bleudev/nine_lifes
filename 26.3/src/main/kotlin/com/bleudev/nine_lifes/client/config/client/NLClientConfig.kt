@@ -186,13 +186,21 @@ private val configPath: Path
 
 private val json = Json { prettyPrint = true; ignoreUnknownKeys = true }
 private val json5 = Json5 { prettyPrint = true; encodeDefaults = true }
+private var lastModifiedTime: Long? = null
+private var cachedConfig: NLClientConfig? = null
 
 private fun configLoad(): NLClientConfig {
     try {
-        return json5.decodeFromString(NLClientConfig.serializer(), Files.readString(configPath))
+        val modifiedTime = Files.getLastModifiedTime(configPath).toMillis()
+        if (modifiedTime != lastModifiedTime || cachedConfig == null) {
+            cachedConfig = json5.decodeFromString(NLClientConfig.serializer(), Files.readString(configPath))
+            lastModifiedTime = modifiedTime
+            LOGGER.info("Reloading nine lifes client config: $cachedConfig")
+        }
+        return cachedConfig!!
     }
     catch (e: Throwable) {
-        LOGGER.error("Error while loading config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
+        LOGGER.error("Error while loading client config. Please report about it.", e)
     }
     return NLClientConfig()
 }
@@ -200,9 +208,12 @@ private fun configLoad(): NLClientConfig {
 private fun configSave(data: NLClientConfig) {
     try {
         Files.writeString(configPath, json5.encodeToString(NLClientConfig.serializer(), data))
+        cachedConfig = data
+        lastModifiedTime = Files.getLastModifiedTime(configPath).toMillis()
+        LOGGER.info("Saving nine lifes client config: $cachedConfig")
     }
     catch (e: Throwable) {
-        LOGGER.error("Error while saving config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
+        LOGGER.error("Error while saving client config. Please report about it.", e)
     }
 }
 
@@ -245,7 +256,7 @@ internal fun configInit() {
 
         }
     } catch (e: Throwable) {
-        LOGGER.error("Error while initializing config:\n${e.stackTrace.joinToString("\n")}\n\nPlease report about it.")
+        LOGGER.error("Error while initializing client config. Please report about it.", e)
     }
 }
 
