@@ -4,6 +4,7 @@ import com.bleudev.nine_lifes.*
 import com.bleudev.nine_lifes.api.event.client.ClientEnvironmentSetupEvents
 import com.bleudev.nine_lifes.api.event.client.ClientRespawnEvents
 import com.bleudev.nine_lifes.api.render.client.PostEffectRegistry
+import com.bleudev.nine_lifes.api.render.client.impl.PostEffectRegistryImpl
 import com.bleudev.nine_lifes.api.render.client.post_effect.NLPostEffect
 import com.bleudev.nine_lifes.api.render.client.post_effect.SpectateEntityPostEffect
 import com.bleudev.nine_lifes.client.config.client.HeartPosition
@@ -33,6 +34,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
@@ -40,10 +42,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.world.level.GameType
-import net.minecraft.world.level.Level
 import org.joml.Vector3f
 import org.joml.Vector4f
 import kotlin.random.Random
@@ -66,6 +66,9 @@ class NLClient : ClientModInitializer {
 
         NLEntityRenderers.initialize()
 
+        LevelRenderEvents.START_MAIN.register {
+            PostEffectRegistryImpl.frameStart()
+        }
         ClientTickEvents.END_LEVEL_TICK.register { endClientLevelTick() }
         ClientRespawnEvents.RESPAWN.register { _ ->
             should_death_screen_be_white = false
@@ -117,16 +120,8 @@ class NLClient : ClientModInitializer {
         }
 
         PostEffectRegistry.register(NLPostEffect
-            .builder(Identifier.fromNamespaceAndPath("foo", "bar"))
-            .condition { Minecraft.getInstance().level?.dimension() == Level.NETHER }
-            .uniform("AnaglyphConfig") {
-                putVec2(0.005f, 0.0025f)
-            }
-            .build()
-        )
-
-        PostEffectRegistry.register(NLPostEffect
             .builderNL("redmaj")
+            .condition { shaderRedMajStrength > 0f }
             .uniform("ChmajConfig") {
                 putVec3(1f, 0f, 0f).putFloat(shaderRedMajStrength)
             }
@@ -134,6 +129,7 @@ class NLClient : ClientModInitializer {
         )
         PostEffectRegistry.register(NLPostEffect
             .builderNL("anaglyph")
+            .condition { shaderAnaglyphX != 0f || shaderAnaglyphY != 0f }
             .uniform("AnaglyphConfig") {
                 putVec2(shaderAnaglyphX, shaderAnaglyphY)
             }
@@ -141,13 +137,15 @@ class NLClient : ClientModInitializer {
         )
         PostEffectRegistry.register(NLPostEffect
             .builderNL("cblur")
+            .condition { shaderCBlurStrength > 0f }
             .uniform("BlurPropConfig") {
-                putFloat(shaderCBlurStrength)
+                putFloat(shaderCBlurStrength * 2)
             }
             .build()
         )
         PostEffectRegistry.register(NLPostEffect
             .builderNL("player_amethysm")
+            .condition { playerAmethysmStrength > 0f }
             .uniform("CustomConvolveConfig") {
                 putFloat(playerAmethysmStrength).putFloat(5f)
             }
@@ -155,6 +153,7 @@ class NLClient : ClientModInitializer {
         )
         PostEffectRegistry.register(NLPostEffect
             .builderNL("player_charged")
+            .condition { playerChargedStrength > 0f }
             .uniform("CustomConvolveConfig") {
                 putFloat(playerChargedStrength).putFloat(10f)
             }

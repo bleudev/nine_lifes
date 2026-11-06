@@ -1,4 +1,7 @@
-# 8.0
+# 8.1: Urgent performance fix
+
+*Following the previous update, some mod users experienced significant FPS drops,
+which is why this fix has been released as a matter of urgency.*
 
 ## Targets
 
@@ -6,26 +9,12 @@
 |-------------------|--------|
 | 26.4-snapshot-7   | ✅️     |
 | 26.3              | ✅️     |
-| 26.2              | ❌️     |
 
 ## Changes
 
-## Breaking changes
-
-- Rewrite `PostEffectRegistry` and delete `SpectatePostEffectRegistry`:
-Use `NLPostEffect` and `SpectateEntityPostEffect` instead. (bleudev [#176](https://github.com/bleudev/nine_lifes/pull/176))
-- Many classes, methods etc. were renamed!!!! If you are developer see [#178](https://github.com/bleudev/nine_lifes/pull/178) for details. (bleudev [#178](https://github.com/bleudev/nine_lifes/pull/178))
-
-## Version changes
-
-- End of support for 26.2 (bleudev [#176](https://github.com/bleudev/nine_lifes/pull/176))
-- Fabric Loader `0.20.1` (bleudev)
-- Kotlin `2.4.21` (bleudev)
-- Dump dependencies (bleudev [#179](https://github.com/bleudev/nine_lifes/pull/179))
-- [DEV] Fabric Loom `0.19.3` (bleudev)
-- [DEV] Gradle `9.8.2` (bleudev)
-
 ## Fixes
 
-- Resource pack reload freezes the game (bleudev)
-- Wandering armor stand loses their data after rerunning (bleudev [#178](https://github.com/bleudev/nine_lifes/pull/178))
+- Many aspects of Nine Lifes were optimized. (bleudev [#182](https://github.com/bleudev/nine_lifes/pull/182))
+  - Post effect system
+  - Config system
+  - CBlur (Custom Blur) effect: *The strength of the effect may decrease; if you are a developer, please make adjustments.*

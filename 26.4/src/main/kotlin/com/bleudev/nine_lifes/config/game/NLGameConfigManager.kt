@@ -1,6 +1,7 @@
 package com.bleudev.nine_lifes.config.game
 
 import com.bleudev.nine_lifes.GAME_CONFIG_VERSION
+import com.bleudev.nine_lifes.LOGGER
 import com.bleudev.nine_lifes.MOD_ID
 import com.bleudev.nine_lifes.api.FriendlyStreamCodec
 import com.bleudev.nine_lifes.client.dataSyncedGameConfig
@@ -20,6 +21,9 @@ class NLGameConfigManager private constructor() {
         prettyPrint = true
         encodeDefaults = true
     }
+    private var cachedConfig: NLGameConfig? = null
+    private var lastModifiedTime: Long? = null
+
     init {
         init()
     }
@@ -31,24 +35,47 @@ class NLGameConfigManager private constructor() {
         }
     }
     private fun save(c: NLGameConfig, noCheck: Boolean) {
-        Files.createDirectories(path.parent)
+        try {
+            Files.createDirectories(path.parent)
 
-        val checkError = c.check()
-        if (!noCheck && checkError != null) {
-            save(checkError.first, true)
-            throw checkError.second
+            if (!noCheck) {
+                val checkError = c.check()
+                if (checkError != null) {
+                    save(checkError.first, true)
+                    throw checkError.second
+                }
+            }
+
+            val d = json.encodeToString(NLGameConfig.serializer(), c)
+            Files.writeString(path, d)
+            lastModifiedTime = Files.getLastModifiedTime(path).toMillis()
+            cachedConfig = c
+            LOGGER.info("Saving nine lifes game config: $cachedConfig")
         }
-
-        val d = json.encodeToString(NLGameConfig.serializer(), c)
-        Files.writeString(path, d)
+        catch (e: Throwable) {
+            LOGGER.error("Error while saving game config. Please report about it.", e)
+        }
     }
     fun save(config: NLGameConfig) {
         save(config, false)
     }
 
     fun load(): NLGameConfig {
-        val s = Files.readString(path)
-        return json.decodeFromString(NLGameConfig.serializer(), s)
+        try {
+            val modifiedTime = Files.getLastModifiedTime(path).toMillis()
+
+            if (modifiedTime != lastModifiedTime || cachedConfig == null) {
+                val s = Files.readString(path)
+                cachedConfig = json.decodeFromString(NLGameConfig.serializer(), s)
+                lastModifiedTime = modifiedTime
+                LOGGER.info("Reloading nine lifes game config: $cachedConfig")
+            }
+            return cachedConfig!!
+        }
+        catch (e: Throwable) {
+            LOGGER.error("Error while loading game config. Please report about it.", e)
+        }
+        return NLGameConfig()
     }
 
     operator fun invoke(transform: NLGameConfig.() -> Unit) {
