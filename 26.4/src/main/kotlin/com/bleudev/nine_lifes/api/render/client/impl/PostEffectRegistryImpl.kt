@@ -11,6 +11,8 @@ import net.minecraft.resources.Identifier
 
 internal object PostEffectRegistryImpl : PostEffectRegistry {
     private val postEffects = arrayListOf<NLPostEffect>()
+    private val postEffectsById = hashMapOf<Identifier, NLPostEffect>()
+
     private val bufferQueries = hashMapOf<Identifier, ArrayList<MyBufferQuery>>()
     private val buffers = hashMapOf<Identifier, List<MyBuffer>>()
     private val bufCache = hashMapOf<Identifier, HashMap<String, GpuBuffer>>()
@@ -19,6 +21,7 @@ internal object PostEffectRegistryImpl : PostEffectRegistry {
     override fun register(postEffect: NLPostEffect) {
         require(!initialized) { "Can't register post effect after initialization!" }
         this.postEffects.add(postEffect)
+        this.postEffectsById[postEffect.id] = postEffect
         for (uniform in postEffect.uniformNames) {
             val list = this.bufferQueries.computeIfAbsent(postEffect.id) { arrayListOf<MyBufferQuery>() }
             list.add(MyBufferQuery.create(uniform, postEffect))
@@ -76,7 +79,13 @@ internal object PostEffectRegistryImpl : PostEffectRegistry {
 
     @JvmStatic
     fun extractPostEffects(): List<Identifier> {
-        return this.postEffects.toList().filter { it.shouldRender() }.map { it.id }
+        return this.postEffects.mapNotNull { if (it.shouldRender()) it.id else null }
+    }
+
+    @JvmStatic
+    fun shouldApplyBuffers(postEffect: Identifier): Boolean {
+        val pe = this.postEffectsById[postEffect]
+        return pe != null && pe.shouldRender() && this.bufCache[postEffect] != null
     }
 
     @JvmStatic
