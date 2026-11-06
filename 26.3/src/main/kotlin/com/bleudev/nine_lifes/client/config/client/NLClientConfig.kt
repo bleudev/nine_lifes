@@ -190,18 +190,25 @@ private var lastModifiedTime: Long? = null
 private var cachedConfig: NLClientConfig? = null
 
 private fun configLoad(): NLClientConfig {
-    try {
-        val modifiedTime = Files.getLastModifiedTime(configPath).toMillis()
-        if (modifiedTime != lastModifiedTime || cachedConfig == null) {
-            cachedConfig = json5.decodeFromString(NLClientConfig.serializer(), Files.readString(configPath))
-            lastModifiedTime = modifiedTime
-            LOGGER.info("Reloading nine lifes client config: $cachedConfig")
+    if (Files.exists(configPath)) {
+        try {
+            val modifiedTime = Files.getLastModifiedTime(configPath).toMillis()
+            if (modifiedTime != lastModifiedTime || cachedConfig == null) {
+                cachedConfig = json5.decodeFromString(NLClientConfig.serializer(), Files.readString(configPath))
+                lastModifiedTime = modifiedTime
+                LOGGER.info("Reloading nine lifes client config: $cachedConfig")
+            }
+            return cachedConfig!!
         }
-        return cachedConfig!!
+        catch (e: Throwable) {
+            LOGGER.error("Error while loading client config. Please report about it.", e)
+        }
+    } else {
+        configInit()
+        return cachedConfig ?: NLClientConfig()
     }
-    catch (e: Throwable) {
-        LOGGER.error("Error while loading client config. Please report about it.", e)
-    }
+    lastModifiedTime = null
+    cachedConfig = null
     return NLClientConfig()
 }
 
@@ -245,15 +252,14 @@ private object ClientConfigMigrator {
 
 internal fun configInit() {
     try {
-        Files.createDirectories(configPath.parent)
         if (!Files.exists(configPath)) {
+            Files.createDirectories(configPath.parent)
             if (Files.exists(oldConfigPath)) {
                 val old = Files.readString(oldConfigPath)
                 configSave(ClientConfigMigrator.migrateOld(old))
             } else {
                 configSave(NLClientConfig())
             }
-
         }
     } catch (e: Throwable) {
         LOGGER.error("Error while initializing client config. Please report about it.", e)

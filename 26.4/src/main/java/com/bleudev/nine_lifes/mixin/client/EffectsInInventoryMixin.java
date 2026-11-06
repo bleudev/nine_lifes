@@ -15,7 +15,7 @@ import static com.bleudev.nine_lifes.client.NLClientStorageKt.stickUsedTicks;
 @Mixin(EffectsInInventory.class)
 public class EffectsInInventoryMixin {
     @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
-    private void stopRenderIfStickUsed(GuiGraphicsExtractor graphics, int mouseX, int mouseY, CallbackInfo ci) {
+    private void stopRenderIfStickUsed(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         if (stickUsedTicks > 0) ci.cancel();
     }
 }

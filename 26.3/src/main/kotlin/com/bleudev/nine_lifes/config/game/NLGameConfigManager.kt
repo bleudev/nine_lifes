@@ -28,15 +28,16 @@ class NLGameConfigManager private constructor() {
         init()
     }
 
-    private fun init() {
-        if (!Files.exists(path)) {
-            val c = NLGameConfig()
-            save(c)
-        }
+    private fun init(): NLGameConfig {
+        val c = NLGameConfig()
+        if (!Files.exists(path)) save(c)
+        return c
     }
     private fun save(c: NLGameConfig, noCheck: Boolean) {
         try {
-            Files.createDirectories(path.parent)
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.parent)
+            }
 
             if (!noCheck) {
                 val checkError = c.check()
@@ -53,7 +54,11 @@ class NLGameConfigManager private constructor() {
             LOGGER.info("Saving nine lifes game config: $cachedConfig")
         }
         catch (e: Throwable) {
-            LOGGER.error("Error while saving game config. Please report about it.", e)
+            if (e is NLGameConfigCheckException) {
+                throw e
+            } else {
+                LOGGER.error("Error while saving game config. Please report about it.", e)
+            }
         }
     }
     fun save(config: NLGameConfig) {
@@ -61,20 +66,23 @@ class NLGameConfigManager private constructor() {
     }
 
     fun load(): NLGameConfig {
-        try {
-            val modifiedTime = Files.getLastModifiedTime(path).toMillis()
-
-            if (modifiedTime != lastModifiedTime || cachedConfig == null) {
-                val s = Files.readString(path)
-                cachedConfig = json.decodeFromString(NLGameConfig.serializer(), s)
-                lastModifiedTime = modifiedTime
-                LOGGER.info("Reloading nine lifes game config: $cachedConfig")
+        if (Files.exists(path)) {
+            try {
+                val modifiedTime = Files.getLastModifiedTime(path).toMillis()
+                if (modifiedTime != lastModifiedTime || cachedConfig == null) {
+                    val s = Files.readString(path)
+                    cachedConfig = json.decodeFromString(NLGameConfig.serializer(), s)
+                    lastModifiedTime = modifiedTime
+                    LOGGER.info("Reloading nine lifes game config: $cachedConfig")
+                }
+                return cachedConfig!!
             }
-            return cachedConfig!!
-        }
-        catch (e: Throwable) {
-            LOGGER.error("Error while loading game config. Please report about it.", e)
-        }
+            catch (e: Throwable) {
+                LOGGER.error("Error while loading game config. Please report about it.", e)
+            }
+        } else return init()
+        lastModifiedTime = null
+        cachedConfig = null
         return NLGameConfig()
     }
 
